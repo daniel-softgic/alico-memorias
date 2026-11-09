@@ -171,7 +171,7 @@ function renderTop() {
   const mv = Math.max(1, ...s.casos.map(c => c.votos));
   H('votes').innerHTML = s.casos.slice().sort((a, b) => b.votos - a.votos).map(c => `<div class="vb"><span class="ic">${c.ic}</span><span class="nm">${esc(c.n)}</span><b>${c.votos}</b><span class="tr"><i style="width:${c.votos / mv * 100}%;background:${c.c}"></i></span></div>`).join('');
   const md = Math.max(1, ...s.dolores.map(d => d[2]));
-  H('pains').innerHTML = s.dolores.slice(0, 3).map(([, n, k]) => `<div class="vb" style="grid-template-columns:1fr auto"><span class="nm" style="grid-column:1">${esc(n)}</span><b style="grid-row:auto">${k}</b><span class="tr" style="grid-column:1/-1"><i style="width:${k / md * 100}%;background:var(--gold)"></i></span></div>`).join('') || '<p class="hint">Aún sin respuestas.</p>';
+  H('pains').innerHTML = s.dolores.filter(d => d[2]).slice(0, 3).map(([, n, k]) => `<div class="vb" style="grid-template-columns:1fr auto"><span class="nm" style="grid-column:1">${esc(n)}</span><b style="grid-row:auto">${k}</b><span class="tr" style="grid-column:1/-1"><i style="width:${k / md * 100}%;background:var(--gold)"></i></span></div>`).join('') || '<p class="hint">Aún sin respuestas.</p>';
   const tk = l.slice(0, 14).map(r => `<i>“${esc((r.t || [])[0] || (r.h || {}).eslogan || '')}” — <b>${esc(r.participante || '')}</b>, ${esc(r.area || '')}</i>`).join('');
   H('tk').innerHTML = tk || '<i>Sé la primera persona en dejar su memoria.</i>';
 }

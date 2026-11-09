@@ -16,6 +16,16 @@ const LS = AL.LS = {
 const DEF = {apiKey: '', model: 'claude-haiku-5-5', cloudUrl: '', cloudSecret: '', pin: '1234', voz: true, sesion: 'Sesión demo', tutorialVisto: false};
 AL.cfg = Object.assign({}, DEF, LS.get('al_cfg', {}));
 AL.save = () => LS.set('al_cfg', AL.cfg);
+/* nube del taller ya configurada: solo falta la clave, que no se publica en el código */
+AL.NUBE = 'https://script.google.com/macros/s/AKfycbwcW-7MqKBSTLIfIDDlGymFCIqbuiVpB4g77eRKJtVlY-GpIj39d6A3WGxa5BBXK0C7/exec';
+if (!AL.cfg.cloudUrl) AL.cfg.cloudUrl = AL.NUBE;
+/* enlace de configuración de una sola vez: …/?clave=XXXX (opcional &ia=sk-ant-…). Se guarda en este navegador y se borra de la barra */
+try {
+  const qs = new URLSearchParams(location.search); let ch = false;
+  if (qs.get('clave')) { AL.cfg.cloudSecret = qs.get('clave').trim(); qs.delete('clave'); ch = true; }
+  if (qs.get('ia') && /^sk-ant-/.test(qs.get('ia'))) { AL.cfg.apiKey = qs.get('ia').trim(); qs.delete('ia'); ch = true; }
+  if (ch) { AL.save(); AL._recienConfig = true; history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs : '') + location.hash); }
+} catch (e) {}
 AL.hasIA = () => !!AL.cfg.apiKey;
 AL.hasCloud = () => !!AL.cfg.cloudUrl;
 AL.state = {ia: null, cloud: null, pending: 0};
@@ -286,3 +296,6 @@ AL.bar = function (o) {
   /* narración: cada caso tiene un botón 🔊 que cuenta qué es y cómo se usa */
   AL.narrar = function (txt) { if (!('speechSynthesis' in window)) return AL.toast('Este navegador no habla. Usa Chrome o Edge.'); const was = AL.cfg.voz; AL.cfg.voz = true; AL.say(txt); AL.cfg.voz = was; };
 })();
+
+/* aviso tras usar el enlace de configuración */
+if (AL._recienConfig) addEventListener('load', () => setTimeout(() => AL.toast && AL.toast('✅ Este computador quedó conectado a la nube del taller' + (AL.cfg.apiKey ? ' y a la IA' : '')), 600));
