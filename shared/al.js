@@ -17,8 +17,8 @@ const DEF = {apiKey: '', model: 'claude-haiku-5-5', cloudUrl: '', cloudSecret: '
 AL.cfg = Object.assign({}, DEF, LS.get('al_cfg', {}));
 AL.save = () => LS.set('al_cfg', AL.cfg);
 /* nube del taller ya configurada: solo falta la clave, que no se publica en el código */
-AL.NUBE = 'https://script.google.com/macros/s/AKfycbwcW-7MqKBSTLIfIDDlGymFCIqbuiVpB4g77eRKJtVlY-GpIj39d6A3WGxa5BBXK0C7/exec';
-if (!AL.cfg.cloudUrl) AL.cfg.cloudUrl = AL.NUBE;
+AL.NUBE = 'https://script.google.com/macros/s/AKfycbzTptR3n18xKCSE7NmMDQ5rvTzPAhx6RrEliZNd2XKm6c2rNTK14wrCTjVjY2d9Eke6/exec';
+if (!AL.cfg.cloudUrl || AL.cfg.cloudUrl.includes('AKfycbwcW-7MqKBSTLIfIDDlGymFCIqbuiVpB4g77eRKJtVlY-GpIj39d6A3WGxa5BBXK0C7')) AL.cfg.cloudUrl = AL.NUBE;
 /* enlace de configuración de una sola vez: …/?clave=XXXX (opcional &ia=sk-ant-…). Se guarda en este navegador y se borra de la barra */
 try {
   const qs = new URLSearchParams(location.search); let ch = false;
