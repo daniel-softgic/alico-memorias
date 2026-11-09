@@ -18,7 +18,7 @@ AL.cfg = Object.assign({}, DEF, LS.get('al_cfg', {}));
 AL.save = () => LS.set('al_cfg', AL.cfg);
 /* nube del taller ya configurada: solo falta la clave, que no se publica en el código */
 AL.NUBE = 'https://script.google.com/macros/s/AKfycbzTptR3n18xKCSE7NmMDQ5rvTzPAhx6RrEliZNd2XKm6c2rNTK14wrCTjVjY2d9Eke6/exec';
-if (!AL.cfg.cloudUrl || AL.cfg.cloudUrl.includes('AKfycbwcW-7MqKBSTLIfIDDlGymFCIqbuiVpB4g77eRKJtVlY-GpIj39d6A3WGxa5BBXK0C7')) AL.cfg.cloudUrl = AL.NUBE;
+if (!AL.cfg.cloudUrl || AL.cfg.cloudUrl.includes('AKfycbwcW-7MqKBSTLIfIDDlGymFCIqbuiVpB4g77eRKJtVlY-GpIj39d6A3WGxa5BBXK0C7')) { AL.cfg.cloudUrl = AL.NUBE; AL.save(); }
 /* enlace de configuración de una sola vez: …/?clave=XXXX (opcional &ia=sk-ant-…). Se guarda en este navegador y se borra de la barra */
 try {
   const qs = new URLSearchParams(location.search); let ch = false;
@@ -27,7 +27,7 @@ try {
   if (ch) { AL.save(); AL._recienConfig = true; history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs : '') + location.hash); }
 } catch (e) {}
 AL.hasIA = () => !!AL.cfg.apiKey;
-AL.hasCloud = () => !!AL.cfg.cloudUrl;
+AL.hasCloud = () => !!(AL.cfg.cloudUrl && AL.cfg.cloudSecret);
 AL.state = {ia: null, cloud: null, pending: 0};
 
 /* ---------- avisos ---------- */
@@ -67,7 +67,7 @@ AL.queue = function (kind, data) {
   clearTimeout(AL.queue.t); AL.queue.t = setTimeout(AL.sync, 1200);
 };
 AL.sync = async function () {
-  if (!AL.cfg.cloudUrl || !outbox.length) { AL.state.pending = outbox.length; AL.paint(); return; }
+  if (!AL.cfg.cloudUrl || !AL.cfg.cloudSecret || !outbox.length) { AL.state.pending = outbox.length; AL.paint(); return; }
   const batch = outbox.slice(0, 30);
   try {
     const r = await fetch(AL.cfg.cloudUrl, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({secret: AL.cfg.cloudSecret, items: batch})});
@@ -93,21 +93,53 @@ AL.log = function (tipo, d = {}) {   // evento estándar (hoja «Eventos»)
 };
 
 /* ---------- voz ---------- */
-let rec = null;
+let rec = null, recWant = false;
 AL.listening = () => !!rec;
+AL.micOk = false;
+/* pide el micrófono de forma explícita (así el navegador muestra el permiso) y explica cualquier bloqueo */
+AL.pedirMic = async function () {
+  if (AL.micOk) return true;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return true;
+  try { const st = await navigator.mediaDevices.getUserMedia({audio: true}); st.getTracks().forEach(t => t.stop()); AL.micOk = true; return true; }
+  catch (e) { AL.micError(e.name === 'NotFoundError' ? 'audio-capture' : 'not-allowed'); return false; }
+};
+AL.micError = function (code) {
+  const m = {
+    'not-allowed': '🎙️ El micrófono está bloqueado. Toca el candado 🔒 junto a la dirección → Micrófono → Permitir, y recarga la página.',
+    'service-not-allowed': '🎙️ Este navegador no deja dictar. Abre el portal en Google Chrome o Microsoft Edge.',
+    'audio-capture': '🎙️ No encuentro un micrófono. Conecta uno o revisa que el computador no lo tenga silenciado.',
+    'network': '🎙️ El dictado necesita internet. Revisa la conexión e intenta otra vez.',
+    'language-not-supported': '🎙️ El navegador no reconoce español aquí. Usa Chrome o Edge.'
+  }[code] || '🎙️ No te escuché bien. ¿Probamos otra vez?';
+  AL.toast(m); AL.lastMicError = code;
+};
 AL.listen = function (opts) {
-  AL.stopListen();
+  AL.stopListen(true);
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { AL.toast('Este navegador no escucha. Usa Chrome o Edge, o escribe con el teclado.'); return false; }
-  rec = new SR(); rec.lang = 'es-CO'; rec.interimResults = true; rec.continuous = !!opts.continuous;
-  let fin = '';
-  rec.onresult = ev => { let it = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) fin += r[0].transcript + ' '; else it += r[0].transcript; } opts.onText && opts.onText((fin + it).trim()); };
-  rec.onerror = ev => { if (ev.error !== 'no-speech' && ev.error !== 'aborted') AL.toast('No te escuché bien. ¿Probamos otra vez?'); };
-  rec.onend = () => { rec = null; opts.onEnd && opts.onEnd(fin.trim()); };
-  try { rec.start(); } catch (e) { rec = null; return false; }
+  if (!SR) { AL.toast('🎙️ Este navegador no puede dictar. Usa Google Chrome o Microsoft Edge, o escribe con el teclado.'); return false; }
+  try { speechSynthesis.cancel(); } catch (e) {}
+  let acc = '', t0 = Date.now(), dead = false;
+  recWant = true;
+  const start = () => {
+    const me = new SR(); me.lang = 'es-CO'; me.interimResults = true; me.continuous = !!opts.continuous; me.maxAlternatives = 1;
+    let fin = '';
+    me.onresult = ev => { if (rec !== me) return; let it = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) fin += r[0].transcript + ' '; else it += r[0].transcript; } opts.onText && opts.onText((acc + fin + it).replace(/\s+/g, ' ').trim()); };
+    me.onerror = ev => { if (ev.error === 'no-speech' || ev.error === 'aborted') return; dead = true; AL.micError(ev.error); };
+    me.onend = () => {
+      if (rec !== me) return;
+      acc = (acc + fin).replace(/\s+/g, ' ').trim() + (fin ? ' ' : '');
+      /* Chrome corta tras unos segundos de silencio: si seguimos en modo continuo, reanuda sin que la persona lo note */
+      if (recWant && opts.continuous && !dead && Date.now() - t0 < 120000) { try { start(); return; } catch (e) {} }
+      rec = null; recWant = false; opts.onEnd && opts.onEnd(acc.trim());
+    };
+    rec = me;
+    me.start();
+  };
+  try { start(); } catch (e) { rec = null; recWant = false; AL.micError('x'); return false; }
+  if (!AL.micOk && navigator.mediaDevices && navigator.permissions) navigator.permissions.query({name: 'microphone'}).then(p => { if (p.state === 'granted') AL.micOk = true; if (p.state === 'denied') AL.micError('not-allowed'); }).catch(() => {});
   return true;
 };
-AL.stopListen = () => { if (rec) { try { rec.stop(); } catch (e) {} } };
+AL.stopListen = (silent) => { recWant = false; const r = rec; if (!r) return; if (silent === true) { rec = null; try { r.abort(); } catch (e) {} } else { try { r.stop(); } catch (e) {} } };
 /* voz: prefiere voces latinas naturales (Edge: Salomé/Gonzalo es-CO, Dalia/Jorge es-MX; Chrome: Google español de Estados Unidos) */
 AL.vozScore = v => {
   if (!/^es/i.test(v.lang)) return -1;

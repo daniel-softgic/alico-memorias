@@ -28,17 +28,22 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 @keyframes pl{70%{box-shadow:0 0 0 10px #F2B33D00}}
 /* cuerpo */
 .main{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 22rem;gap:1.4rem;min-height:0}
-.wall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:1rem;min-height:0}
-.gc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;box-shadow:0 6px 18px rgba(80,60,20,.06);transition:transform .2s,box-shadow .2s;animation:in .6s cubic-bezier(.2,.9,.3,1) both}
-.gc:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(80,60,20,.12)}
+.wall{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:1.3rem;min-height:0;padding:.2rem}
+/* cada memoria es un cuadro: marco delgado, paspartú marfil, filete dorado y ficha de museo */
+.gc{position:relative;padding:.42rem;border-radius:5px;cursor:pointer;background:linear-gradient(145deg,#3A3127 0%,#16120E 45%,#2A231B 100%);box-shadow:0 22px 32px -16px rgba(31,27,22,.55),0 3px 6px rgba(31,27,22,.18),inset 0 0 0 1px rgba(255,255,255,.08);transition:transform .25s,box-shadow .25s;animation:in .6s cubic-bezier(.2,.9,.3,1) both;min-height:0;display:flex}
+.gc.gold{background:linear-gradient(140deg,#FBE3A3 0%,#C98A08 30%,#F6CB63 52%,#A86E00 78%,#F2B33D 100%)}
+.gc:hover{transform:translateY(-5px) rotate(-.3deg);box-shadow:0 30px 40px -18px rgba(31,27,22,.6),0 4px 8px rgba(31,27,22,.2)}
+.gc .mat{flex:1;min-height:0;display:flex;flex-direction:column;background:#FCFAF5;padding:.85rem .85rem 0;box-shadow:inset 0 2px 7px rgba(0,0,0,.22),inset 0 0 0 1px rgba(0,0,0,.05)}
 @keyframes in{from{opacity:0;transform:translateY(14px) scale(.98)}}
-.gc .ph{position:relative;flex:1;min-height:0;background:var(--goldL)}.gc .ph img{width:100%;height:100%;object-fit:cover;display:block}
-.gc .cs{position:absolute;left:.6rem;bottom:.6rem;background:rgba(255,255,255,.94);border-radius:99px;padding:.22rem .7rem;font-size:.72rem;font-weight:700;display:flex;gap:.3rem;align-items:center}
-.gc .ej{position:absolute;right:.6rem;top:.6rem;background:#fff;border-radius:99px;padding:.1rem .55rem;font-size:.6rem;font-weight:800;letter-spacing:.06em;color:var(--mut)}
-.gc .in{padding:.75rem .95rem .85rem}
-.gc h3{margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gc q{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.84rem;color:var(--mut);margin:.25rem 0 .4rem;line-height:1.35}
-.gc .ft{font-size:.72rem;font-weight:700;color:var(--gold)}
+.gc .ph{position:relative;flex:1;min-height:0;background:var(--goldL);box-shadow:0 0 0 1px rgba(31,27,22,.12),0 0 0 4px #FCFAF5,0 0 0 5px rgba(218,145,0,.55)}.gc .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.gc .ph:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 18px rgba(0,0,0,.18);pointer-events:none}
+.gc .cs{position:absolute;left:.5rem;bottom:.5rem;background:rgba(255,255,255,.94);border-radius:99px;padding:.2rem .65rem;font-size:.68rem;font-weight:700;display:flex;gap:.3rem;align-items:center;z-index:1}
+.gc .ej{position:absolute;right:.5rem;top:.5rem;background:#fff;border-radius:99px;padding:.1rem .5rem;font-size:.58rem;font-weight:800;letter-spacing:.06em;color:var(--mut);z-index:1}
+.gc .in{padding:.7rem .2rem .75rem;text-align:center}
+.gc h3{margin:0;font-size:1rem;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc q{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8rem;color:var(--mut);margin:.2rem 0 .35rem;line-height:1.35;font-style:italic}
+.gc .ft{font-size:.66rem;font-weight:800;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc .nw{position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#F2B33D;font-size:.6rem;font-weight:800;letter-spacing:.12em;padding:.2rem .6rem;border-radius:99px;z-index:2}
 .empty{grid-column:1/-1;grid-row:1/-1;display:grid;place-items:center;text-align:center;color:var(--mut);font-size:1.3rem}
 .side{display:flex;flex-direction:column;gap:1rem;min-height:0}
 .pnl{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.1rem}
@@ -119,12 +124,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 .fld input,.fld select,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:.75rem .9rem;font:inherit;font-size:1rem;background:#FFFCF6}
 .fld{margin-bottom:.8rem}
 .chk{display:flex;gap:.7rem;align-items:flex-start;font-size:.92rem;margin:.5rem 0;color:var(--mut)}.chk input{width:1.3rem;height:1.3rem;accent-color:var(--gold);margin-top:.1rem}
-.idea{display:grid;grid-template-columns:15rem 1fr;gap:1.4rem;align-items:start}
-.pack{background:linear-gradient(160deg,#fff 0%,#FFF4DE 100%);border:1px solid var(--line);border-radius:26px;padding:1.2rem;text-align:center;position:relative;overflow:hidden}
-.pack:before{content:"";position:absolute;left:0;right:0;top:0;height:3.2rem;background:linear-gradient(90deg,var(--gold),var(--gold2))}
-.pack img.al{position:relative;height:1.3rem;margin:.15rem auto 1.5rem;display:block;filter:brightness(0) invert(1)}
-.pack h3{margin:.2rem 0;font-size:1.25rem;font-weight:800}.pack p{margin:0;color:var(--mut);font-size:.85rem}
-.pack .tg{display:inline-block;margin-top:.7rem;background:#fff;border:1px solid var(--line);border-radius:99px;padding:.2rem .7rem;font-size:.75rem;font-weight:700}
+.idea{display:grid;grid-template-columns:17rem 1fr;gap:1.6rem;align-items:start}
+.pkw{position:relative;padding:.6rem;border-radius:28px;background:radial-gradient(120% 90% at 50% 30%,#2A2219 0%,#0E0C0A 70%);box-shadow:0 24px 50px -20px rgba(31,27,22,.6)}
+.pkw .bd{position:absolute;left:.9rem;top:.9rem;z-index:2;font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(242,179,61,.16);color:#F2B33D;border:1px solid rgba(242,179,61,.4);border-radius:99px;padding:.2rem .6rem}
+.via{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;font-size:.82rem;color:var(--mut);margin:.2rem 0 .9rem}.via b{color:var(--gold)}
+.safe{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(135deg,#FFF7E6,#fff);border:1px solid #F3D9A6;border-radius:18px;padding:.9rem 1.1rem;margin:.4rem 0 1rem;font-size:.95rem;line-height:1.45}.safe span{font-size:1.8rem}
+.und{display:none;margin:.6rem 0 0;font-size:.88rem;font-weight:600;color:var(--ink);background:var(--goldL);border-radius:12px;padding:.5rem .8rem}.und.on{display:block}
+.memo-pre{color:var(--gold2)}
 .vid{position:relative;border-radius:24px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:55vh;margin:0 auto}.vid video,.vid img{width:100%;height:100%;object-fit:cover;display:block}
 .cd{position:absolute;inset:0;display:grid;place-items:center;font-size:8rem;font-weight:800;color:#fff;text-shadow:0 0 30px #000;pointer-events:none}
 .frame{position:absolute;inset:6%;border:3px dashed rgba(255,255,255,.7);border-radius:20px;pointer-events:none}
@@ -147,7 +153,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
     <aside class="side">
       <div class="pnl"><h4>Lo que piden los colaboradores</h4><div id="votes"></div></div>
       <div class="pnl"><h4>Lo que más tiempo les quita</h4><div id="pains"></div></div>
-      <div class="memoBox"><div class="say" id="say">Cuéntame en 5 minutos qué te gustaría que la IA hiciera por ti.</div><div id="memoTop"></div></div>
+      <div class="memoBox"><div class="say" id="say">Cuéntame qué te gustaría que la IA hiciera por ti.</div><div id="memoTop"></div></div>
     </aside>
   </div>
   <footer class="foot"><div class="tick"><span id="tk"></span></div><a class="lnk" href="admin.html">Informe</a><button class="lnk" id="set">Ajustes</button><button class="lnk" id="rst" title="Reinicia los contadores del muro (no borra nada)">⟲ Reiniciar contador</button></footer>
@@ -161,6 +167,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 (() => {
 'use strict';
 const $ = AL.$, esc = AL.esc, $$ = s => [...document.querySelectorAll(s)], H = id => document.getElementById(id);
+{ const st = document.createElement('style'); st.textContent = MEM.empaqueCSS; document.head.appendChild(st); }
 
 /* ============================ muro ============================ */
 let page = 0; const PER = 8;
@@ -172,43 +179,41 @@ function renderTop() {
   H('votes').innerHTML = s.casos.slice().sort((a, b) => b.votos - a.votos).map(c => `<div class="vb"><span class="ic">${c.ic}</span><span class="nm">${esc(c.n)}</span><b>${c.votos}</b><span class="tr"><i style="width:${c.votos / mv * 100}%;background:${c.c}"></i></span></div>`).join('');
   const md = Math.max(1, ...s.dolores.map(d => d[2]));
   H('pains').innerHTML = s.dolores.filter(d => d[2]).slice(0, 3).map(([, n, k]) => `<div class="vb" style="grid-template-columns:1fr auto"><span class="nm" style="grid-column:1">${esc(n)}</span><b style="grid-row:auto">${k}</b><span class="tr" style="grid-column:1/-1"><i style="width:${k / md * 100}%;background:var(--gold)"></i></span></div>`).join('') || '<p class="hint">Aún sin respuestas.</p>';
-  const tk = l.slice(0, 14).map(r => `<i>“${esc((r.t || [])[0] || (r.h || {}).eslogan || '')}” — <b>${esc(r.participante || '')}</b>, ${esc(r.area || '')}</i>`).join('');
+  const tk = l.slice(0, 14).map(r => `<i>“${esc((r.t || [])[0] || (r.h || {}).eslogan || '')}” — <b>${esc(MEM.nombre(r))}</b>, ${esc(r.area || '')}</i>`).join('');
   H('tk').innerHTML = tk || '<i>Sé la primera persona en dejar su memoria.</i>';
 }
 function renderWall() {
   const l = vis(), pages = Math.max(1, Math.ceil(l.length / PER)); if (page >= pages) page = 0;
-  const sl = l.slice(page * PER, page * PER + PER);
+  const sl = l.slice(page * PER, page * PER + PER), nuevo = l.find(r => !r.ejemplo);
   if (!l.length) { H('wall').innerHTML = '<div class="empty">✨ El muro está listo.<br>Toca «Hablar con Memo» para dejar la primera memoria.</div>'; return; }
-  H('wall').style.gridTemplateColumns = `repeat(${sl.length <= 3 ? Math.max(sl.length, 2) : 4},minmax(0,1fr))`;
-  H('wall').innerHTML = sl.map((r, i) => { const c = MEM.caso((r.a || {}).caso) || {}, h = r.h || {};
-    return `<div class="gc" data-id="${r.id}" style="animation-delay:${i * .06}s"><div class="ph">${r.foto ? `<img src="${r.foto}" alt="">` : `<div style="height:100%;display:grid;place-items:center;font-size:3rem">💡</div>`}${r.ejemplo ? '<span class="ej">EJEMPLO</span>' : ''}${c.n ? `<span class="cs">${c.ic} ${esc(c.n)}</span>` : ''}</div>
-    <div class="in"><h3>${esc(h.nombre_idea || r.grupo)}</h3><q>${esc((r.t || [])[0] || h.eslogan || '')}</q><div class="ft">${esc(r.grupo)} · ${esc(r.participante || '')} · ${esc(r.area || '')}</div></div></div>`; }).join('');
+    H('wall').innerHTML = sl.map((r, i) => { const c = MEM.caso((r.a || {}).caso) || {}, h = r.h || {}, gold = nuevo && r.id === nuevo.id;
+    return `<div class="gc ${gold ? 'gold' : ''}" data-id="${r.id}" style="animation-delay:${i * .06}s">${gold ? '<span class="nw">LA MÁS RECIENTE</span>' : ''}<div class="mat"><div class="ph">${r.foto ? `<img src="${r.foto}" alt="">` : `<div style="height:100%;display:grid;place-items:center;font-size:3rem">💡</div>`}${r.ejemplo ? '<span class="ej">EJEMPLO</span>' : ''}${c.n ? `<span class="cs">${c.ic} ${esc(c.n)}</span>` : ''}</div>
+    <div class="in"><h3>${esc(h.nombre_idea || r.grupo)}</h3><q>${esc(h.eslogan || (r.t || [])[0] || '')}</q><div class="ft">${esc(r.grupo)} · ${esc(MEM.nombre(r))}</div></div></div></div>`; }).join('');
   sl.filter(r => !r.foto && !r.ejemplo).forEach(r => MEM.fetchFoto(r).then(f => f && renderWall()));
 }
 H('wall').onclick = e => { const c = e.target.closest('.gc'); if (c) detalle(c.dataset.id); };
 function detalle(id) {
-  const r = MEM.get(id); if (!r) return; const a = r.a || {}, h = r.h || {}, c = MEM.caso(a.caso) || {};
-  AL.modal(`<div style="font-family:'Plus Jakarta Sans',sans-serif"><div style="display:grid;grid-template-columns:14rem 1fr;gap:1.2rem">${r.foto ? `<img src="${r.foto}" style="width:100%;border-radius:18px">` : '<div></div>'}<div><div class="qn">${esc(r.grupo)} · ${esc(r.area)}</div><h2 style="margin:.2rem 0">${esc(h.nombre_idea || '')}</h2><p style="color:#6E6558">${esc(r.participante)} · ${esc(r.rol || '')}</p><p>${esc(h.historia_usuario || '')}</p></div></div>
-  <div class="sum">${MEM.Q.map((q, i) => `<div><b>${i + 1}. ${esc(q.corto)}</b>${esc(resumenResp(r, i))}</div>`).join('')}<div><b>Padrino o madrina</b>${esc(r.padrino || '—')}</div></div>
+  const r = MEM.get(id); if (!r) return; const h = r.h || {};
+  AL.modal(`<div style="font-family:'Plus Jakarta Sans',sans-serif"><div style="display:grid;grid-template-columns:13rem 1fr;gap:1.3rem;align-items:start"><div class="pkw">${MEM.empaque({ nombre: h.nombre_idea, eslogan: h.eslogan, caso: (r.a || {}).caso, id: r.id })}</div><div>${r.foto ? `<img src="${r.foto}" style="width:100%;max-height:15rem;object-fit:cover;border-radius:14px">` : ''}<div class="qn" style="margin-top:.6rem">${esc(r.grupo)} · ${esc(r.area)}</div><h2 style="margin:.2rem 0">${esc(h.nombre_idea || '')}</h2><p style="color:#6E6558">${esc(MEM.nombre(r))}${r.anon ? '' : ' · ' + esc(r.rol || '')}</p><p>${esc(h.historia_usuario || '')}</p></div></div>
+  <div class="sum">${MEM.Q.map((q, i) => `<div><b>${i + 1}. ${esc(q.corto)}</b>${esc(resumenResp(r, i))}</div>`).join('')}</div>
   <div style="text-align:right;margin-top:1rem"><button class="b2" onclick="AL.closeModal()">Cerrar</button></div></div>`);
 }
 function resumenResp(r, i) {
-  const a = r.a || {}, t = (r.t || [])[i] || '';
-  const k = [MEM.lab(MEM.DOLORES, a.dolor), a.horas != null ? `${MEM.HORAS.find(x => x[1] === a.horas)?.[0] || a.horas + ' h'} · ${MEM.PERSONAS.find(x => x[1] === a.personas)?.[0] || ''}` : '', (MEM.caso(a.caso) || {}).n, (a.ayuda || []).map(x => MEM.lab(MEM.AYUDAS, x)).join(', '), [(a.barreras || []).map(x => MEM.lab(MEM.BARRERAS, x)).join(', '), a.listo ? 'preparación ' + a.listo + '/5' : ''].filter(Boolean).join(' · ')][i];
-  return [k, t].filter(Boolean).join(' — ') || '—';
+  const a = r.a || {}, t = (r.t || [])[i] || '', L = (arr, x) => (x || []).map(k => MEM.lab(arr, k)).join(', ');
+  const k = [MEM.lab(MEM.DOLORES, a.dolor), a.horas != null ? `${a.horas} h/semana · ${(MEM.PERSONAS.find(x => x[1] === a.personas) || [''])[0]}` : '', L(MEM.AYUDAS, a.ayuda), L(MEM.GANAS, a.gana), [L(MEM.APOYOS, a.apoyo), a.listo ? 'ganas de aprender ' + a.listo + '/5' : ''].filter(Boolean).join(' · '), (MEM.caso(a.caso) || {}).n][i];
+  return [k, t ? '«' + t + '»' : ''].filter(Boolean).join(' — ') || '—';
 }
 function refresh() { renderTop(); renderWall(); }
 setInterval(() => { const pages = Math.ceil(vis().length / PER); if (pages > 1 && !H('flow').classList.contains('on')) { page = (page + 1) % pages; renderWall(); } }, 15000);
 H('memoTop').innerHTML = MEM.memo({ size: 110, pose: 'cordialidad' });
-const SAYS = ['Cuéntame en 5 minutos qué te gustaría que la IA hiciera por ti.', '¿Qué tarea te quita más tiempo? Quiero escucharte.', 'Tu voz define por dónde empieza Alico con la IA.', 'Cinco preguntas, una foto y tu memoria queda en el muro.'];
+const SAYS = ['Cuéntame qué te gustaría que la IA hiciera por ti.', 'No es una evaluación: quiero saber dónde te podemos ayudar.', 'Tu voz define por dónde empieza Alico con la IA.', 'Seis preguntas, una foto y tu idea queda empacada en el muro.'];
 let si = 0; setInterval(() => { H('say').textContent = SAYS[++si % SAYS.length]; }, 8000);
 
-/* nuevas memorias desde otros equipos */
 async function poll() { const before = new Set(MEM.list().map(r => r.id)); if (await MEM.pull()) { const nuevas = MEM.list().filter(r => !before.has(r.id) && !r.ejemplo); refresh(); if (nuevas[0] && !H('flow').classList.contains('on')) aviso(nuevas[0]); } }
 setInterval(poll, 12000); poll();
 function aviso(r) {
   const d = document.createElement('div'); d.className = 'toastC'; const h = r.h || {};
-  d.innerHTML = `${r.foto ? `<img src="${r.foto}">` : '<span style="font-size:2rem">🎉</span>'}<div><small>Nueva memoria · ${esc(r.grupo)}</small><b>${esc(h.nombre_idea || '')}</b><small>${esc(r.participante || '')} · ${esc(r.area || '')}</small></div>`;
+  d.innerHTML = `${r.foto ? `<img src="${r.foto}">` : '<span style="font-size:2rem">🎉</span>'}<div><small>Nueva memoria · ${esc(r.grupo)}</small><b>${esc(h.nombre_idea || '')}</b><small>${esc(MEM.nombre(r))} · ${esc(r.area || '')}</small></div>`;
   document.body.appendChild(d); confetti(70); setTimeout(() => d.remove(), 6000);
 }
 function confetti(n = 120) {
@@ -216,11 +221,12 @@ function confetti(n = 120) {
   for (let i = 0; i < n; i++) P.push({ x: innerWidth * (.55 + Math.random() * .45), y: -20 - Math.random() * 200, vx: (Math.random() - .6) * 4, vy: 2 + Math.random() * 4, s: 5 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[i % cols.length] });
   let f = 0; (function a() { x.clearRect(0, 0, c.width, c.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); }); if (++f < 200) requestAnimationFrame(a); else x.clearRect(0, 0, c.width, c.height); })();
 }
-/* reiniciar contador: no borra nada, solo empieza a contar desde ahora (el informe conserva todo) */
 H('rst').onclick = () => {
-  AL.modal(`<h2>⟲ Reiniciar el contador del muro</h2><p class="muted">El muro y los contadores empiezan desde cero para el siguiente grupo o jornada. <b>No se borra ninguna respuesta</b>: todo sigue en el informe y en Google Sheets.</p><div class="field" style="margin-top:.8rem"><label>PIN del taller</label><input id="rp" type="password" inputmode="numeric"></div><div style="display:flex;gap:.6rem;justify-content:flex-end"><button class="btn gr" onclick="AL.closeModal()">Cancelar</button>${MEM.cfg.desde ? '<button class="btn gr" id="rx">Ver todo otra vez</button>' : ''}<button class="btn" id="ro">Reiniciar ahora</button></div>`);
+  AL.modal(`<h2>⟲ Reiniciar el contador del muro</h2><p class="muted">El muro y los contadores empiezan desde cero para el siguiente grupo o jornada. <b>No se borra ninguna respuesta</b>: todo sigue en el informe y en Google Sheets.</p><div class="field" style="margin-top:.8rem"><label>PIN del taller</label><input id="rp" type="password" inputmode="numeric" autocomplete="off"></div><div style="display:flex;gap:.6rem;justify-content:flex-end"><button class="btn gr" onclick="AL.closeModal()">Cancelar</button>${MEM.cfg.desde ? '<button class="btn gr" id="rx">Ver todo otra vez</button>' : ''}<button class="btn" id="ro">Reiniciar ahora</button></div>`);
+  setTimeout(() => H('rp') && H('rp').focus(), 50);
   const chk = () => { if ($('#rp').value !== AL.cfg.pin) { AL.toast('PIN incorrecto'); return false; } return true; };
   $('#ro').onclick = () => { if (!chk()) return; MEM.cfg.desde = Date.now(); MEM.saveCfg(); AL.closeModal(); page = 0; refresh(); AL.toast('Contador en cero. Todo lo anterior sigue en el informe.'); };
+  $('#rp').addEventListener('keydown', e => { if (e.key === 'Enter') $('#ro').click(); });
   if ($('#rx')) $('#rx').onclick = () => { if (!chk()) return; MEM.cfg.desde = 0; MEM.saveCfg(); AL.closeModal(); refresh(); };
 };
 H('set').onclick = AL.settings;
@@ -229,140 +235,186 @@ H('set').onclick = AL.settings;
 let talkId = 0;
 function speak(t, cb, subEl) {
   const id = ++talkId, words = t.split(/\s+/);
-  if (subEl) { subEl.innerHTML = words.map(w => `<span>${esc(w)} </span>`).join(''); }
-  const spans = subEl ? [...subEl.children] : [], mark = n => spans.forEach((s, i) => s.classList.toggle('on', i <= n));
+  const spans = subEl ? [...subEl.querySelectorAll('span')] : [], mark = n => spans.forEach((s, i) => s.classList.toggle('on', i <= n));
   $$('#flow .memo').forEach(m => m.classList.add('talk'));
   let fallback = null;
-  const done = () => { if (id !== talkId) return; clearInterval(fallback); mark(words.length); $$('#flow .memo').forEach(m => m.classList.remove('talk')); cb && cb(); cb = null; };
-  /* si la voz no reporta palabras, avanzamos los subtítulos al ritmo típico del habla */
-  let k = -1; const startFb = () => { fallback = setInterval(() => { if (id !== talkId) return clearInterval(fallback); k++; mark(k); if (k >= words.length) clearInterval(fallback); }, 330); };
+  const done = () => { if (id !== talkId) return; clearInterval(fallback); mark(words.length); $$('#flow .memo').forEach(m => m.classList.remove('talk')); const c = cb; cb = null; c && c(); };
+  let k = -1; const startFb = () => { clearInterval(fallback); fallback = setInterval(() => { if (id !== talkId) return clearInterval(fallback); k++; mark(k); if (k >= words.length) clearInterval(fallback); }, 330); };
   if (!AL.cfg.voz || !('speechSynthesis' in window)) { startFb(); setTimeout(done, words.length * 330 + 300); return; }
   try {
     speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t), v = AL.mejorVoz(); u.lang = v ? v.lang : 'es-CO'; if (v) u.voice = v; u.rate = v && /natural|neural|online/i.test(v.name) ? 1.02 : .97;
-    let got = false; u.onboundary = e => { if (e.name && e.name !== 'word') return; got = true; clearInterval(fallback); const n = t.slice(0, e.charIndex).split(/\s+/).filter(Boolean).length; mark(n); };
+    let got = false; u.onboundary = e => { if (e.name && e.name !== 'word') return; got = true; clearInterval(fallback); mark(t.slice(0, e.charIndex).split(/\s+/).filter(Boolean).length); };
     u.onstart = () => setTimeout(() => { if (!got) startFb(); }, 700); u.onend = done; u.onerror = done; speechSynthesis.speak(u);
     setTimeout(() => { if (!speechSynthesis.speaking && !got && id === talkId) { startFb(); setTimeout(done, words.length * 330); } }, 1500);
   } catch (e) { startFb(); setTimeout(done, words.length * 330); }
 }
+const hush = () => { talkId++; try { speechSynthesis.cancel(); } catch (e) {} $$('#flow .memo').forEach(m => m.classList.remove('talk')); };
 
-/* ============================ entrevista ============================ */
-const LBL = ['Tú', '1', '2', '3', '4', '5', 'Tu idea', 'Foto', 'Listo'];
-const POSES = ['saludo', 'atencion', 'explicacion', 'senalar', 'analisis', 'cordialidad', 'analisis', 'senalar', 'aprobacion', 'alegria'];
-const PI = () => step <= 6 ? step : step - 1; /* «Tu idea» agrupa empacar y revisar */
+/* ============================ entrevista: discovery express ============================ */
+const LBL = ['Tú', '1', '2', '3', '4', '5', '6', 'Tu idea', 'Foto', 'Listo'];
+const POSES = ['saludo', 'atencion', 'analisis', 'explicacion', 'cordialidad', 'complicidad', 'senalar', 'aprobacion', 'senalar', 'alegria'];
 let R = null, step = 0;
-const nuevo = () => ({ id: 'm' + AL.uid(), grupo: '', nombre: '', participante: '', rol: '', area: 'Producción', consent: '', fotoOk: true, t: ['', '', '', '', ''], a: { ayuda: [], barreras: [] }, h: null, foto: null, padrino: '' });
+const nuevo = () => ({ id: 'm' + AL.uid(), grupo: '', nombre: '', participante: '', rol: '', area: 'Producción', anon: false, consent: '', fotoOk: true, t: ['', '', '', '', '', ''], pre: [], a: { ayuda: [], gana: [], apoyo: [] }, h: null, foto: null, padrino: '' });
 function openFlow() { R = nuevo(); step = 0; H('flow').classList.add('on'); draw(); }
-function closeFlow() { AL.stopListen(); stopCam(); talkId++; try { speechSynthesis.cancel(); } catch (e) {} H('flow').classList.remove('on'); refresh(); }
+function closeFlow() { AL.stopListen(true); stopCam(); hush(); H('flow').classList.remove('on'); refresh(); }
 H('go').onclick = openFlow;
 document.addEventListener('keydown', e => { if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return; if ((e.key === 'n' || e.key === 'N') && !H('flow').classList.contains('on')) openFlow(); });
 function shell(memoTxt, inner, o = {}) {
   H('flow').innerHTML = `<div class="fh"><div class="brands" style="padding:.4rem .7rem"><img src="assets/alico.png" alt="Alico" style="height:1.3rem"><span class="x">×</span><img src="assets/softgic.png" alt="Softgic" style="height:1.3rem"></div>
-    <div class="prog">${LBL.map((l, i) => `<div class="${i < PI() ? 'on' : i === PI() ? 'now' : ''}">${i >= 1 && i <= 5 ? 'Pregunta ' + l : l}</div>`).join('')}</div><button class="xb" id="x">✕ Salir</button></div>
-  <div class="fb"><div class="lc">${MEM.memo({ size: 320, pose: POSES[step] })}<div class="sub"><small>🔊 Memo dice</small><p id="subt"></p><button class="rep" id="rep">↻ Repetir</button></div></div><div class="rc" id="rc">${inner}</div></div>`;
+    <div class="prog">${LBL.map((l, i) => `<div class="${i < step ? 'on' : i === step ? 'now' : ''}">${i >= 1 && i <= 6 ? 'Pregunta ' + l : l}</div>`).join('')}</div><button class="xb" id="x">✕ Salir</button></div>
+  <div class="fb"><div class="lc">${MEM.memo({ size: 300, pose: POSES[step] })}<div class="sub"><small>🔊 Memo dice</small><p id="subt"></p><button class="rep" id="rep">↻ Repetir</button></div></div><div class="rc" id="rc">${inner}</div></div>`;
   H('x').onclick = () => { if (step < 9 && !confirm('¿Salir? Se pierde lo que llevas.')) return; closeFlow(); };
-  H('rep').onclick = () => speak(memoTxt, null, H('subt'));
-  H('subt').innerHTML = memoTxt.split(/\s+/).map(w => `<span>${esc(w)} </span>`).join('');
-  if (!o.mute) speak(memoTxt, o.after, H('subt'));
+  const pre = o.pre || '', full = (pre ? pre + ' ' : '') + memoTxt;
+  H('subt').innerHTML = (pre ? `<em class="memo-pre" style="font-style:normal">${pre.split(/\s+/).map(w => `<span>${esc(w)} </span>`).join('')}</em>` : '') + memoTxt.split(/\s+/).map(w => `<span>${esc(w)} </span>`).join('');
+  H('rep').onclick = () => speak(full, null, H('subt'));
+  if (!o.mute) speak(full, o.after, H('subt'));
 }
-function draw() { AL.stopListen(); stopCam(); [dIntro, dQ, dQ, dQ, dQ, dQ, dGen, dRev, dFoto][step](); }
-const next = () => { step++; draw(); };
+function draw() { AL.stopListen(true); stopCam(); [dIntro, dQ, dQ, dQ, dQ, dQ, dQ, dGen, dFoto][step](); }
 
-/* --- 0 · presentación --- */
+/* --- 0 · presentación (espacio seguro) --- */
 function dIntro() {
   const gs = ['Grupo 1', 'Grupo 2', 'Grupo 3', 'Grupo 4', 'Grupo 5', 'Grupo 6', 'Grupo 7', 'Grupo 8'];
-  shell('¡Hola! Soy Memo, de Softgic. Te haré cinco preguntas cortas sobre tu trabajo y la inteligencia artificial. Tus respuestas ayudan a decidir por dónde empieza Alico. Primero, preséntate.', `<div class="qn">Antes de empezar</div><h2>¿Quién eres?</h2><p class="hint">Toma 5 minutos. Puedes hablar o escribir.</p>
-  <div class="ql" style="margin-top:.4rem">Tu grupo</div><div class="chips" id="gp">${gs.map(g => `<button data-g="${g}">${g}</button>`).join('')}</div>
+  shell('¡Hola! Soy Memo, de Softgic. Esto no es una evaluación: son seis preguntas para entender tu trabajo y saber dónde la inteligencia artificial, Alico y tus líderes te pueden ayudar. Primero, preséntate.', `<div class="qn">Antes de empezar</div><h2>¿Quién eres?</h2>
+  <div class="safe"><span>🤝</span><div><b>Aquí no hay respuestas buenas ni malas.</b> Lo que cuentes sirve para saber dónde apoyarte. La IA llega para quitarte lo repetitivo y que aprendas cosas nuevas, <b>no para reemplazarte</b>. Si prefieres, tu respuesta puede ser anónima.</div></div>
+  <div class="ql" style="margin-top:.2rem">Tu grupo</div><div class="chips" id="gp">${gs.map(g => `<button data-g="${g}">${g}</button>`).join('')}</div>
   <div class="f2" style="margin-top:.9rem"><div class="fld"><label>Nombre del grupo (opcional)</label><input id="gn" placeholder="Ej.: Los Imparables"></div><div class="fld"><label>Tu nombre</label><input id="pn" placeholder="Ej.: Marta"></div></div>
   <div class="f2"><div class="fld"><label>Tu cargo</label><input id="pr" placeholder="Ej.: Líder de turno"></div><div class="fld"><label>Tu área</label><select id="pa">${MEM.AREAS.map(a => `<option>${a}</option>`).join('')}</select></div></div>
-  <label class="chk"><input type="checkbox" id="c1"><span>Autorizo el tratamiento de mis datos y respuestas para este ejercicio de Alico y Softgic (Ley 1581 de 2012).</span></label>
+  <label class="chk"><input type="checkbox" id="an"><span>Prefiero que <b>mi nombre no aparezca</b> en el muro ni en el informe (solo mi área).</span></label>
+  <label class="chk"><input type="checkbox" id="c1"><span>Autorizo el tratamiento de mis respuestas para este ejercicio de Alico y Softgic (Ley 1581 de 2012).</span></label>
   <label class="chk"><input type="checkbox" id="c2" checked><span>Autorizo el uso de la foto del grupo en el muro y en la memoria del evento.</span></label>
   <div class="nav"><span></span><button class="b1 bg" id="nx">Empezar ➜</button></div>`);
   $$('#gp button').forEach(b => b.onclick = () => { R.grupo = b.dataset.g; $$('#gp button').forEach(x => x.classList.toggle('on', x === b)); });
+  H('an').onchange = e => H('pn').placeholder = e.target.checked ? 'Opcional' : 'Ej.: Marta';
   H('nx').onclick = () => {
-    R.nombre = H('gn').value.trim(); R.participante = H('pn').value.trim(); R.rol = H('pr').value.trim(); R.area = H('pa').value;
+    R.nombre = H('gn').value.trim(); R.participante = H('pn').value.trim(); R.rol = H('pr').value.trim(); R.area = H('pa').value; R.anon = H('an').checked;
     if (!R.grupo && !R.nombre) return AL.toast('Elige tu grupo o escribe su nombre');
-    if (!R.participante) return AL.toast('Escribe tu nombre');
+    if (!R.participante && !R.anon) return AL.toast('Escribe tu nombre o marca la opción anónima');
     if (!H('c1').checked) return AL.toast('Necesito tu autorización para continuar');
-    R.fotoOk = H('c2').checked; R.consent = new Date().toISOString(); R.grupoLabel = R.nombre ? (R.grupo ? R.grupo + ' · ' + R.nombre : R.nombre) : R.grupo; next();
+    R.fotoOk = H('c2').checked; R.consent = new Date().toISOString(); R.grupoLabel = R.nombre ? (R.grupo ? R.grupo + ' · ' + R.nombre : R.nombre) : R.grupo; step++; draw();
   };
 }
 
-/* --- 1 a 5 · preguntas con transcripción en vivo --- */
+/* --- 1 a 6 · preguntas con transcripción en vivo y comprensión automática --- */
 function dQ() {
   const i = step - 1, q = MEM.Q[i], A = R.a;
   let quick = '';
-  if (q.tipo === 'uno') quick = `<div class="ql">Toca la que mejor lo describe</div><div class="chips" id="qk">${q.opts.map(([k, l]) => `<button data-k="${k}" class="${A.dolor === k ? 'on' : ''}">${esc(l)}</button>`).join('')}</div>`;
+  const chip = (arr, sel, multi) => arr.map(([k, l]) => `<button data-k="${k}" class="${(multi ? (A[q.campo] || []).includes(k) : sel === k) ? 'on' : ''}">${esc(l)}</button>`).join('');
+  if (q.tipo === 'uno') quick = `<div class="ql">Toca la que mejor lo describe</div><div class="chips" id="qk">${chip(q.opts, A.dolor)}</div>`;
   if (q.tipo === 'tiempo') quick = `<div class="ql">Horas a la semana</div><div class="chips" id="qh">${MEM.HORAS.map(([l, v]) => `<button data-v="${v}" class="${A.horas === v ? 'on' : ''}">${l}</button>`).join('')}</div><div class="ql">¿A cuántas personas les pasa?</div><div class="chips" id="qp">${MEM.PERSONAS.map(([l, v]) => `<button data-v="${v}" class="${A.personas === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+  if (q.tipo === 'varios') quick = `<div class="ql">Elige hasta ${q.max}</div><div class="chips" id="qm">${chip(q.opts, null, true)}</div>`;
+  if (q.tipo === 'apoyo') quick = `<div class="ql">Lo que más te ayudaría (hasta ${q.max})</div><div class="chips" id="qm">${chip(q.opts, null, true)}</div><div class="ql">¿Qué tantas ganas tienes de aprender a trabajar con IA?</div><div class="ready" id="qr">${MEM.LISTO.map((e, k) => `<button data-v="${k + 1}" class="${A.listo === k + 1 ? 'on' : ''}" title="${k + 1} de 5">${e}</button>`).join('')}</div>`;
   if (q.tipo === 'caso') quick = `<div class="ql">Elige un caso</div><div class="cases" id="qc">${MEM.CASOS.map(c => `<button data-k="${c.id}" class="${A.caso === c.id ? 'on' : ''}"><span>${c.ic}</span>${esc(c.n)}</button>`).join('')}</div>`;
-  if (q.tipo === 'varios') quick = `<div class="ql">Elige hasta ${q.max}</div><div class="chips" id="qm">${q.opts.map(([k, l]) => `<button data-k="${k}" class="${A.ayuda.includes(k) ? 'on' : ''}">${esc(l)}</button>`).join('')}</div>`;
-  if (q.tipo === 'adopcion') quick = `<div class="ql">Lo que necesitarías (hasta ${q.max})</div><div class="chips" id="qm">${q.opts.map(([k, l]) => `<button data-k="${k}" class="${A.barreras.includes(k) ? 'on' : ''}">${esc(l)}</button>`).join('')}</div><div class="ql">¿Qué tan listo te sientes?</div><div class="ready" id="qr">${MEM.LISTO.map((e, k) => `<button data-v="${k + 1}" class="${A.listo === k + 1 ? 'on' : ''}" title="${k + 1} de 5">${e}</button>`).join('')}</div>`;
   const conv = MEM.Q.slice(0, i).map((qq, k) => `<div class="it"><span class="n">${k + 1}</span><div><b>${esc(qq.corto)}</b>${esc(resumenResp(R, k))}</div></div>`).join('');
-  shell(q.q, `<div class="qn">Pregunta ${i + 1} de 5</div><h2>${esc(q.corto)}</h2><p class="hint">${esc(q.hint)}</p>
+  shell(q.q, `<div class="qn">Pregunta ${i + 1} de 6</div><h2>${esc(q.corto)}</h2><p class="hint">${esc(q.hint)}</p>
     <div class="live" id="live"></div>
-    <div class="mrow"><button class="mic" id="mic" title="Hablar">🎙️</button><div class="wave off" id="wave">${'<i></i>'.repeat(9)}</div><div class="mst" id="mst">Toca el micrófono y cuéntame<small>Verás tus palabras aquí mientras hablas</small></div><button class="edit" id="ed">✍️ Escribir</button></div>
+    <div class="mrow"><button class="mic" id="mic" title="Hablar">🎙️</button><div class="wave off" id="wave">${'<i></i>'.repeat(9)}</div><div class="mst" id="mst"></div><button class="edit" id="ed">✍️ Escribir</button></div>
+    <div class="und" id="und"></div>
     ${quick}
     <div class="ejs">${q.ej.map(e => `<button data-e="${esc(e)}">💬 ${esc(e)}</button>`).join('')}</div>
-    <div class="nav"><button class="b2" id="bk">← Atrás</button><button class="b1 ${i === 4 ? 'bg' : ''}" id="nx">${i === 4 ? 'Empacar mi idea 🎁' : 'Siguiente ➜'}</button></div>
-    ${conv ? `<details class="conv" open><summary>Lo que llevamos</summary>${conv}</details>` : ''}`, { after: () => { if (!R.t[i]) startMic(); } });
-  let fin = R.t[i] || '', inter = '', editing = false, ses = 0;
-  /* corta la escucha conservando todo lo dicho hasta ahora (onText ya lo dejó en R.t[i]) */
-  const cortar = () => { if (AL.listening()) { fin = (R.t[i] || fin).trim(); inter = ''; ses++; AL.stopListen(); setRec(false); } };
-  const paint = () => { if (editing) return; H('live').innerHTML = fin || inter ? `${esc(fin)} <span class="int">${esc(inter)}</span>${AL.listening() ? '<span class="cur"></span>' : ''}` : `<span class="ph">${AL.listening() ? 'Te escucho…' : 'Tu respuesta aparecerá aquí.'}</span>${AL.listening() ? '<span class="cur"></span>' : ''}`; H('live').scrollTop = 1e6; };
-  const setRec = on => { H('mic').classList.toggle('on', on); H('wave').classList.toggle('off', !on); H('live').classList.toggle('rec', on); H('mic').textContent = on ? '⏹' : '🎙️'; H('mst').innerHTML = on ? 'Te estoy escuchando…<small>Habla con naturalidad. Toca ⏹ cuando termines.</small>' : (fin ? 'Listo. Puedes seguir hablando o corregir.<small>Toca 🎙️ para agregar más</small>' : 'Toca el micrófono y cuéntame<small>Verás tus palabras aquí mientras hablas</small>'); paint(); };
-  function startMic() {
-    if (AL.listening() || editing) return; const base = fin ? fin + ' ' : '', my = ++ses;
-    const ok = AL.listen({ continuous: true, onText: t => { if (my !== ses) return; const all = (base + t).trim(); fin = base.trim(); inter = t; H('live') && (H('live').innerHTML = `${esc(base)}<span>${esc(t)}</span><span class="cur"></span>`); R.t[i] = all; },
-      onEnd: f => { if (my !== ses) return; fin = (base + (f || inter)).trim(); inter = ''; R.t[i] = fin; if (H('mic')) setRec(false); } });
-    if (ok) setRec(true);
+    <div class="nav"><button class="b2" id="bk">← Atrás</button><button class="b1 ${i === 5 ? 'bg' : ''}" id="nx">${i === 5 ? 'Empacar mi idea 🎁' : 'Siguiente ➜'}</button></div>
+    ${conv ? `<details class="conv"><summary>Lo que llevamos (${i})</summary>${conv}</details>` : ''}`, { pre: R.pre[i], after: () => { if (!R.t[i] && AL.micOk) startMic(); } });
+  let fin = R.t[i] || '', inter = '', editing = false;
+  const paint = () => { if (editing || !H('live')) return; const on = AL.listening(); H('live').innerHTML = fin || inter ? `${esc(fin)} <span class="int">${esc(inter)}</span>${on ? '<span class="cur"></span>' : ''}` : `<span class="ph">${on ? 'Te escucho…' : 'Tu respuesta aparecerá aquí mientras hablas.'}</span>${on ? '<span class="cur"></span>' : ''}`; H('live').scrollTop = 1e6; };
+  const setRec = on => { if (!H('mic')) return; H('mic').classList.toggle('on', on); H('wave').classList.toggle('off', !on); H('live').classList.toggle('rec', on); H('mic').textContent = on ? '⏹' : '🎙️'; H('mst').innerHTML = on ? 'Te estoy escuchando…<small>Habla con naturalidad. Toca ⏹ cuando termines.</small>' : (fin ? 'Listo. Puedes seguir hablando o corregir.<small>Toca 🎙️ para agregar más</small>' : 'Toca el micrófono y cuéntame<small>Verás tus palabras aquí mientras hablas</small>'); paint(); };
+  /* Memo «entiende» la respuesta y marca la opción por la persona (se puede cambiar) */
+  const entender = () => {
+    const txt = fin; if (!txt) return; let dijo = '';
+    if (q.tipo === 'tiempo') { const n = MEM.numeros(txt); if (n.horas && !A.horas) { A.horas = n.horas; dijo += n.horas + ' h a la semana'; } if (n.personas && !A.personas) { A.personas = n.personas; dijo += (dijo ? ' · ' : '') + MEM.PERSONAS.find(x => x[1] === n.personas)[0]; } }
+    else { const sg = MEM.sugerir(q.k === 'dolor' ? 'dolor' : q.k, txt);
+      if (sg.length) {
+        if (q.tipo === 'uno' && !A.dolor) { A.dolor = sg[0]; dijo = MEM.lab(MEM.DOLORES, sg[0]); }
+        if (q.tipo === 'caso' && !A.caso) { A.caso = sg[0]; dijo = MEM.caso(sg[0]).n; }
+        if ((q.tipo === 'varios' || q.tipo === 'apoyo') && !(A[q.campo] || []).length) { A[q.campo] = sg.slice(0, q.max); dijo = A[q.campo].map(k => MEM.lab(q.opts, k)).join(' y '); }
+      } }
+    if (dijo) { H('und').innerHTML = `✨ Memo entendió: <b>${esc(dijo)}</b>. Si no es así, toca otra opción.`; H('und').classList.add('on'); syncChips(); }
+  };
+  const syncChips = () => {
+    $$('#qk button').forEach(b => b.classList.toggle('on', A.dolor === b.dataset.k)); $$('#qc button').forEach(b => b.classList.toggle('on', A.caso === b.dataset.k));
+    $$('#qh button').forEach(b => b.classList.toggle('on', A.horas === +b.dataset.v)); $$('#qp button').forEach(b => b.classList.toggle('on', A.personas === +b.dataset.v));
+    $$('#qm button').forEach(b => b.classList.toggle('on', (A[q.campo] || []).includes(b.dataset.k))); $$('#qr button').forEach(b => b.classList.toggle('on', A.listo === +b.dataset.v));
+  };
+  async function startMic() {
+    if (AL.listening() || editing) return;
+    hush();
+    if (!(await AL.pedirMic())) { setRec(false); H('mst').innerHTML = '🔒 Micrófono bloqueado<small>Toca el candado junto a la dirección → Micrófono → Permitir. O usa ✍️ Escribir.</small>'; return; }
+    const base = fin ? fin + ' ' : '';
+    const ok = AL.listen({ continuous: true,
+      onText: t => { inter = ''; fin = (base + t).trim(); R.t[i] = fin; if (H('live')) H('live').innerHTML = `${esc(fin)}<span class="cur"></span>`; },
+      onEnd: f => { fin = (base + f).trim(); inter = ''; R.t[i] = fin; setRec(false); entender(); } });
+    setRec(ok);
   }
   setRec(false);
   H('mic').onclick = () => AL.listening() ? AL.stopListen() : startMic();
-  H('ed').onclick = () => { cortar(); editing = !editing; if (editing) { H('live').innerHTML = `<textarea id="ta" placeholder="Escribe aquí tu respuesta…">${esc(fin)}</textarea>`; H('ta').focus(); H('ta').oninput = e => { fin = e.target.value; R.t[i] = fin; }; H('ed').textContent = '✓ Listo'; } else { H('ed').textContent = '✍️ Escribir'; paint(); } };
-  $$('.ejs button').forEach(b => b.onclick = () => { cortar(); fin = (fin ? fin + ' ' : '') + b.dataset.e; R.t[i] = fin; editing = false; H('ed').textContent = '✍️ Escribir'; paint(); });
-  const one = (sel, set) => $$(sel + ' button').forEach(b => b.onclick = () => { set(b.dataset); $$(sel + ' button').forEach(x => x.classList.toggle('on', x === b)); });
+  H('ed').onclick = () => { AL.stopListen(); editing = !editing; if (editing) { H('live').innerHTML = `<textarea id="ta" placeholder="Escribe aquí tu respuesta…">${esc(fin)}</textarea>`; H('ta').focus(); H('ta').oninput = e => { fin = e.target.value; R.t[i] = fin; }; H('ed').textContent = '✓ Listo'; } else { H('ed').textContent = '✍️ Escribir'; paint(); entender(); } };
+  $$('.ejs button').forEach(b => b.onclick = () => { fin = (fin ? fin + ' ' : '') + b.dataset.e; R.t[i] = fin; editing = false; H('ed').textContent = '✍️ Escribir'; paint(); entender(); });
+  const one = (sel, set) => $$(sel + ' button').forEach(b => b.onclick = () => { set(b.dataset); syncChips(); H('und').classList.remove('on'); });
   one('#qk', d => A.dolor = d.k); one('#qh', d => A.horas = +d.v); one('#qp', d => A.personas = +d.v); one('#qc', d => A.caso = d.k); one('#qr', d => A.listo = +d.v);
-  $$('#qm button').forEach(b => b.onclick = () => { const arr = q.tipo === 'varios' ? A.ayuda : A.barreras, k = b.dataset.k, j = arr.indexOf(k); if (j >= 0) arr.splice(j, 1); else { if (arr.length >= q.max) arr.shift(); arr.push(k); } $$('#qm button').forEach(x => x.classList.toggle('on', arr.includes(x.dataset.k))); });
-  H('bk').onclick = () => { cortar(); step--; draw(); };
-  H('nx').onclick = () => {
-    cortar(); R.t[i] = (editing && H('ta') ? H('ta').value : fin).trim();
-    const falta = q.tipo === 'uno' ? !A.dolor : q.tipo === 'tiempo' ? !(A.horas && A.personas) : q.tipo === 'caso' ? !A.caso : q.tipo === 'varios' ? !A.ayuda.length : !(A.barreras.length && A.listo);
-    if (falta) { const m = q.tipo === 'tiempo' ? 'Toca las horas y las personas, aunque sea aproximado.' : q.tipo === 'adopcion' ? 'Elige qué necesitarías y qué tan listo te sientes.' : 'Toca una de las opciones de abajo: así puedo sumar tu voz al informe.'; AL.toast(m); speak(m, null, H('subt')); return; }
-    next();
+  $$('#qm button').forEach(b => b.onclick = () => { const arr = A[q.campo] = A[q.campo] || [], k = b.dataset.k, j = arr.indexOf(k); if (j >= 0) arr.splice(j, 1); else { if (arr.length >= q.max) arr.shift(); arr.push(k); } syncChips(); H('und').classList.remove('on'); });
+  H('bk').onclick = () => { AL.stopListen(true); hush(); step--; draw(); };
+  H('nx').onclick = async () => {
+    AL.stopListen(true); hush(); R.t[i] = (editing && H('ta') ? H('ta').value : fin).trim(); fin = R.t[i]; entender();
+    const falta = q.tipo === 'uno' ? !A.dolor : q.tipo === 'tiempo' ? !(A.horas && A.personas) : q.tipo === 'caso' ? !A.caso : q.tipo === 'varios' ? !(A[q.campo] || []).length : !((A.apoyo || []).length && A.listo);
+    if (falta) { const m = q.tipo === 'tiempo' ? 'Toca las horas y las personas, aunque sea aproximado.' : q.tipo === 'apoyo' ? 'Elige el apoyo que te serviría y tus ganas de aprender.' : 'Toca una de las opciones: así tu voz suma en el informe.'; AL.toast(m); speak(m, null, null); return; }
+    if (i === 5) { step++; draw(); return; }
+    H('nx').disabled = true; H('nx').innerHTML = '<span style="opacity:.8">Memo está pensando…</span>';
+    R.pre[i + 1] = await reflejo(i); step++; draw();
   };
 }
+/* Memo valida lo que la persona dijo antes de seguir (IA si hay clave; si no, frases cálidas por categoría) */
+async function reflejo(i) {
+  const A = R.a, L = (arr, x) => (x || []).map(k => MEM.lab(arr, k).toLowerCase()).join(' y ');
+  const base = [
+    () => `Gracias por contarlo. ${MEM.lab(MEM.DOLORES, A.dolor)} es justo el tipo de carga que la IA puede aliviar.`,
+    () => `${MEM.horasEquipo(R)} horas a la semana en tu equipo: eso es talento que podemos liberar para lo importante.`,
+    () => `Buena idea. ${L(MEM.AYUDAS, A.ayuda).replace(/^que /, 'Que la IA ')} es posible y se puede aprender paso a paso.`,
+    () => `Me gusta: ${L(MEM.GANAS, A.gana)}. La idea es que la tecnología trabaje para ti, no al revés.`,
+    () => `Anotado. Lo vamos a llevar a Alico y a tus líderes: ${L(MEM.APOYOS, A.apoyo)}.`
+  ][i]();
+  if (!AL.hasIA()) return base;
+  const sys = 'Eres Memo, facilitador cálido de Softgic en un taller de IA con colaboradores de Alico (empaques, Medellín). Responde en español de Colombia, máximo 24 palabras, en una o dos frases: valida lo que la persona dijo sin juzgar, conéctalo con cómo la IA o el apoyo de Alico le puede ayudar a mejorar y aprender. No prometas cifras, no hagas preguntas, no uses comillas.';
+  const u = `Pregunta: ${MEM.Q[i].q}\nRespuesta rápida: ${resumenResp(R, i)}\nLo que dijo: ${R.t[i] || '(no dijo nada más)'}\nÁrea: ${R.area}, cargo: ${R.rol || 'colaborador'}.`;
+  try { const t = await Promise.race([AL.claude(sys, u, { max: 120, tag: 'memorias-reflejo' }), new Promise((_, no) => setTimeout(() => no(new Error('lento')), 4500))]); const c = String(t).replace(/["«»]/g, '').trim(); return c && c.length < 220 ? c : base; } catch (e) { return base; }
+}
 
-/* --- 6 · Memo empaca la idea --- */
+/* --- 7 · Memo empaca la idea con IA --- */
 async function dGen() {
-  shell('Gracias. Dame un momento: estoy empacando tu idea.', `<div style="text-align:center;padding:3rem 1rem"><div class="spin2"></div><h2>Memo está empacando tu idea…</h2><p class="hint">Convierto tus respuestas en una oportunidad clara para Alico.</p></div>`);
-  R.h = await historia(); step++; draw();
+  shell('Gracias. Dame un momento: estoy empacando tu idea con todo lo que me contaste.', `<div style="text-align:center;padding:2.5rem 1rem"><div style="max-width:13rem;margin:0 auto;opacity:.92" class="pkw">${MEM.empaque({ nombre: '…', eslogan: 'Empacando tu idea', caso: R.a.caso, id: R.id })}</div><h2 style="margin-top:1rem">Memo está empacando tu idea…</h2><p class="hint">${AL.hasIA() ? 'La IA está redactando el nombre y la historia con tus seis respuestas.' : 'Armando tu idea con tus respuestas.'}</p></div>`);
+  R.h = await historia(); dRev();
 }
 async function historia() {
-  const c = MEM.caso(R.a.caso) || {}, base = historiaBasica();
+  const base = historiaBasica();
   if (!AL.hasIA()) return base;
-  const sys = `Eres Memo, analista de negocio de Softgic. Con las respuestas de un colaborador de Alico (empaques flexibles y termoformados, Medellín) redacta una oportunidad de automatización o IA. Devuelve SOLO JSON: {"nombre_idea":"máx. 5 palabras, atractivo","eslogan":"máx. 10 palabras","historia_usuario":"Como <rol> quiero <capacidad> para <beneficio>","impacto":"1 frase con horas o resultado","prioridad":"Alta|Media|Baja","primer_paso":"1 frase concreta"}. Usa solo lo que dijo; no inventes cifras.`;
-  const u = `Persona: ${R.participante}, ${R.rol || 'sin cargo'}, área ${R.area}.\nTarea que le quita tiempo: ${MEM.lab(MEM.DOLORES, R.a.dolor)} — «${R.t[0]}»\nTiempo: ${R.a.horas} h/semana, ${R.a.personas} personas — «${R.t[1]}»\nCaso que quiere primero: ${c.n} — «${R.t[2]}»\nQué quiere que haga la IA: ${R.a.ayuda.map(k => MEM.lab(MEM.AYUDAS, k)).join(', ')} — «${R.t[3]}»\nQué necesita para adoptarla: ${R.a.barreras.map(k => MEM.lab(MEM.BARRERAS, k)).join(', ')}; preparación ${R.a.listo}/5 — «${R.t[4]}»`;
-  try { const h = AL.parseJSON(await AL.claude(sys, u, { max: 700, tag: 'memorias-historia' })); return Object.assign(base, h, { via: 'ia' }); } catch (e) { return base; }
+  const sys = `Eres Memo, analista de negocio de Softgic. Con las seis respuestas de un colaborador de Alico (empaques flexibles y termoformados, Medellín) redacta su idea de IA como una oportunidad concreta. Devuelve SOLO JSON:
+{"nombre_idea":"2 a 5 palabras, creativo y memorable, en español, sin comillas ni la palabra IA al inicio","eslogan":"máx. 9 palabras, inspirador","historia_usuario":"Como <su cargo> de <su área> quiero <capacidad concreta de IA que pidió> para <beneficio que dijo que ganaría>, sin perder <algo que valora>","impacto":"1 frase con las horas por semana del equipo y el beneficio","prioridad":"Alta|Media|Baja","primer_paso":"1 frase concreta y pequeña para empezar en su área","aprendizaje":"1 frase: qué va a aprender la persona trabajando con esta IA"}
+Usa SOLO lo que dijo; no inventes cifras distintas a las dadas; tono positivo, centrado en ayudar a la persona, nunca en reemplazarla.`;
+  const c = MEM.caso(R.a.caso) || {};
+  const u = MEM.Q.map((q, k) => `${k + 1}. ${q.corto}: ${resumenResp(R, k)}`).join('\n') + `\nCargo: ${R.rol || 'colaborador'} · Área: ${R.area} · Horas del equipo por semana: ${MEM.horasEquipo(R)} · Caso elegido: ${c.n} (${c.valor})`;
+  try { const h = AL.parseJSON(await AL.claude(sys, u, { max: 800, tag: 'memorias-historia' })); return Object.assign(base, h, { via: 'ia' }); } catch (e) { return Object.assign(base, { err: e.message }); }
 }
 function historiaBasica() {
   const c = MEM.caso(R.a.caso) || {}, hrs = MEM.horasEquipo(R), cut = (s, n) => { s = (s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n).replace(/\s\S*$/, '') + '…' : s; };
-  const ay = MEM.lab(MEM.AYUDAS, R.a.ayuda[0] || '').replace(/^Que /, 'una IA que ');
-  return { nombre_idea: (c.n || 'Mi idea').replace(/ ·.*/, '') + ' en ' + R.area, eslogan: cut(R.t[2] || ay, 60), historia_usuario: `Como ${(R.rol || 'colaborador').toLowerCase()} de ${R.area} quiero ${ay || 'apoyo de IA'} para ${cut(R.t[0], 80) ? 'dejar de perder tiempo en «' + cut(R.t[0], 80) + '»' : 'trabajar mejor'}.`,
-    impacto: hrs ? `${hrs} horas a la semana del equipo` : 'Menos tiempo en tareas repetitivas', prioridad: hrs > 40 ? 'Alta' : hrs > 10 ? 'Media' : 'Baja', primer_paso: c.piloto || 'Piloto corto en un área', caso: R.a.caso, via: 'reglas' };
+  const ay = MEM.lab(MEM.AYUDAS, (R.a.ayuda || [])[0] || '').replace(/^Que /, '').toLowerCase(), ga = MEM.lab(MEM.GANAS, (R.a.gana || [])[0] || '').toLowerCase();
+  const NOM = { reportes: 'Turno sin papel', informacion: 'Respuesta al instante', inspeccion: 'Calidad a la vista', paros: 'Máquina que avisa', pedidos: 'Pedido a la vista', solicitudes: 'Cliente escuchado', planeacion: 'Compra inteligente', coordinacion: 'Planta conectada' };
+  return { nombre_idea: (NOM[R.a.dolor] || c.n || 'Mi idea') + ' · ' + R.area, eslogan: cut(R.t[5] || R.t[2] || ga, 60), historia_usuario: `Como ${(R.rol || 'colaborador').toLowerCase()} de ${R.area} quiero una IA que ${ay || 'me apoye'} para ${ga || 'trabajar mejor'}${R.t[0] ? ' y dejar de perder tiempo en «' + cut(R.t[0], 70) + '»' : ''}.`,
+    impacto: hrs ? `${hrs} horas a la semana del equipo para ${ga || 'tareas de más valor'}` : 'Menos tiempo en tareas repetitivas', prioridad: hrs > 40 ? 'Alta' : hrs > 10 ? 'Media' : 'Baja', primer_paso: c.piloto || 'Piloto corto en un área', aprendizaje: 'Trabajar con un asistente de IA en su puesto', caso: R.a.caso, via: 'reglas' };
 }
 
-/* --- 7 · revisión + padrino --- */
+/* --- revisión: el empaque futurista + historia --- */
 function dRev() {
-  const h = R.h, c = MEM.caso(R.a.caso) || {};
-  shell('Esta es tu idea empacada. Revisa que diga lo que quisiste decir y elige quién la va a apadrinar.', `<div class="qn">Tu idea</div><h2>Así quedó tu memoria</h2>
-  <div class="idea" style="margin-top:.8rem"><div class="pack"><img class="al" src="assets/alico.png" alt="Alico"><h3 id="pk1">${esc(h.nombre_idea)}</h3><p>${esc(h.eslogan || '')}</p><span class="tg">${c.ic || ''} ${esc(c.n || '')}</span><p style="margin-top:.8rem;font-size:.75rem">${esc(R.grupoLabel)} · ${new Date().toLocaleDateString('es-CO')}</p></div>
-  <div><div class="fld"><label>Nombre de la idea</label><input id="rn" value="${esc(h.nombre_idea)}"></div><div class="fld"><label>Historia de usuario</label><textarea id="rh" rows="3">${esc(h.historia_usuario)}</textarea></div>
+  const h = R.h, ia = h.via === 'ia';
+  shell(`Así quedó tu idea empacada: ${h.nombre_idea}. Revisa que diga lo que quisiste decir y elige quién la va a apadrinar.`, `<div class="qn">Tu idea</div><h2>Así quedó tu memoria</h2>
+  <div class="via">${ia ? '✨ <span><b>Redactado con IA</b> a partir de tus seis respuestas.</span>' : `📝 <span>Borrador automático.${AL.hasIA() ? '' : ' Para que la IA lo redacte, conecta la clave de IA en ⚙️ Ajustes.'}</span>`}${AL.hasIA() ? '<button class="edit" id="rg" style="margin-left:0">✨ Redactar otra versión con IA</button>' : ''}</div>
+  <div class="idea"><div class="pkw" id="pkw"><span class="bd">Orgullosamente Alico</span>${MEM.empaque({ nombre: h.nombre_idea, eslogan: h.eslogan, caso: R.a.caso, id: R.id })}</div>
+  <div><div class="fld"><label>Nombre de la idea</label><input id="rn" value="${esc(h.nombre_idea)}"></div><div class="fld"><label>Eslogan</label><input id="re" value="${esc(h.eslogan || '')}"></div><div class="fld"><label>Historia de usuario</label><textarea id="rh" rows="3">${esc(h.historia_usuario)}</textarea></div>
   <div class="f2"><div class="fld"><label>Padrino o madrina (quien la impulsa)</label><input id="pd" placeholder="Ej.: jefe del área" value="${esc(R.padrino)}"></div><div class="fld"><label>Primer paso</label><input id="pp" value="${esc(h.primer_paso || '')}"></div></div>
-  <div class="sum" style="grid-template-columns:repeat(3,1fr)"><div><b>Impacto</b>${esc(h.impacto || '')}</div><div><b>Prioridad</b>${esc(h.prioridad || '')}</div><div><b>Preparación</b>${MEM.LISTO[(R.a.listo || 3) - 1]} ${R.a.listo}/5</div></div></div></div>
+  <div class="sum" style="grid-template-columns:repeat(3,1fr)"><div><b>Impacto</b>${esc(h.impacto || '')}</div><div><b>Lo que vas a aprender</b>${esc(h.aprendizaje || '')}</div><div><b>Ganas de aprender</b>${MEM.LISTO[(R.a.listo || 3) - 1]} ${R.a.listo}/5</div></div></div></div>
   <div class="nav"><button class="b2" id="bk">← Corregir respuestas</button><button class="b1 bg" id="nx">${R.fotoOk ? 'Me gusta · foto 📸' : 'Me gusta · publicar ✨'}</button></div>`);
-  H('rn').oninput = e => H('pk1').textContent = e.target.value;
-  const sync = () => { h.nombre_idea = H('rn').value.trim() || h.nombre_idea; h.historia_usuario = H('rh').value; h.primer_paso = H('pp').value; R.padrino = H('pd').value.trim(); };
+  const repaint = () => { H('pkw').innerHTML = '<span class="bd">Orgullosamente Alico</span>' + MEM.empaque({ nombre: H('rn').value, eslogan: H('re').value, caso: R.a.caso, id: R.id }); };
+  let tt; H('rn').oninput = H('re').oninput = () => { clearTimeout(tt); tt = setTimeout(repaint, 250); };
+  const sync = () => { h.nombre_idea = H('rn').value.trim() || h.nombre_idea; h.eslogan = H('re').value.trim(); h.historia_usuario = H('rh').value; h.primer_paso = H('pp').value; R.padrino = H('pd').value.trim(); };
+  if (H('rg')) H('rg').onclick = async () => { H('rg').disabled = true; H('rg').textContent = 'Redactando…'; R.padrino = H('pd').value.trim(); R.h = await historia(); dRev(); };
   H('bk').onclick = () => { sync(); step = 1; draw(); };
-  H('nx').onclick = () => { sync(); if (R.fotoOk) next(); else publicar(); };
+  H('nx').onclick = () => { sync(); if (R.fotoOk) { step = 8; draw(); } else publicar(); };
 }
 
 /* --- 8 · foto del grupo --- */
@@ -378,24 +430,25 @@ async function dFoto() {
   H('snap').onclick = async () => {
     if (!stream) return AL.toast('Sube una foto o sigue sin ella'); H('snap').disabled = true;
     for (let n = 3; n > 0; n--) { H('cd').textContent = n; await new Promise(r => setTimeout(r, 900)); } H('cd').textContent = '';
-    const v = H('v'), c = document.createElement('canvas'), w = 560, hh = Math.round(w * v.videoHeight / v.videoWidth) || 420; c.width = w; c.height = hh; c.getContext('2d').drawImage(v, 0, 0, w, hh);
-    R.foto = c.toDataURL('image/jpeg', .72); confirmFoto();
+    const v = H('v'), c = document.createElement('canvas'), w = 640, hh = Math.round(w * v.videoHeight / v.videoWidth) || 480; c.width = w; c.height = hh; c.getContext('2d').drawImage(v, 0, 0, w, hh);
+    R.foto = c.toDataURL('image/jpeg', .74); confirmFoto();
   };
 }
-function shrink(f) { return new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 560 / im.width), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .72)); }; im.src = URL.createObjectURL(f); }); }
+function shrink(f) { return new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 640 / im.width), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .74)); }; im.src = URL.createObjectURL(f); }); }
 function confirmFoto() { stopCam(); H('vid').innerHTML = `<img src="${R.foto}">`; $('.nav').innerHTML = `<button class="b2" id="re">🔁 Repetir</button><button class="b1 bg" id="ok">¡Quedó genial! Publicar ✨</button>`; H('re').onclick = () => dFoto(); H('ok').onclick = publicar; }
 
 /* --- 9 · publicado --- */
 function publicar() {
-  const rec = { id: R.id, ts: new Date().toISOString(), sesion: AL.cfg.sesion, grupo: R.grupoLabel, grupo_n: R.grupo, participante: R.participante, rol: R.rol, area: R.area, consent: R.consent, foto_ok: R.fotoOk, t: R.t.slice(), a: JSON.parse(JSON.stringify(R.a)), h: R.h, foto: R.foto, padrino: R.padrino || 'Por definir' };
+  const rec = { id: R.id, ts: new Date().toISOString(), sesion: AL.cfg.sesion, grupo: R.grupoLabel, grupo_n: R.grupo, participante: R.participante, anon: R.anon, rol: R.rol, area: R.area, consent: R.consent, foto_ok: R.fotoOk, t: R.t.slice(), memo: R.pre.filter(Boolean), a: JSON.parse(JSON.stringify(R.a)), h: R.h, foto: R.foto, padrino: R.padrino || 'Por definir' };
   MEM.save(rec); AL.log('memoria_publicada', { caso_id: 'memorias', area: rec.area, via: R.h.via, ok: 'si', detalle: (R.h.nombre_idea || '').slice(0, 100) });
-  step = 9; const c = MEM.caso(rec.a.caso) || {};
-  shell(`¡Gracias, ${R.participante}! Tu memoria ya está en el muro y tu voz quedó en el informe para Alico y Softgic.`, `<div style="text-align:center"><div class="qn">Listo</div><h2 style="font-size:2rem">¡Tu memoria está en el muro! 🎉</h2><p class="hint">Gracias por contarnos qué te gustaría que la IA hiciera por ti.</p>
-    ${rec.foto ? `<img src="${rec.foto}" style="max-width:24rem;width:100%;border-radius:22px;margin:.6rem auto;display:block">` : ''}
-    <div class="sum" style="text-align:left"><div><b>Tu idea</b>${esc(rec.h.nombre_idea)}</div><div><b>El caso que quieres primero</b>${c.ic || ''} ${esc(c.n || '')}</div><div><b>Tiempo que se puede liberar</b>${MEM.horasEquipo(rec)} h/semana del equipo</div><div><b>Padrino o madrina</b>${esc(rec.padrino)}</div></div>
-    <div class="nav" style="justify-content:center"><button class="b1 bg" id="fin">Ver el muro ➜</button></div></div>`);
+  step = 9; const c = MEM.caso(rec.a.caso) || {}, quien = R.anon ? '' : ', ' + R.participante;
+  shell(`¡Gracias${quien}! Tu idea ya está en el muro y tu voz quedó en el informe para Alico y Softgic.`, `<div class="qn" style="text-align:center">Listo</div><h2 style="font-size:2rem;text-align:center">¡Tu memoria está en el muro! 🎉</h2><p class="hint" style="text-align:center">Gracias por contarnos dónde te puede ayudar la IA.</p>
+    <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.4rem;align-items:center;margin-top:.6rem"><div class="pkw">${MEM.empaque({ nombre: rec.h.nombre_idea, eslogan: rec.h.eslogan, caso: rec.a.caso, id: rec.id })}</div>
+    <div>${rec.foto ? `<img src="${rec.foto}" style="width:100%;max-height:16rem;object-fit:cover;border-radius:18px;display:block">` : ''}
+    <div class="sum"><div><b>El caso que quieres primero</b>${c.ic || ''} ${esc(c.n || '')}</div><div><b>Tiempo que se puede liberar</b>${MEM.horasEquipo(rec)} h/semana del equipo</div><div><b>Lo que vas a aprender</b>${esc(rec.h.aprendizaje || '')}</div><div><b>Padrino o madrina</b>${esc(rec.padrino)}</div></div></div></div>
+    <div class="nav" style="justify-content:center"><button class="b1 bg" id="fin">Ver el muro ➜</button></div>`);
   confetti(160);
-  const t = setTimeout(() => H('fin') && H('fin').click(), 20000);
+  const t = setTimeout(() => H('fin') && H('fin').click(), 25000);
   H('fin').onclick = () => { clearTimeout(t); closeFlow(); page = 0; refresh(); aviso(MEM.get(rec.id)); };
 }
 
