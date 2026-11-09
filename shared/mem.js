@@ -89,7 +89,7 @@ const KEY = 'mem_resp_v3', CFG = 'mem_cfg_v2';
 MEM.cfg = Object.assign({ desde: 0, evento: 'Feria de Innovación y Conocimiento · Alico' }, LS.get(CFG, {}));
 MEM.saveCfg = () => LS.set(CFG, MEM.cfg);
 /* ---------- reinicio general del muro: cada navegador arranca de cero una sola vez, y lo anterior en la nube se ignora ---------- */
-MEM.RESET = { id: 'r-2026-11-09', ts: Date.parse('2026-11-09T13:45:00Z') };
+MEM.RESET = { id: 'r-2026-11-09b', ts: Date.parse('2026-11-09T14:03:00Z') };
 if (LS.get('mem_reset', '') !== MEM.RESET.id) {
   LS.set(KEY, []); MEM.cfg.desde = 0; MEM.saveCfg();
   try { localStorage.removeItem('mem_ejec'); localStorage.removeItem('mem_resp_v2'); } catch (e) {}
