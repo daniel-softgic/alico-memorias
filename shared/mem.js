@@ -88,6 +88,14 @@ MEM.numeros = function (txt) {
 const KEY = 'mem_resp_v3', CFG = 'mem_cfg_v2';
 MEM.cfg = Object.assign({ desde: 0, evento: 'Feria de Innovación y Conocimiento · Alico' }, LS.get(CFG, {}));
 MEM.saveCfg = () => LS.set(CFG, MEM.cfg);
+/* ---------- reinicio general del muro: cada navegador arranca de cero una sola vez, y lo anterior en la nube se ignora ---------- */
+MEM.RESET = { id: 'r-2026-11-09', ts: Date.parse('2026-11-09T13:45:00Z') };
+if (LS.get('mem_reset', '') !== MEM.RESET.id) {
+  LS.set(KEY, []); MEM.cfg.desde = 0; MEM.saveCfg();
+  try { localStorage.removeItem('mem_ejec'); localStorage.removeItem('mem_resp_v2'); } catch (e) {}
+  try { const ob = LS.get('al_outbox', []) || []; LS.set('al_outbox', ob.filter(it => it.kind !== 'respuesta' && !(it.kind === 'archivo' && /^resp-/.test((it.data || {}).name || '')))); } catch (e) {}
+  LS.set('mem_reset', MEM.RESET.id);
+}
 MEM.list = () => { let l = LS.get(KEY, null); if (!l) { l = MEM.seed(); LS.set(KEY, l); } return l; };
 MEM.store = l => { try { LS.set(KEY, l); return true; } catch (e) { try { LS.set(KEY, l.map((x, i) => i > 25 ? Object.assign({}, x, { foto: x.ejemplo ? x.foto : null, fotoNube: !!x.foto }) : x)); AL.toast('Memoria llena: fotos antiguas quedan en la nube'); } catch (e2) { AL.toast('No pude guardar en este navegador: descarga el respaldo'); } return false; } };
 MEM.get = id => MEM.list().find(x => x.id === id);
@@ -111,7 +119,7 @@ MEM.pull = async function () {
   if (!AL.hasCloud()) return false;
   try {
     const rows = (await AL.cloudGet({ action: 'respuestas' })).rows || [], l = MEM.list(); let ch = false;
-    rows.forEach(x => { if (!x || !x.id) return; const k = l.findIndex(y => y.id === x.id), loc = k >= 0 ? l[k] : null;
+    rows.forEach(x => { if (!x || !x.id || new Date(x.ts).getTime() < MEM.RESET.ts) return; const k = l.findIndex(y => y.id === x.id), loc = k >= 0 ? l[k] : null;
       if (!loc) { l.unshift(x); ch = true; } else if ((x.upd || 0) > (loc.upd || 0)) { Object.assign(loc, x, { foto: loc.foto }); ch = true; } });
     if (ch) MEM.store(l); return ch;
   } catch (e) { return false; }
