@@ -1,32 +1,50 @@
-# Empaquemos estas memorias · Alico (Cápsula de Memorias)
+# Empaquemos estas memorias · Alico × Softgic
 
-Portal independiente para cerrar cada sesión del workshop: en 5 minutos un participante postula una iniciativa por voz, la IA la convierte en historia de negocio y el grupo queda en el muro de la TV.
+Cierre del taller GEN IA. Cada colaborador conversa 5 minutos con **Memo** (robot de Softgic). Memo hace 5 preguntas pensadas para que Alico y Softgic sepan qué quieren los empleados en automatización e IA. Las respuestas se convierten en el **informe del evento** y en la **hoja de ruta**.
+
+**En línea:** https://daniel-softgic.github.io/alico-memorias/
 
 ## Archivos
-- `index.html` – Muro para la TV + flujo de entrevista (voz/texto, 5 preguntas, foto, acta, aplauso).
-- `admin.html` – Panel administrativo (PIN por defecto **1234**): resumen, ideas, discovery automático, exportar.
-- `shared/` – núcleo común (`al.js`, `al.css`) y lógica de memorias (`mem.js`).
-- `apps-script/Code.gs` – backend para Google Sheets / Drive.
+- `index.html`: muro para la TV y entrevista con Memo.
+  - Voz con subtítulos y transcripción en vivo (no se graba audio).
+  - Opciones rápidas para poder medir, idea empacada con IA y foto del grupo.
+- `admin.html`: informe (PIN por defecto **1234**), con cuatro pestañas:
+  - **Resumen**
+  - **Informe por caso y hoja de ruta**
+  - **Respuestas** (con la transcripción completa)
+  - **Guardar y exportar**
+- `shared/mem.js`: preguntas, casos, almacenamiento, estadísticas y puntaje.
+- `shared/al.js`: núcleo común con el portal GEN IA (IA, nube, voz y ajustes).
+- `apps-script/Code.gs`: nube en Google Sheets, Drive y correo. Es la misma que usa el portal GEN IA. Las respuestas van a la hoja **Respuestas**.
 
-## Puesta en marcha (10 min)
-1. **Hosting**: sube la carpeta a un repo de GitHub → Settings → Pages → rama `main`, raíz. (La cámara y el micrófono exigen https; GitHub Pages lo cumple.)
-2. **Google Sheets** (opcional pero recomendado para no perder datos): crea una hoja → Extensiones → Apps Script → pega `apps-script/Code.gs` → Implementar como aplicación web (acceso: cualquiera) → copia la URL.
-3. **Ajustes** (botón ⚙️ en el panel): pega la API key de Anthropic, la URL del Apps Script, el secreto y cambia el PIN. Sin API key funciona en "modo básico" (historia armada con plantilla).
-4. **Prueba**: abre `index.html` en Chrome o Edge en el PC del taller, permite cámara y micrófono, y postula una idea de prueba. Luego en admin pulsa «Eliminar ejemplos».
+## Las 5 preguntas
+| # | Pregunta | Qué mide |
+|---|----------|----------|
+| 1 | ¿Qué tarea te quita más tiempo o te frustra? | Dolor principal (8 categorías) |
+| 2 | ¿Cuántas horas a la semana y a cuántas personas les pasa? | Horas que se pueden liberar (horas × personas) |
+| 3 | ¿Cuál de los 5 casos quieres primero, y por qué? | Demanda por caso |
+| 4 | ¿Qué te gustaría que la IA hiciera por ti? | Capacidades esperadas |
+| 5 | ¿Qué necesitas para adoptarla? ¿Qué tan listo te sientes (1–5)? | Barreras y preparación |
 
-## Cómo correr los 5 minutos
-1. Muro en la TV (pantalla completa, F11). 
-2. Botón **➕ Postular una idea** (o tecla N).
-3. Participantes eligen grupo (o nombre propio), aceptan consentimiento y responden 5 preguntas hablando.
-4. Revisan la funda, se toman la foto (cuenta regresiva), firman el acta y el grupo aplaude.
-5. El grupo aparece en el muro con burbujas, confeti y banners.
+## Puntaje de la hoja de ruta
+El puntaje de cada caso pondera tres factores:
+- **50 % interés:** votos más la mitad de quienes describen un problema que el caso resuelve.
+- **30 % horas** en juego.
+- **20 % facilidad** de implementar.
 
-## Memo (robot de Softgic)
-Memo usa las poses del Manual de Marca de Softgic (`assets/robot/`), cambiando según el momento: saludo, atención, análisis, aprobación, señalar, presentación, alegría y duda.
+Con ese puntaje cada caso queda en una ola:
+- **Ola 1** (meses 0–3): los 2 primeros.
+- **Ola 2** (meses 3–6): los 2 siguientes.
+- **Ola 3** (meses 6–12): el último.
 
-## Notas
-- Voz: reconocimiento solo en Chrome/Edge. Siempre hay texto como alternativa.
-- Fotos: se guardan en el navegador y en Drive (no en la hoja). Entre equipos se sincronizan vía Apps Script.
-- Consentimiento Habeas Data (Ley 1581) y de imagen se registra por idea.
-- La API key queda en el navegador del equipo del taller: úsala solo ahí y revócala al terminar.
-- Las 3 ideas «EJEMPLO» son de demostración y se eliminan desde Exportar.
+## Durante el evento
+- **Muro en la TV:** pantalla completa (F11). Se entra a la entrevista con el botón **Hablar con Memo** o con la tecla **N**.
+- **Reiniciar contador** (pie de página, pide el PIN): el muro empieza de cero para el siguiente grupo, pero **no se borra nada** del informe.
+- **Guardar todo:**
+  - Con la nube configurada, cada respuesta va sola a Google Sheets.
+  - Además, en el informe → *Guardar y exportar* se descarga el **CSV** (Excel), el **respaldo completo** (JSON con fotos) y el **PDF** del informe.
+- **Ejemplos:** los datos de EJEMPLO se ocultan solos cuando llega la primera respuesta real. Se pueden quitar desde *Guardar y exportar*.
+
+## Requisitos
+- Chrome o Edge, porque el reconocimiento de voz no funciona en otros navegadores. Siempre se puede escribir.
+- ⚙️ Ajustes: clave de IA (opcional, para redactar la idea y el resumen ejecutivo), URL de la nube y clave de la nube.

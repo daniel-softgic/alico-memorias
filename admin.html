@@ -3,124 +3,232 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panel de Memorias · Alico · Softgic</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Informe del evento · Memorias Alico</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/al.css">
 <style>
-header.ad{display:flex;gap:1rem;align-items:center;background:#14202e;color:#fff;padding:.9rem 1.6rem;flex-wrap:wrap}
-header.ad h1{font-size:1.25rem;font-weight:800}header.ad a{color:#E99B35;font-weight:700;text-decoration:none}
-.bd{background:#1d3550;border-radius:99px;padding:.25rem .8rem;font-size:.78rem}
-.cht{width:100%;max-width:900px;display:block}
-.mx{position:relative;height:20rem;border-left:3px solid #cdbfae;border-bottom:3px solid #cdbfae;margin:1rem 0 2rem 3rem;background:linear-gradient(0deg,#fffaf3,#fff)}
-.mx .q{position:absolute;font-size:.7rem;font-weight:700;color:#b9a98f;text-transform:uppercase;letter-spacing:.05em}
-.dot{position:absolute;transform:translate(-50%,50%);min-width:2.2rem;height:2.2rem;padding:0 .4rem;border-radius:99px;color:#fff;font-weight:800;display:grid;place-items:center;font-size:.85rem;cursor:pointer;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.25)}
-.dot:hover{z-index:5;transform:translate(-50%,50%) scale(1.2)}
-.md h2{font-size:1.2rem;font-weight:800;margin:1rem 0 .3rem;color:var(--or-d)}.md p,.md li{line-height:1.55}.md ul{padding-left:1.2rem}
-.story{background:#fff8f0;border-left:6px solid var(--or);border-radius:0 14px 14px 0;padding:.9rem 1.1rem;font-size:1.05rem}
-.qa{border-left:4px solid var(--line);padding:.2rem .8rem;margin:.5rem 0}.qa b{display:block;font-size:.82rem;color:var(--gr)}
-.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}@media(max-width:1000px){.cols3{grid-template-columns:1fr}}
-.sel{padding:.3rem .6rem;border-radius:10px;border:2px solid var(--line);font-weight:600}
+:root{--gold:#DA9100;--gold2:#F2B33D;--goldL:#FFF4DE;--ink:#1F1B16;--mut:#6E6558;--bg:#FBF8F3;--line:#ECE3D4;--r:22px}
+html{font-size:clamp(13px,.95vw,18px)}
+body{font-family:'Plus Jakarta Sans',Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1280px;margin:0 auto;padding:1.4rem 1.6rem 3rem}
+.top{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.brands{display:flex;align-items:center;gap:.7rem;padding:.5rem .8rem;background:#fff;border:1px solid var(--line);border-radius:16px}.brands img{height:1.6rem}.brands .x{color:#b9ad9a}
+.ttl small{display:block;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}.ttl h1{margin:0;font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+.acts{margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap}
+.b{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6rem 1rem;font-weight:700;font-size:.88rem;color:var(--ink);text-decoration:none;display:inline-flex;gap:.4rem;align-items:center;cursor:pointer}
+.b:hover{border-color:var(--gold)}.b.k{background:var(--ink);color:#fff;border-color:var(--ink)}.b.g{background:linear-gradient(135deg,var(--gold),var(--gold2));border:0}.b.d{color:#b3261e}
+.tabs{display:flex;gap:.3rem;margin:1.3rem 0 1rem;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:.7rem 1rem;font-weight:700;color:var(--mut);font-size:.95rem}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--gold)}
+.banner{background:var(--goldL);border:1px solid #F1D9A8;border-radius:14px;padding:.6rem 1rem;font-size:.88rem;margin-bottom:1rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.kp{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem}
+.k{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.1rem}.k b{display:block;font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}.k small{color:var(--mut);font-weight:600;font-size:.8rem}.k.g b{color:var(--gold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.cd{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:1.1rem 1.2rem;break-inside:avoid}
+.cd h3{margin:0 0 .8rem;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 2.4rem;gap:.15rem .6rem;margin:.5rem 0;font-size:.88rem;font-weight:600}
+.bar .t{grid-column:1/-1;height:.5rem;background:#F3ECE0;border-radius:99px;overflow:hidden}.bar .t i{display:block;height:100%;border-radius:99px;background:var(--gold)}.bar b{text-align:right}
+.ready{display:flex;gap:.4rem;align-items:flex-end;height:7rem}.ready div{flex:1;text-align:center;font-size:1.3rem}.ready div i{display:block;background:var(--gold);border-radius:8px 8px 0 0;margin:0 auto .3rem;width:70%}.ready small{display:block;font-size:.75rem;color:var(--mut);font-weight:700}
+/* hoja de ruta */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 1.4rem}
+.ola{border-radius:var(--r);padding:1rem 1.1rem;border:1px solid var(--line);background:#fff;position:relative}
+.ola .h{display:flex;justify-content:space-between;align-items:baseline}.ola .h b{font-size:1.15rem}.ola .h small{color:var(--mut);font-weight:700}
+.ola.o1{background:linear-gradient(160deg,#fff,var(--goldL));border-color:#F1D9A8}.ola.o1 .h b{color:var(--gold)}
+.ola .c{display:flex;gap:.6rem;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:.55rem .7rem;margin-top:.55rem;font-weight:700;font-size:.9rem}.ola .c span{font-size:1.3rem}.ola .c em{margin-left:auto;font-style:normal;font-size:.75rem;color:var(--mut)}
+.case{background:#fff;border:1px solid var(--line);border-radius:26px;padding:1.3rem 1.4rem;margin-bottom:1rem;break-inside:avoid;display:grid;grid-template-columns:15rem 1fr;gap:1.4rem}
+.case .l{border-right:1px solid var(--line);padding-right:1.2rem}
+.case .ic{font-size:2.2rem}.case h2{margin:.2rem 0;font-size:1.3rem;font-weight:800;letter-spacing:-.01em}
+.score{display:flex;align-items:center;gap:.8rem;margin:.8rem 0}.ring{--p:50;width:4.4rem;height:4.4rem;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p)*1%),#F3ECE0 0);display:grid;place-items:center}.ring b{background:#fff;width:3.4rem;height:3.4rem;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
+.pill{display:inline-block;border-radius:99px;padding:.18rem .7rem;font-size:.75rem;font-weight:800}.p1{background:var(--gold);color:#fff}.p2{background:#FBE3B4;color:#7a5200}.p3{background:#EEE8DE;color:var(--mut)}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.2rem 0 .9rem}.mini div{background:#FFFCF6;border:1px solid var(--line);border-radius:14px;padding:.55rem .7rem}.mini b{display:block;font-size:1.25rem;font-weight:800}.mini small{font-size:.72rem;color:var(--mut);font-weight:600}
+.sec{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:.8rem 0 .3rem}
+.case p{margin:.2rem 0;font-size:.92rem;line-height:1.45}.quote{border-left:3px solid var(--gold);padding:.15rem .7rem;margin:.35rem 0;font-size:.88rem;color:#4b443a;font-style:italic}
+.tags span{display:inline-block;background:#F6F0E6;border-radius:99px;padding:.2rem .6rem;font-size:.78rem;font-weight:600;margin:.15rem .2rem .15rem 0}
+.exec{background:var(--ink);color:#fff;border-radius:26px;padding:1.3rem 1.5rem;margin-bottom:1rem}.exec h3{color:var(--gold2);margin:0 0 .5rem;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase}.exec p,.exec li{font-size:.98rem;line-height:1.55}.exec ul{margin:.3rem 0;padding-left:1.2rem}
+/* respuestas */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;font-size:.86rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);background:#FFFCF6;padding:.65rem .7rem;border-bottom:1px solid var(--line)}
+td{padding:.6rem .7rem;border-bottom:1px solid #F3ECE0;vertical-align:top}tr:hover td{background:#FFFCF6;cursor:pointer}
+td img{width:3.4rem;height:2.6rem;object-fit:cover;border-radius:8px}
+.srch{display:flex;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap}.srch input,.srch select{border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;font:inherit;background:#fff}
+.srch input{flex:1;min-width:14rem}
+.dt{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.dt .cd p{font-size:.88rem;color:var(--mut);margin:.2rem 0 .8rem}
+.gate{min-height:100vh;display:grid;place-items:center}.gate .cd{width:min(24rem,92vw);text-align:center;padding:2rem}.gate input{width:100%;font-size:1.6rem;text-align:center;letter-spacing:.4em;border:1.5px solid var(--line);border-radius:14px;padding:.7rem;margin:1rem 0}
+.muted{color:var(--mut)}
+.pg{display:none}.pg.on{display:block}
+@media (max-width:900px){.kp{grid-template-columns:repeat(2,1fr)}.grid2,.grid3,.road,.dt,.case{grid-template-columns:1fr}.case .l{border:0;padding:0}.mini{grid-template-columns:repeat(2,1fr)}}
+@media print{
+  body{background:#fff}.acts,.tabs,.noprint,.banner .b{display:none!important}.pg{display:none!important}.pg.pr{display:block!important}
+  .wrap{padding:0}.case,.cd,.ola,.exec{box-shadow:none}.exec{-webkit-print-color-adjust:exact;print-color-adjust:exact}.ring,.p1,.bar .t i,.ola.o1{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .case{page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
+<div id="gate" class="gate"><div class="cd"><img src="assets/alico.png" style="height:2rem" alt="Alico"><h2 style="margin:.8rem 0 0">Informe del evento</h2><p class="muted">Solo para el equipo de Alico y Softgic</p><input id="pin" type="password" inputmode="numeric" placeholder="••••" autofocus><button class="b k" id="in" style="width:100%;justify-content:center">Entrar</button><p class="muted" style="font-size:.8rem;margin-top:1rem">El PIN se cambia en ⚙️ Ajustes.</p></div></div>
+<div class="wrap" id="app" hidden>
+  <header class="top">
+    <div class="brands"><img src="assets/alico.png" alt="Alico"><span class="x">×</span><img src="assets/softgic.png" alt="Softgic"></div>
+    <div class="ttl"><small id="evt"></small><h1>Lo que quieren los colaboradores de Alico</h1></div>
+    <div class="acts"><button class="b" id="sync">☁️ Traer de la nube</button><button class="b" id="prn">🖨️ Imprimir / PDF</button><a class="b" href="index.html">← Muro</a><button class="b" id="set">⚙️</button></div>
+  </header>
+  <nav class="tabs" id="tabs"><button data-p="res" class="on">Resumen</button><button data-p="ruta">Informe por caso y hoja de ruta</button><button data-p="resp">Respuestas</button><button data-p="dat">Guardar y exportar</button></nav>
+  <div id="ban"></div>
+  <section class="pg on pr" id="p-res"></section>
+  <section class="pg pr" id="p-ruta"></section>
+  <section class="pg" id="p-resp"></section>
+  <section class="pg" id="p-dat"></section>
+</div>
+
 <script src="shared/al.js"></script>
 <script src="shared/mem.js"></script>
-<header class="ad"><h1>🗂️ Panel de Memorias · Alico</h1><span class="bd" id="ia"></span><span class="bd" id="cl"></span><div class="sp"></div><a href="index.html">← Muro</a><button class="btn sm" id="set">⚙️ Ajustes</button><button class="btn tl sm" id="sync">🔄 Sincronizar con Sheets</button></header>
-<main class="wrap" id="app"></main>
 <script>
 (() => {
 'use strict';
-const $ = AL.$, esc = AL.esc, $$ = s => [...document.querySelectorAll(s)];
-const ok = sessionStorage.getItem('mem_admin') === '1';
-function gate() {
-  document.getElementById('app').innerHTML = `<div class="card" style="max-width:26rem;margin:4rem auto;text-align:center"><h2>🔒 Panel administrativo</h2><p class="muted" style="margin:.5rem 0 1rem">Ingresa el PIN del taller (el mismo de Ajustes).</p><input class="inp" id="pin" type="password" inputmode="numeric" style="text-align:center;font-size:1.4rem"><br><br><button class="btn lg" id="en">Entrar</button></div>`;
-  const go = () => { if ($('#pin').value === AL.cfg.pin) { sessionStorage.setItem('mem_admin', '1'); start(); } else AL.toast('PIN incorrecto'); };
-  $('#en').onclick = go; $('#pin').onkeydown = e => e.key === 'Enter' && go(); $('#pin').focus();
-}
-const bars = (rows, color) => { const mx = Math.max(...rows.map(r => r[1]), 1); return rows.map(([k, v]) => `<div class="bar"><span class="lb" style="width:14rem" title="${esc(k)}">${esc(k)}</span><span class="tr"><i class="fl" style="width:${v / mx * 100}%;--c:${color || 'var(--or)'}"></i></span><span class="vl">${AL.fmt(v)}</span></div>`).join('') || '<p class="muted">Sin datos todavía.</p>'; };
-const cnt = (l, f) => { const o = {}; l.forEach(r => { const k = f(r) || '—'; o[k] = (o[k] || 0) + 1; }); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
-const data = () => MEM.list().filter(r => !r.ejemplo || showEj);
-let showEj = true, tab = 'res', fq = '';
-function start() {
-  const hasReal = MEM.reales().length > 0; showEj = !hasReal || showEj && !hasReal;
-  $('#ia').textContent = AL.hasIA() ? '🤖 IA conectada' : '🤖 IA: modo básico'; $('#cl').textContent = AL.hasCloud() ? '☁️ Nube configurada' : '☁️ Solo este equipo';
-  document.getElementById('app').innerHTML = `<div class="tabs" id="tabs"><button class="tab on" data-t="res">📊 Resumen</button><button class="tab" data-t="ide">💡 Ideas</button><button class="tab" data-t="dis">🧭 Discovery automático</button><button class="tab" data-t="exp">⬇️ Exportar y datos</button></div><div id="body"></div>`;
-  $('#tabs').onclick = e => { const b = e.target.closest('[data-t]'); if (b) { tab = b.dataset.t; $$('#tabs .tab').forEach(x => x.classList.toggle('on', x === b)); draw(); } };
-  MEM.pull().then(c => c && draw()); draw();
-}
-function draw() { ({ res: vRes, ide: vIde, dis: vDis, exp: vExp })[tab](); }
-$('#set').onclick = AL.settings;
-$('#sync').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); AL.toast('Sincronizando…'); const c = await MEM.pull(); MEM.reales().forEach(r => MEM.save(r)); AL.sync(); AL.toast(c ? 'Traídas ideas nuevas de Sheets' : 'Todo al día'); draw(); };
+const esc = AL.esc, H = id => document.getElementById(id), $$ = s => [...document.querySelectorAll(s)];
+const N = n => Math.round(n).toLocaleString('es-CO'), pl = (n, a, b) => n + ' ' + (n === 1 ? a : b);
 
-/* ---------- resumen ---------- */
-function vRes() {
-  const l = data(), g = new Set(l.map(r => r.grupo)).size, p = new Set(l.map(r => r.participante).filter(Boolean)).size, hs = l.reduce((s, r) => s + (+((r.h || {}).horas_semana) || 0), 0), alta = l.filter(r => (r.h || {}).prioridad === 'Alta').length, con = l.filter(r => r.consent && r.consent !== '').length;
-  const CM = { Baja: 1, Media: 2, Alta: 3 }, maxH = Math.max(...l.map(r => +((r.h || {}).horas_semana) || 0), 1);
-  const dots = l.map((r, i) => { const h = r.h || {}, x = (CM[h.complejidad] || 2) / 3 * 100 - 16, y = ((+h.horas_semana || 0) / maxH) * 84 + 6, jx = (i % 3) * 3; return `<div class="dot" data-id="${r.id}" style="left:${x + jx}%;bottom:${y}%;background:${h.prioridad === 'Alta' ? '#EE7623' : h.prioridad === 'Baja' ? '#9aa1a8' : '#00BED6'}" title="${esc(h.nombre_idea)} · ${h.horas_semana || 0} h/sem">${i + 1}</div>`; }).join('');
-  const qw = l.filter(r => ((r.h || {}).prioridad === 'Alta' || (+r.h.horas_semana || 0) > 0) && ['Baja', 'Media'].includes((r.h || {}).complejidad)).sort((a, b) => (+b.h.horas_semana || 0) - (+a.h.horas_semana || 0)).slice(0, 4);
-  $('#body').innerHTML = `${MEM.reales().length ? '' : '<div class="alert info"><span class="big">ℹ️</span><div>Estás viendo <b>datos de ejemplo</b>. Desaparecen cuando se publica la primera idea real (o en «Exportar y datos»).</div></div>'}
-  <div class="kpis"><div class="kpi"><small>Ideas</small><b>${l.length}</b></div><div class="kpi"><small>Grupos</small><b>${g}</b></div><div class="kpi"><small>Personas</small><b>${p}</b></div><div class="kpi"><small>Horas/semana por recuperar</small><b>${hs}</b><em>≈ ${AL.fmt(hs * 46)} h/año</em></div><div class="kpi"><small>Prioridad alta</small><b>${alta}</b></div><div class="kpi"><small>Con consentimiento</small><b>${con}</b><em>de ${l.length}</em></div></div>
-  <div class="cols3"><div class="card"><h3>🏭 Por área</h3>${bars(cnt(l, r => r.area), 'var(--or)')}</div><div class="card"><h3>🤖 Tipo de solución</h3>${bars(cnt(l, r => (r.h || {}).tipo_ia), 'var(--tl2)')}</div><div class="card"><h3>🎯 Prioridad</h3>${bars(cnt(l, r => (r.h || {}).prioridad), 'var(--or2)')}<h3 style="margin-top:1rem">👥 Ideas por grupo</h3>${bars(cnt(l, r => r.grupo).slice(0, 6), 'var(--gr)')}</div></div>
-  <div class="two" style="margin-top:1rem"><div class="card"><h3>🧭 Matriz valor vs. esfuerzo</h3><p class="muted small">Cada punto es una idea (número = fila en «Ideas»). Arriba y a la izquierda: ganancias rápidas.</p><div class="mx"><span class="q" style="left:.5rem;top:.3rem">Ganancias rápidas</span><span class="q" style="right:.5rem;top:.3rem">Apuestas grandes</span><span class="q" style="left:.5rem;bottom:.3rem">Rellenos</span><span class="q" style="right:.5rem;bottom:.3rem">Evitar</span>${dots}<span class="q" style="left:0;bottom:-1.5rem">Baja complejidad</span><span class="q" style="right:0;bottom:-1.5rem">Alta complejidad</span><span class="q" style="left:-3rem;top:42%;transform:rotate(-90deg);transform-origin:left">Horas ahorradas ↑</span></div></div>
-  <div class="card"><h3>⚡ Ganancias rápidas sugeridas</h3>${qw.map(r => `<div class="box" style="border:2px solid var(--line);border-radius:14px;padding:.7rem .9rem;margin:.5rem 0;cursor:pointer" data-id="${r.id}"><b>${esc(r.h.nombre_idea)}</b> <span class="chip or">${esc(r.grupo)}</span><br><span class="small muted">${esc(r.h.historia_usuario)}</span><br><span class="chip ok">⏱ ${r.h.horas_semana || 0} h/sem</span> <span class="chip">${esc(r.h.complejidad)}</span></div>`).join('') || '<p class="muted">Aún no hay candidatas.</p>'}</div></div>`;
-  $$('[data-id]').forEach(b => b.onclick = () => detalle(b.dataset.id));
+/* ---------- acceso ---------- */
+const entrar = () => { if (H('pin').value !== AL.cfg.pin) { AL.toast('PIN incorrecto'); H('pin').value = ''; return; } sessionStorage.setItem('mem_adm', '1'); H('gate').remove(); H('app').hidden = false; render(); MEM.pull().then(c => c && render()); };
+H('in').onclick = entrar; H('pin').onkeydown = e => e.key === 'Enter' && entrar();
+try { if (sessionStorage.getItem('mem_adm') === '1') { H('pin').value = AL.cfg.pin; entrar(); } } catch (e) {}
+
+/* ---------- datos a usar ---------- */
+let conEj = false;
+const datos = () => { const r = MEM.reales(); return (r.length && !conEj) ? r : MEM.list(); };
+const soloEj = () => !MEM.reales().length;
+
+/* ---------- pestañas ---------- */
+let tab = 'res';
+H('tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; tab = b.dataset.p; $$('#tabs button').forEach(x => x.classList.toggle('on', x === b)); $$('.pg').forEach(p => { p.classList.toggle('on', p.id === 'p-' + tab); }); };
+H('prn').onclick = () => { $$('.pg').forEach(p => p.classList.toggle('pr', p.id === 'p-res' || p.id === 'p-ruta')); window.print(); };
+H('set').onclick = AL.settings;
+H('sync').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en ⚙️ Ajustes'); AL.toast('Consultando la nube…'); await AL.sync(); const c = await MEM.pull(); render(); AL.toast(c ? 'Llegaron respuestas nuevas de la nube' : 'Todo al día'); };
+
+function render() {
+  const l = datos(), s = MEM.stats(l);
+  H('evt').textContent = MEM.cfg.evento + ' · ' + MEM.fmtFecha(Date.now());
+  H('ban').innerHTML = soloEj() ? `<div class="banner">🧪 <span>Aún no hay respuestas reales: estás viendo <b>datos de EJEMPLO</b>. Se ocultan solos cuando llegue la primera respuesta.</span></div>`
+    : `<div class="banner noprint">✅ <span><b>${MEM.reales().length}</b> ${MEM.reales().length === 1 ? 'respuesta real' : 'respuestas reales'}${AL.hasCloud() ? ' · guardadas también en Google Sheets' : ' · <b>solo en este navegador</b>: conecta la nube o descarga el respaldo'}.</span><label style="margin-left:auto;display:flex;gap:.4rem;align-items:center;font-weight:600"><input type="checkbox" id="cej" ${conEj ? 'checked' : ''}> incluir ejemplos</label></div>`;
+  if (H('cej')) H('cej').onchange = e => { conEj = e.target.checked; render(); };
+  resumen(l, s); ruta(l, s); respuestas(l); datosPg();
 }
-/* ---------- ideas ---------- */
-const ESTADOS = ['nueva', 'en análisis', 'propuesta', 'en ejecución', 'descartada'];
-function vIde() {
-  const l = data().filter(r => !fq || JSON.stringify([r.grupo, r.participante, r.area, r.h]).toLowerCase().includes(fq.toLowerCase()));
-  $('#body').innerHTML = `<div class="card"><div style="display:flex;gap:.6rem;margin-bottom:.7rem"><input class="inp" id="fq" placeholder="Buscar por grupo, persona, área, palabra…" value="${esc(fq)}"></div><div style="overflow:auto"><table class="tb"><tr><th>#</th><th>Foto</th><th>Grupo · persona</th><th>Idea y historia de usuario</th><th>Área · solución</th><th>H/sem</th><th>Prioridad</th><th>Estado</th></tr>${l.map((r, i) => { const h = r.h || {}; return `<tr style="cursor:pointer" data-id="${r.id}"><td>${i + 1}</td><td>${r.foto ? `<img src="${r.foto}" style="width:3.6rem;height:2.7rem;object-fit:cover;border-radius:8px">` : '—'}</td><td><b>${esc(r.grupo)}</b><br><span class="small muted">${esc(r.participante || '')} · ${esc(r.rol || '')}</span></td><td><b>${esc(h.nombre_idea)}</b> ${r.ejemplo ? '<span class="sample">EJEMPLO</span>' : ''}<br><span class="small">${esc(h.historia_usuario)}</span></td><td>${esc(r.area || '')}<br><span class="small muted">${esc(h.tipo_ia || '')}</span></td><td><b>${h.horas_semana || 0}</b></td><td><span class="chip ${h.prioridad === 'Alta' ? 'or' : ''}">${esc(h.prioridad || '')}</span><br><span class="small muted">${esc(h.complejidad || '')}</span></td><td>${esc(r.estado || 'nueva')}</td></tr>`; }).join('') || '<tr><td colspan="8" class="muted">Sin resultados.</td></tr>'}</table></div></div>`;
-  $('#fq').oninput = e => { fq = e.target.value; clearTimeout(vIde.t); vIde.t = setTimeout(() => { vIde(); const f = $('#fq'); f.focus(); f.setSelectionRange(fq.length, fq.length); }, 250); };
-  $$('tr[data-id]').forEach(t => t.onclick = () => detalle(t.dataset.id));
+
+/* ---------- 1 · resumen ---------- */
+function bars(arr, max) { const m = max || Math.max(1, ...arr.map(x => x[2])); return arr.map(([, n, k]) => `<div class="bar"><span>${esc(n)}</span><b>${k}</b><span class="t"><i style="width:${k / m * 100}%"></i></span></div>`).join(''); }
+function resumen(l, s) {
+  const mv = Math.max(1, ...s.casos.map(c => c.votos));
+  const ld = Math.max(1, ...s.listoDist);
+  H('p-res').innerHTML = `<div class="kp"><div class="k"><b>${s.n}</b><small>respuestas</small></div><div class="k"><b>${s.personas}</b><small>personas</small></div><div class="k"><b>${s.grupos}</b><small>grupos</small></div><div class="k g"><b>${N(s.horas)}</b><small>horas/semana que se pueden liberar</small></div><div class="k"><b>${s.listo ? s.listo.toFixed(1) : '—'}<span style="font-size:1rem">/5</span></b><small>preparación para la IA</small></div></div>
+  <div class="grid2"><div class="cd"><h3>El caso que quieren primero</h3>${s.casos.slice().sort((a, b) => b.votos - a.votos).map(c => `<div class="bar"><span>${c.ic} ${esc(c.n)}</span><b>${c.votos}</b><span class="t"><i style="width:${c.votos / mv * 100}%;background:${c.c}"></i></span></div>`).join('')}</div>
+  <div class="cd"><h3>La tarea que más tiempo les quita</h3>${bars(s.dolores.filter(x => x[2]))}</div></div>
+  <div class="grid3"><div class="cd"><h3>Lo que quieren que la IA haga</h3>${bars(s.ayudas.filter(x => x[2]))}</div>
+  <div class="cd"><h3>Lo que necesitan para adoptarla</h3>${bars(s.barreras.filter(x => x[2]))}</div>
+  <div class="cd"><h3>¿Qué tan listos se sienten?</h3><div class="ready">${s.listoDist.map((k, i) => `<div><i style="height:${k / ld * 4.5 + .2}rem"></i>${MEM.LISTO[i]}<small>${k}</small></div>`).join('')}</div><h3 style="margin-top:1.2rem">Participación por área</h3>${bars(s.areas.slice(0, 6))}</div></div>`;
 }
-function mdOf(r) { const h = r.h || {}; return `# ${h.nombre_idea}\n\n**Grupo:** ${r.grupo} · **Persona:** ${r.participante} (${r.rol || '—'}) · **Área:** ${r.area}\n**Fecha:** ${MEM.fmtFecha(r.ts)} · **Padrino/madrina:** ${r.padrino || '—'}\n\n## Historia de usuario\n${h.historia_usuario}\n\n## Problema\n${h.problema || ''}\n\n## Afectados\n${h.afectados || ''}\n\n## Impacto y valor\n${h.impacto || ''}\n${h.valor_estimado || ''}\nHoras por semana estimadas: ${h.horas_semana || 0}\n\n## Criterios de aceptación\n${(h.criterios || []).map(c => '- ' + c).join('\n')}\n\n## Riesgos\n${(h.riesgos || []).map(c => '- ' + c).join('\n')}\n\n## Dependencias\n${(h.dependencias || []).map(c => '- ' + c).join('\n')}\n\n## Primer paso\n${h.primer_paso || ''} (${h.fecha_objetivo || ''})\n\n## Clasificación\nPrioridad: ${h.prioridad} (${h.prioridad_razon || ''}) · Complejidad: ${h.complejidad} · Solución: ${h.tipo_ia}\n\n## Respuestas originales\n${(r.respuestas || []).map((a, i) => `${i + 1}. ${a}`).join('\n')}\n`; }
-async function detalle(id) {
-  const r = MEM.get(id); if (!r) return; const h = r.h || {}; if (!r.foto) MEM.fetchFoto(r).then(f => { if (f) { const im = $('#dfoto'); if (im) im.src = f; } });
-  const QS = ['¿Qué problema le quita el sueño?', '¿Quién lo vive y con qué frecuencia?', '¿Cómo cambiaría su día?', '¿Con qué datos/personas contamos?', 'Primer paso y fecha'];
-  AL.modal(`<div style="display:grid;grid-template-columns:15rem 1fr;gap:1.4rem"><div>${MEM.funda(r, 230)}<img id="dfoto" src="${r.foto || ''}" style="width:100%;border-radius:12px;margin-top:.6rem;${r.foto ? '' : 'display:none'}">${r.firma ? `<div class="small muted" style="margin-top:.5rem">Firma del equipo</div><img src="${r.firma}" style="width:100%;background:#fffdf7;border-radius:8px">` : ''}</div>
-  <div><h2 style="margin:0">${esc(h.nombre_idea)}</h2><div class="muted small">${esc(r.grupo)} · ${esc(r.participante || '')} (${esc(r.rol || '—')}) · ${esc(r.area)} · ${MEM.fmtFecha(r.ts)} · padrino/madrina: ${esc(r.padrino || '—')} · consentimiento: ${r.consent ? '✅' : '—'}</div>
-  <div class="story" style="margin:.7rem 0">${esc(h.historia_usuario)}</div>
-  <div class="ch2" style="display:flex;gap:.4rem;flex-wrap:wrap"><span class="chip ok">⏱ ${h.horas_semana || 0} h/sem</span><span class="chip or">Prioridad ${esc(h.prioridad)}</span><span class="chip">Complejidad ${esc(h.complejidad)}</span><span class="chip">🤖 ${esc(h.tipo_ia)}</span></div>
-  <div class="two" style="margin-top:.8rem"><div><b>Problema</b><p class="small">${esc(h.problema || '')}</p><b>Impacto / valor</b><p class="small">${esc(h.impacto || '')} ${esc(h.valor_estimado || '')}</p><b>Primer paso</b><p class="small">${esc(h.primer_paso || '')} · ${esc(h.fecha_objetivo || '')}</p></div><div><b>Criterios de aceptación</b><ul class="small">${(h.criterios || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul><b>Riesgos</b><ul class="small">${(h.riesgos || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul><b>Dependencias</b><ul class="small">${(h.dependencias || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul></div></div>
-  <details><summary><b>Respuestas originales de la entrevista</b></summary>${(r.respuestas || []).map((a, i) => `<div class="qa"><b>${QS[i]}</b>${esc(a)}</div>`).join('') || '<p class="muted small">—</p>'}</details>
-  ${(r.aplausos || []).length ? `<p class="small">👏 ${(r.aplausos).map(a => esc(a.de + ': ' + a.frase)).join(' · ')}</p>` : ''}
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;align-items:center"><select class="sel" id="est">${ESTADOS.map(e => `<option ${e === (r.estado || 'nueva') ? 'selected' : ''}>${e}</option>`).join('')}</select><button class="btn sm tl" id="prop">📝 Borrador de propuesta (IA)</button><button class="btn sm gr" id="md">⬇️ .md</button><button class="btn sm gr" id="del">🗑 Eliminar</button><span class="sp"></span><button class="btn sm" onclick="AL.closeModal()">Cerrar</button></div><div id="pr" class="md" style="margin-top:.8rem"></div></div></div>`, '');
-  $('#est').onchange = e => { r.estado = e.target.value; MEM.save(r); draw(); };
-  $('#md').onclick = () => AL.download('idea-' + (h.nombre_idea || r.id).replace(/\s+/g, '-') + '.md', 'text/markdown', mdOf(r));
-  $('#del').onclick = () => { if (!confirm('¿Eliminar esta idea de este equipo? (En Sheets queda el registro)')) return; MEM.store(MEM.list().filter(x => x.id !== r.id)); AL.closeModal(); draw(); };
-  $('#prop').onclick = async () => { const o = $('#pr'); o.innerHTML = '<span class="spin"></span> Redactando…'; const t = await IA(`Eres consultor de Softgic. Con esta historia de usuario de Alico redacta un BORRADOR de propuesta de servicio en markdown: ## Contexto y necesidad, ## Objetivo, ## Alcance de la fase 1 (MVP), ## Entregables, ## Plan en 3 sprints de 10 días hábiles, ## Equipo, ## Supuestos y prerrequisitos de Alico, ## Riesgos y mitigación, ## Indicadores de éxito. Sin precios. Basado solo en lo dicho; marca como [por validar] lo que falte. Máx. 350 palabras.`, mdOf(r), 900, 'Requiere conectar la IA en Ajustes para generar la propuesta.'); o.innerHTML = md(t) + '<button class="btn sm gr" id="dp">⬇️ Descargar propuesta</button>'; $('#dp').onclick = () => AL.download('propuesta-' + (h.nombre_idea || r.id).replace(/\s+/g, '-') + '.md', 'text/markdown', t); };
+
+/* ---------- 2 · informe por caso y hoja de ruta ---------- */
+const OLAS = { 1: ['Ola 1', 'Meses 0–3 · arrancar ya', 'p1'], 2: ['Ola 2', 'Meses 3–6 · preparar y escalar', 'p2'], 3: ['Ola 3', 'Meses 6–12 · cuando haya base de datos', 'p3'] };
+function porQue(c, s) {
+  const r = [];
+  if (c.votos) r.push(`${c.votos} ${c.votos === 1 ? 'persona lo eligió' : 'personas lo eligieron'} como primero`);
+  if (c.afines) r.push(`${c.afines} más describen un problema que este caso resuelve`);
+  if (c.horas) r.push(`hay unas ${N(c.horas)} horas/semana en juego`);
+  r.push(c.cx === 1 ? 'es de baja complejidad y se puede probar rápido' : c.cx === 2 ? 'tiene complejidad media (requiere integración o equipos)' : 'es de alta complejidad: depende de datos integrados');
+  return r.join('; ') + '.';
 }
-async function IA(sys, user, max, fb) { if (!AL.hasIA()) return fb; try { return await AL.claude(AL.SYS + ' ' + sys, user, { max, tag: 'memorias-admin' }); } catch (e) { return fb + '\n(La IA no respondió: ' + e.message + ')'; } }
-const md = t => esc(t).replace(/^# (.+)$/gm, '<h2>$1</h2>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/^[-•] (.+)$/gm, '<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>').replace(/\n{2,}/g, '<br>');
-/* ---------- discovery ---------- */
-let lastDis = '';
-function disBasico(l) {
-  const A = cnt(l, r => r.area), T = cnt(l, r => (r.h || {}).tipo_ia), hs = l.reduce((s, r) => s + (+((r.h || {}).horas_semana) || 0), 0);
-  const top = l.slice().sort((a, b) => (+b.h.horas_semana || 0) - (+a.h.horas_semana || 0)).slice(0, 5);
-  return `## Resumen ejecutivo\nSe recogieron ${l.length} ideas de ${new Set(l.map(r => r.grupo)).size} grupos. Horas por semana potencialmente recuperables: ${hs}.\n\n## Temas dominantes\n- Áreas con más ideas: ${A.slice(0, 3).map(a => a[0] + ' (' + a[1] + ')').join(', ')}\n- Tipos de solución más pedidos: ${T.slice(0, 3).map(a => a[0] + ' (' + a[1] + ')').join(', ')}\n\n## Candidatas a empezar\n${top.map((r, i) => `- ${i + 1}. ${r.h.nombre_idea} (${r.grupo}) · ${r.h.horas_semana || 0} h/sem · complejidad ${r.h.complejidad}`).join('\n')}\n\n## Siguiente paso\nValidar las 3 primeras con sus equipos y priorizar un piloto de 30 días. (Informe básico: conecta la IA en Ajustes para el análisis completo.)`;
+function siguiente(c) {
+  const b = (c.barreras[0] || [])[0];
+  const extra = { capacitacion: 'Incluir una capacitación práctica de 2 horas por turno.', facil: 'Diseñar con los usuarios: pantallas simples, voz y pocos clics.', datos: 'Antes del piloto, ordenar y validar los datos de la fuente.', jefe: 'Nombrar un patrocinador del área que dé tiempo para aprender.', confianza: 'Comunicar que la IA asiste y no reemplaza; mostrar resultados del piloto.', equipos: 'Verificar conectividad y equipos en planta (tablet, cámara, wifi).' }[b];
+  return [c.ola === 1 ? 'Taller de descubrimiento de 2 horas con el área y definición de la línea base de los indicadores.' : c.ola === 2 ? 'Levantar requisitos y datos mientras corre la Ola 1.' : 'Preparar la integración de datos (Epicor y otras fuentes) como base.', extra].filter(Boolean);
 }
-function vDis() {
-  $('#body').innerHTML = `<div class="guide"><span class="gi">🧭</span><div><b>Discovery automático</b><span>La IA lee todas las ideas, las agrupa por temas y propone portafolio, olas de implementación y la propuesta para Softgic.</span></div></div><div class="card"><button class="btn lg" id="gd">🧭 Generar discovery de las ${data().length} ideas</button> <button class="btn gr" id="dd" ${lastDis ? '' : 'hidden'}>⬇️ Descargar informe</button><div id="dr" class="md" style="margin-top:1rem">${lastDis ? md(lastDis) : ''}</div></div>`;
-  $('#gd').onclick = async () => { const l = data(); if (!l.length) return AL.toast('Aún no hay ideas'); const o = $('#dr'); o.innerHTML = '<span class="spin"></span> Analizando todas las ideas…'; const flat = l.map(r => { const f = MEM.flat(r); delete f.id; return f; });
-    lastDis = await IA(`Eres el analista de discovery de Softgic. Recibes las iniciativas que equipos de Alico (empaques flexibles) postularon en un taller de IA. Entrega un informe en markdown con: ## Resumen ejecutivo, ## Temas y patrones (agrupa ideas afines y nombra el grupo), ## Portafolio priorizado (top 5 con razón: valor, esfuerzo, urgencia), ## Ganancias rápidas (30 días), ## Hoja de ruta en 3 olas (0-30, 30-90, 90+ días), ## Datos y sistemas necesarios, ## Riesgos transversales, ## Recomendación de propuesta para Softgic (alcance sugerido de fase 1), ## Preguntas abiertas para validar con Alico. Usa solo lo que dicen los datos y marca [por validar] lo supuesto. Máx. 600 palabras, viñetas, sin tablas.`, JSON.stringify(flat), 1800, disBasico(l));
-    o.innerHTML = md(lastDis); $('#dd').hidden = false; $('#dd').onclick = () => AL.download('discovery-memorias-alico.md', 'text/markdown', lastDis); };
+function ruta(l, s) {
+  const o = s.orden, ex = MEM.cfg.ejecutivo;
+  H('p-ruta').innerHTML = `
+  <div class="exec"><h3>Resumen ejecutivo para Alico y Softgic</h3><div id="exT">${ex && ex.n === l.length ? ex.html : ejecutivoBasico(s)}</div>
+  <div class="noprint" style="margin-top:.8rem;display:flex;gap:.5rem"><button class="b g" id="exIA">✨ Redactar con IA</button>${ex ? '<span class="muted" style="color:#c9bda8;font-size:.8rem;align-self:center">' + (ex.n === l.length ? 'Redactado con IA sobre ' + ex.n + ' respuestas' : 'Hay respuestas nuevas: vuelve a redactarlo') + '</span>' : ''}</div></div>
+  <div class="cd"><h3>Hoja de ruta sugerida</h3><p class="muted" style="margin:-.4rem 0 .4rem;font-size:.85rem">Puntaje = 50 % interés de los colaboradores (votos + problemas afines) · 30 % horas que se liberan · 20 % facilidad de implementar.</p>
+  <div class="road">${[1, 2, 3].map(k => `<div class="ola ${k === 1 ? 'o1' : ''}"><div class="h"><b>${OLAS[k][0]}</b><small>${OLAS[k][1]}</small></div>${o.filter(c => c.ola === k).map(c => `<div class="c"><span>${c.ic}</span>${esc(c.n)}<em>${c.score} pts</em></div>`).join('')}</div>`).join('')}</div></div>
+  <div style="margin-top:1rem">${o.map((c, i) => {
+    const ar = c.areas.slice(0, 4).map(([a, n]) => `<span>${esc(a)} · ${n}</span>`).join('') || '<span>—</span>';
+    const br = c.barreras.slice(0, 3).map(([k, n]) => `<span>${esc(MEM.lab(MEM.BARRERAS, k))} · ${n}</span>`).join('') || '<span>Sin datos aún</span>';
+    return `<article class="case"><div class="l"><div class="ic">${c.ic}</div><span class="pill ${OLAS[c.ola][2]}">#${i + 1} · ${OLAS[c.ola][0]}</span><h2>${esc(c.n)}</h2><p class="muted" style="font-size:.82rem">${esc(c.area)}</p>
+      <div class="score"><div class="ring" style="--p:${c.score}"><b>${c.score}</b></div><div style="font-size:.8rem" class="muted">puntaje<br>de prioridad</div></div>
+      <div class="sec">Por qué en esta ola</div><p style="font-size:.85rem">${porQue(c, s)}</p></div>
+      <div><div class="mini"><div><b>${c.votos}</b><small>lo eligieron primero</small></div><div><b>${c.afines}</b><small>con un problema afín</small></div><div><b>${N(c.horas)}</b><small>h/semana en juego</small></div><div><b>${c.listo ? c.listo.toFixed(1) + '/5' : '—'}</b><small>preparación de quienes lo piden</small></div></div>
+      <div class="sec">Cómo aporta valor a Alico</div><p>${esc(c.valor)}</p>
+      <div class="sec">Lo que dicen los colaboradores</div>${c.frases.length ? c.frases.map(f => `<div class="quote">“${esc(f)}”</div>`).join('') : '<p class="muted">Nadie lo eligió primero todavía.</p>'}
+      <div class="grid2" style="margin-top:.4rem;gap:.8rem"><div><div class="sec">Áreas interesadas</div><div class="tags">${ar}</div></div><div><div class="sec">Lo que necesitan para adoptarlo</div><div class="tags">${br}</div></div></div>
+      <div class="grid2" style="margin-top:.2rem;gap:.8rem"><div><div class="sec">Piloto propuesto</div><p>${esc(c.piloto)}</p><div class="sec">Indicadores para medirlo</div><div class="tags">${c.kpis.map(k => `<span>${esc(k)}</span>`).join('')}</div></div>
+      <div><div class="sec">Lo que se necesita de Alico</div><p>${esc(c.necesita)}</p><div class="sec">Siguiente paso</div>${siguiente(c).map(x => `<p>→ ${esc(x)}</p>`).join('')}</div></div></div></article>`; }).join('')}</div>`;
+  H('exIA').onclick = () => ejecutivoIA(l, s);
 }
-/* ---------- exportar ---------- */
-function vExp() {
-  const l = data();
-  $('#body').innerHTML = `<div class="two"><div class="card"><h3>⬇️ Descargas</h3><p class="muted small">Todo lo que captó el portal, listo para trabajar o subir a otra herramienta.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn" id="e1">CSV (Excel)</button><button class="btn tl" id="e2">JSON completo</button><button class="btn gr" id="e3">Todas las historias (.md)</button></div></div>
-  <div class="card"><h3>☁️ Google Sheets</h3><p class="muted small">Cada idea se guarda sola en la hoja <b>Ideas</b> al publicarse. La foto va a Drive (<i>Alico-Taller-IA/Modelos</i>). Estado actual: <b>${AL.hasCloud() ? 'nube configurada' : 'sin nube (solo este equipo)'}</b>; pendientes por enviar: <b>${AL.state.pending}</b>.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn tl" id="e4">Reenviar todo a Sheets</button><button class="btn gr" id="e5">Traer de Sheets</button></div></div></div>
-  <div class="card" style="margin-top:1rem"><h3>🧹 Datos</h3><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn gr" id="e6">Quitar ideas de EJEMPLO</button><button class="btn bad" id="e7">Borrar todo en este equipo</button></div><p class="muted small" style="margin-top:.5rem">Borrar no afecta lo ya guardado en Google Sheets.</p></div>`;
-  $('#e1').onclick = () => AL.download('memorias-alico.csv', 'text/csv', MEM.csv(l.map(MEM.flat)));
-  $('#e2').onclick = () => AL.download('memorias-alico.json', 'application/json', JSON.stringify(l.map(r => Object.assign({}, r, { foto: r.foto ? '[foto]' : null })), null, 1));
-  $('#e3').onclick = () => AL.download('historias-memorias-alico.md', 'text/markdown', l.map(mdOf).join('\n\n---\n\n'));
-  $('#e4').onclick = () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); MEM.reales().forEach(r => MEM.save(r)); AL.sync(); AL.toast('Enviando ' + MEM.reales().length + ' ideas'); };
-  $('#e5').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); AL.toast((await MEM.pull()) ? 'Ideas traídas' : 'Sin novedades'); draw(); };
-  $('#e6').onclick = () => { MEM.store(MEM.list().filter(r => !r.ejemplo)); showEj = false; AL.toast('Ejemplos quitados'); draw(); };
-  $('#e7').onclick = () => { if (prompt('Escribe BORRAR para confirmar') === 'BORRAR') { MEM.store([]); draw(); } };
+function ejecutivoBasico(s) {
+  const o = s.orden, d = s.dolores.filter(x => x[2]), b = s.barreras.filter(x => x[2]), a = s.ayudas.filter(x => x[2]);
+  if (!s.n) return '<p>Aún no hay respuestas.</p>';
+  return `<p><b>${pl(s.personas, 'colaborador', 'colaboradores')}</b> de ${pl(s.areas.length, 'área', 'áreas')}, en ${pl(s.grupos, 'grupo', 'grupos')}, contaron qué les quita tiempo y qué esperan de la IA. Entre todos estiman <b>${N(s.horas)} horas a la semana</b> que hoy se van en tareas que se pueden automatizar. Su preparación promedio es <b>${s.listo.toFixed(1)} de 5</b>.</p>
+  <ul><li><b>Por dónde empezar:</b> ${o.filter(c => c.ola === 1).map(c => c.ic + ' ' + esc(c.n)).join(' y ')}.</li>
+  ${d[0] ? `<li><b>El dolor más común:</b> ${esc(d[0][1]).toLowerCase()} (${pl(d[0][2], 'persona', 'personas')})${d[1] ? `, seguido de ${esc(d[1][1]).toLowerCase()} (${d[1][2]})` : ''}.</li>` : ''}
+  ${a[0] ? `<li><b>Lo que más le piden a la IA:</b> ${esc(a[0][1]).toLowerCase()}.</li>` : ''}
+  ${b[0] ? `<li><b>La condición para adoptarla:</b> ${esc(b[0][1]).toLowerCase()}${b[1] ? ' y ' + esc(b[1][1]).toLowerCase() : ''}.</li>` : ''}</ul>`;
 }
-ok ? start() : gate();
-window.__adm = { data };
+async function ejecutivoIA(l, s) {
+  if (!AL.hasIA()) return AL.toast('Pega la clave de IA en ⚙️ Ajustes');
+  H('exT').innerHTML = '<p>✨ Redactando…</p>';
+  const casos = s.orden.map(c => `${c.n}: ${c.votos} votos, ${c.afines} afines, ${c.horas} h/sem, preparación ${c.listo.toFixed(1)}, ola ${c.ola}, frases: ${c.frases.join(' | ')}`).join('\n');
+  const u = `Participantes: ${s.personas}; grupos ${s.grupos}; horas/semana liberables ${s.horas}; preparación ${s.listo.toFixed(1)}/5.\nDolores: ${s.dolores.filter(x => x[2]).map(x => x[1] + ' ' + x[2]).join(', ')}\nQué piden a la IA: ${s.ayudas.filter(x => x[2]).map(x => x[1] + ' ' + x[2]).join(', ')}\nQué necesitan: ${s.barreras.filter(x => x[2]).map(x => x[1] + ' ' + x[2]).join(', ')}\nCasos:\n${casos}`;
+  const sys = 'Eres consultor senior de Softgic. Redacta para la gerencia de Alico (empaques, Medellín) un resumen ejecutivo del taller GEN IA en español de Colombia, claro y sin tecnicismos. Devuelve HTML simple (solo <p>, <ul>, <li>, <b>): 1 párrafo de contexto con cifras, 4–5 viñetas de hallazgos, y 1 párrafo con la recomendación de por dónde empezar y por qué. Usa solo los datos dados; no inventes cifras.';
+  try { const html = (await AL.claude(sys, u, { max: 1200, tag: 'memorias-ejecutivo' })).replace(/```html|```/g, '').replace(/<(?!\/?(p|ul|li|b)\b)[^>]*>/gi, ''); MEM.cfg.ejecutivo = { n: l.length, html, ts: Date.now() }; MEM.saveCfg(); ruta(l, s); }
+  catch (e) { H('exT').innerHTML = ejecutivoBasico(s) + `<p style="color:#F2B33D">No pude usar la IA: ${esc(e.message)}</p>`; }
+}
+
+/* ---------- 3 · respuestas ---------- */
+let q = '', fc = '';
+function respuestas(l) {
+  H('p-resp').innerHTML = `<div class="srch"><input id="q" placeholder="Buscar por nombre, área, idea o palabra…" value="${esc(q)}"><select id="fc"><option value="">Todos los casos</option>${MEM.CASOS.map(c => `<option value="${c.id}" ${fc === c.id ? 'selected' : ''}>${c.ic} ${esc(c.n)}</option>`).join('')}</select></div><div id="tb"></div>`;
+  const pinta = () => {
+    const f = l.filter(r => (!fc || (r.a || {}).caso === fc) && (!q || AL.norm(JSON.stringify([r.participante, r.area, r.grupo, r.rol, r.t, r.h])).includes(AL.norm(q))));
+    H('tb').innerHTML = `<table><thead><tr><th></th><th>Persona</th><th>Idea</th><th>Tarea que le quita tiempo</th><th>Caso</th><th>h/sem equipo</th><th>Prep.</th><th>Fecha</th></tr></thead><tbody>${f.map(r => { const a = r.a || {}, c = MEM.caso(a.caso) || {};
+      return `<tr data-id="${r.id}"><td>${r.foto ? `<img src="${r.foto}" alt="">` : ''}</td><td><b>${esc(r.participante || '')}</b><br><span class="muted">${esc(r.rol || '')} · ${esc(r.area || '')}</span><br><span class="muted">${esc(r.grupo || '')}${r.ejemplo ? ' · EJEMPLO' : ''}</span></td><td>${esc((r.h || {}).nombre_idea || '')}</td><td>${esc(MEM.lab(MEM.DOLORES, a.dolor) || '')}<br><span class="muted">${esc(((r.t || [])[0] || '').slice(0, 90))}</span></td><td>${c.ic || ''} ${esc(c.n || '')}</td><td>${MEM.horasEquipo(r)}</td><td>${a.listo ? MEM.LISTO[a.listo - 1] : ''}</td><td class="muted">${new Date(r.ts).toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</td></tr>`; }).join('') || '<tr><td colspan="8" class="muted">Sin resultados</td></tr>'}</tbody></table>`;
+  };
+  pinta(); H('q').oninput = e => { q = e.target.value; pinta(); }; H('fc').onchange = e => { fc = e.target.value; pinta(); };
+  H('tb').onclick = e => { const tr = e.target.closest('tr[data-id]'); if (tr) ficha(tr.dataset.id); };
+}
+function ficha(id) {
+  const r = MEM.get(id); if (!r) return; const a = r.a || {}, h = r.h || {}, c = MEM.caso(a.caso) || {};
+  const rq = [MEM.lab(MEM.DOLORES, a.dolor), `${MEM.HORAS.find(x => x[1] === a.horas)?.[0] || ''} · ${MEM.PERSONAS.find(x => x[1] === a.personas)?.[0] || ''} → ${MEM.horasEquipo(r)} h/sem del equipo`, c.n, (a.ayuda || []).map(k => MEM.lab(MEM.AYUDAS, k)).join(', '), (a.barreras || []).map(k => MEM.lab(MEM.BARRERAS, k)).join(', ') + (a.listo ? ` · preparación ${a.listo}/5 ${MEM.LISTO[a.listo - 1]}` : '')];
+  AL.modal(`<div style="font-family:'Plus Jakarta Sans',sans-serif;max-width:52rem"><div style="display:grid;grid-template-columns:${r.foto ? '13rem ' : ''}1fr;gap:1rem">${r.foto ? `<img src="${r.foto}" style="width:100%;border-radius:16px">` : ''}<div><small style="color:#DA9100;font-weight:800">${esc(r.grupo)} · ${esc(r.area)}</small><h2 style="margin:.2rem 0">${esc(h.nombre_idea || '')}</h2><p class="muted">${esc(r.participante)} · ${esc(r.rol || '')} · ${new Date(r.ts).toLocaleString('es-CO')}</p><p>${esc(h.historia_usuario || '')}</p><p><b>Impacto:</b> ${esc(h.impacto || '')} · <b>Prioridad:</b> ${esc(h.prioridad || '')}<br><b>Primer paso:</b> ${esc(h.primer_paso || '')} · <b>Padrino:</b> ${esc(r.padrino || '')}</p></div></div>
+  <h3 style="margin:1rem 0 .4rem;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#6E6558">Transcripción de la conversación</h3>
+  ${MEM.Q.map((qq, i) => `<div style="border-top:1px solid #ECE3D4;padding:.55rem 0"><b style="font-size:.85rem">${i + 1}. ${esc(qq.q)}</b><div style="color:#DA9100;font-weight:700;font-size:.82rem;margin:.2rem 0">${esc(rq[i] || '')}</div><div style="font-size:.9rem">${esc((r.t || [])[i] || '—')}</div></div>`).join('')}
+  <div style="display:flex;justify-content:space-between;margin-top:1rem"><button class="b d" id="del">🗑️ Eliminar esta respuesta</button><button class="b k" onclick="AL.closeModal()">Cerrar</button></div></div>`);
+  H('del').onclick = () => { if (!confirm('¿Eliminar esta respuesta de este navegador? (En Google Sheets se conserva.)')) return; MEM.store(MEM.list().filter(x => x.id !== id)); AL.closeModal(); render(); };
+}
+
+/* ---------- 4 · guardar y exportar ---------- */
+function datosPg() {
+  const r = MEM.reales(), ej = MEM.list().length - r.length, pend = (AL.LS.get('al_outbox', []) || []).length;
+  H('p-dat').innerHTML = `<div class="banner">${AL.hasCloud() ? '☁️ <span>Nube conectada: cada respuesta se guarda automáticamente en la hoja <b>Respuestas</b> de Google Sheets y las fotos en Drive.' + (pend ? ` <b>${pend}</b> pendientes por enviar.` : '') + '</span>' : '⚠️ <span>Sin nube: las respuestas solo viven en este navegador. Conéctala en ⚙️ Ajustes o descarga el respaldo al terminar cada sesión.</span>'}</div>
+  <div class="dt">
+  <div class="cd"><h3>📊 Excel (CSV)</h3><p>Una fila por persona con las 5 respuestas, sus transcripciones, horas, idea y padrino. Se abre directo en Excel.</p><button class="b k" id="csv">Descargar CSV</button></div>
+  <div class="cd"><h3>💾 Respaldo completo</h3><p>Todo, incluidas las fotos, en un archivo. Sirve para no perder nada y para unir lo de varios computadores.</p><button class="b k" id="bk">Descargar respaldo</button> <label class="b">Importar…<input type="file" accept=".json" id="imp" hidden></label></div>
+  <div class="cd"><h3>🖨️ Informe en PDF</h3><p>Resumen, resumen ejecutivo, informe por caso y hoja de ruta, listo para enviar a Alico.</p><button class="b g" id="pdf">Imprimir / guardar PDF</button></div>
+  <div class="cd"><h3>☁️ Google Sheets</h3><p>Reenvía todas las respuestas reales a la nube (no duplica: la hoja actualiza por ID).</p><button class="b" id="up">Enviar ${r.length} respuestas</button></div>
+  <div class="cd"><h3>⟲ Contador del muro</h3><p>${MEM.cfg.desde ? 'Contando desde ' + new Date(MEM.cfg.desde).toLocaleString('es-CO') + '.' : 'Cuenta todas las respuestas.'} Reiniciarlo no borra nada del informe.</p><button class="b" id="rc">Reiniciar ahora</button> ${MEM.cfg.desde ? '<button class="b" id="rc0">Mostrar todo</button>' : ''}</div>
+  <div class="cd"><h3>🧹 Limpiar</h3><p>${ej} respuestas de ejemplo · ${r.length} reales.</p><button class="b" id="qe">Quitar ejemplos</button> <button class="b d" id="bo">Borrar todo de este equipo</button></div>
+  </div>
+  <div class="cd" style="margin-top:1rem"><h3>Nombre del evento (aparece en el informe)</h3><div class="srch" style="margin:0"><input id="ev" value="${esc(MEM.cfg.evento)}"><button class="b" id="evs">Guardar</button></div></div>`;
+  const f = () => new Date().toISOString().slice(0, 10);
+  H('csv').onclick = () => AL.download(`memorias-alico-${f()}.csv`, 'text/csv;charset=utf-8', MEM.csv(datos().map(MEM.flat)));
+  H('bk').onclick = () => AL.download(`respaldo-memorias-alico-${f()}.json`, 'application/json', MEM.respaldo());
+  H('imp').onchange = async e => { const fl = e.target.files[0]; if (!fl) return; try { const n = MEM.importar(await fl.text()); AL.toast(n + ' respuestas importadas'); render(); } catch (er) { AL.toast('Ese archivo no es un respaldo válido'); } };
+  H('pdf').onclick = () => H('prn').click();
+  H('up').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en ⚙️ Ajustes'); r.forEach(x => MEM.save(x)); await AL.sync(); AL.toast('Enviadas a Google Sheets'); render(); };
+  H('rc').onclick = () => { MEM.cfg.desde = Date.now(); MEM.saveCfg(); AL.toast('Contador del muro en cero'); render(); };
+  if (H('rc0')) H('rc0').onclick = () => { MEM.cfg.desde = 0; MEM.saveCfg(); render(); };
+  H('qe').onclick = () => { MEM.store(MEM.list().filter(x => !x.ejemplo).concat([])); if (!MEM.reales().length) AL.LS.set('mem_resp_v2', []); AL.toast('Ejemplos quitados'); render(); };
+  H('bo').onclick = () => { const p = prompt('Esto borra TODAS las respuestas de este navegador (Google Sheets las conserva). Descarga antes el respaldo.\n\nEscribe BORRAR para confirmar:'); if (p !== 'BORRAR') return; AL.LS.set('mem_resp_v2', []); AL.toast('Borrado'); render(); };
+  H('evs').onclick = () => { MEM.cfg.evento = H('ev').value.trim() || MEM.cfg.evento; MEM.saveCfg(); render(); AL.toast('Guardado'); };
+}
 })();
 </script>
 </body>

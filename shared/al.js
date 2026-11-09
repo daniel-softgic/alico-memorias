@@ -253,10 +253,36 @@ AL.bar = function (o) {
     <div class="sp"></div>
     <div class="alb-nav">${CASOS.map(x => `<a href="${base}${x.ruta}" title="${AL.esc(x.nombre)}" class="${x.id === c.id ? 'on' : ''}" style="--zc:${x.color}">${x.n}</a>`).join('')}</div>
     ${o.chips === false ? '' : '<span id="al-ia" class="alb-chip"></span><span id="al-cloud" class="alb-chip"></span>'}
-    ${o.help ? '<button id="al-help">❓ Cómo se usa</button>' : ''}<button id="al-set">⚙️ Ajustes</button>`;
+    ${o.narra ? '<button id="al-say" title="Escuchar de qué trata este caso">🔊 Escuchar</button>' : ''}${o.help ? '<button id="al-help">❓ Cómo se usa</button>' : ''}<button id="al-set">⚙️ Ajustes</button>`;
   document.body.prepend(el);
   $('#al-set').onclick = AL.settings;
+  if (o.narra) $('#al-say').onclick = () => { if (window.speechSynthesis && speechSynthesis.speaking) { AL.shutUp(); $('#al-say').textContent = '🔊 Escuchar'; return; } AL.narrar(o.narra); $('#al-say').textContent = '⏹ Detener'; const iv = setInterval(() => { if (!speechSynthesis.speaking) { clearInterval(iv); const b = $('#al-say'); b && (b.textContent = '🔊 Escuchar'); } }, 500); };
   if (o.help) { $('#al-help').onclick = () => AL.help(c.id, o.help, true); AL.help(c.id, o.help); }
   AL.paint(); AL.sync();
 };
+})();
+
+/* ---------- bus entre casos: lo que pasa en uno alimenta a los otros (mismo navegador + nube) ---------- */
+(function () {
+  const AL = window.AL, LS = AL.LS, KEY = k => 'al_hub_' + k, subs = {};
+  AL.hub = {
+    list: kind => LS.get(KEY(kind), []),
+    push(kind, obj, cap = 600) {
+      const it = Object.assign({ id: AL.uid(), ts: new Date().toISOString(), sesion: AL.cfg.sesion }, obj);
+      const l = LS.get(KEY(kind), []); l.unshift(it); try { LS.set(KEY(kind), l.slice(0, cap)); } catch (e) {}
+      (subs[kind] || []).forEach(f => { try { f(it); } catch (e) {} });
+      if (AL.hasCloud()) AL.queue(kind, Object.assign({}, it, { titulo: it.titulo || kind, foto: undefined }));
+      return it;
+    },
+    update(kind, id, patch) { const l = LS.get(KEY(kind), []), x = l.find(o => o.id === id); if (x) { Object.assign(x, patch); LS.set(KEY(kind), l); } return x; },
+    on(kind, fn) { (subs[kind] = subs[kind] || []).push(fn); },
+    clear: kind => LS.set(KEY(kind), [])
+  };
+  window.addEventListener('storage', e => {           // otra pestaña escribió (ej.: visión → torre abierta al lado)
+    if (!e.key || !e.key.startsWith('al_hub_')) return;
+    const kind = e.key.slice(7), l = LS.get(e.key, []);
+    (subs[kind] || []).forEach(f => { try { f(l[0], true); } catch (er) {} });
+  });
+  /* narración: cada caso tiene un botón 🔊 que cuenta qué es y cómo se usa */
+  AL.narrar = function (txt) { if (!('speechSynthesis' in window)) return AL.toast('Este navegador no habla. Usa Chrome o Edge.'); const was = AL.cfg.voz; AL.cfg.voz = true; AL.say(txt); AL.cfg.voz = was; };
 })();
