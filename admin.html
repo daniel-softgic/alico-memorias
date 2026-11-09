@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel de Memorias · Alico · Softgic</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/al.css">
+<style>
+header.ad{display:flex;gap:1rem;align-items:center;background:#14202e;color:#fff;padding:.9rem 1.6rem;flex-wrap:wrap}
+header.ad h1{font-size:1.25rem;font-weight:800}header.ad a{color:#E99B35;font-weight:700;text-decoration:none}
+.bd{background:#1d3550;border-radius:99px;padding:.25rem .8rem;font-size:.78rem}
+.cht{width:100%;max-width:900px;display:block}
+.mx{position:relative;height:20rem;border-left:3px solid #cdbfae;border-bottom:3px solid #cdbfae;margin:1rem 0 2rem 3rem;background:linear-gradient(0deg,#fffaf3,#fff)}
+.mx .q{position:absolute;font-size:.7rem;font-weight:700;color:#b9a98f;text-transform:uppercase;letter-spacing:.05em}
+.dot{position:absolute;transform:translate(-50%,50%);min-width:2.2rem;height:2.2rem;padding:0 .4rem;border-radius:99px;color:#fff;font-weight:800;display:grid;place-items:center;font-size:.85rem;cursor:pointer;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.dot:hover{z-index:5;transform:translate(-50%,50%) scale(1.2)}
+.md h2{font-size:1.2rem;font-weight:800;margin:1rem 0 .3rem;color:var(--or-d)}.md p,.md li{line-height:1.55}.md ul{padding-left:1.2rem}
+.story{background:#fff8f0;border-left:6px solid var(--or);border-radius:0 14px 14px 0;padding:.9rem 1.1rem;font-size:1.05rem}
+.qa{border-left:4px solid var(--line);padding:.2rem .8rem;margin:.5rem 0}.qa b{display:block;font-size:.82rem;color:var(--gr)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}@media(max-width:1000px){.cols3{grid-template-columns:1fr}}
+.sel{padding:.3rem .6rem;border-radius:10px;border:2px solid var(--line);font-weight:600}
+</style>
+</head>
+<body>
+<script src="shared/al.js"></script>
+<script src="shared/mem.js"></script>
+<header class="ad"><h1>🗂️ Panel de Memorias · Alico</h1><span class="bd" id="ia"></span><span class="bd" id="cl"></span><div class="sp"></div><a href="index.html">← Muro</a><button class="btn sm" id="set">⚙️ Ajustes</button><button class="btn tl sm" id="sync">🔄 Sincronizar con Sheets</button></header>
+<main class="wrap" id="app"></main>
+<script>
+(() => {
+'use strict';
+const $ = AL.$, esc = AL.esc, $$ = s => [...document.querySelectorAll(s)];
+const ok = sessionStorage.getItem('mem_admin') === '1';
+function gate() {
+  document.getElementById('app').innerHTML = `<div class="card" style="max-width:26rem;margin:4rem auto;text-align:center"><h2>🔒 Panel administrativo</h2><p class="muted" style="margin:.5rem 0 1rem">Ingresa el PIN del taller (el mismo de Ajustes).</p><input class="inp" id="pin" type="password" inputmode="numeric" style="text-align:center;font-size:1.4rem"><br><br><button class="btn lg" id="en">Entrar</button></div>`;
+  const go = () => { if ($('#pin').value === AL.cfg.pin) { sessionStorage.setItem('mem_admin', '1'); start(); } else AL.toast('PIN incorrecto'); };
+  $('#en').onclick = go; $('#pin').onkeydown = e => e.key === 'Enter' && go(); $('#pin').focus();
+}
+const bars = (rows, color) => { const mx = Math.max(...rows.map(r => r[1]), 1); return rows.map(([k, v]) => `<div class="bar"><span class="lb" style="width:14rem" title="${esc(k)}">${esc(k)}</span><span class="tr"><i class="fl" style="width:${v / mx * 100}%;--c:${color || 'var(--or)'}"></i></span><span class="vl">${AL.fmt(v)}</span></div>`).join('') || '<p class="muted">Sin datos todavía.</p>'; };
+const cnt = (l, f) => { const o = {}; l.forEach(r => { const k = f(r) || '—'; o[k] = (o[k] || 0) + 1; }); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
+const data = () => MEM.list().filter(r => !r.ejemplo || showEj);
+let showEj = true, tab = 'res', fq = '';
+function start() {
+  const hasReal = MEM.reales().length > 0; showEj = !hasReal || showEj && !hasReal;
+  $('#ia').textContent = AL.hasIA() ? '🤖 IA conectada' : '🤖 IA: modo básico'; $('#cl').textContent = AL.hasCloud() ? '☁️ Nube configurada' : '☁️ Solo este equipo';
+  document.getElementById('app').innerHTML = `<div class="tabs" id="tabs"><button class="tab on" data-t="res">📊 Resumen</button><button class="tab" data-t="ide">💡 Ideas</button><button class="tab" data-t="dis">🧭 Discovery automático</button><button class="tab" data-t="exp">⬇️ Exportar y datos</button></div><div id="body"></div>`;
+  $('#tabs').onclick = e => { const b = e.target.closest('[data-t]'); if (b) { tab = b.dataset.t; $$('#tabs .tab').forEach(x => x.classList.toggle('on', x === b)); draw(); } };
+  MEM.pull().then(c => c && draw()); draw();
+}
+function draw() { ({ res: vRes, ide: vIde, dis: vDis, exp: vExp })[tab](); }
+$('#set').onclick = AL.settings;
+$('#sync').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); AL.toast('Sincronizando…'); const c = await MEM.pull(); MEM.reales().forEach(r => MEM.save(r)); AL.sync(); AL.toast(c ? 'Traídas ideas nuevas de Sheets' : 'Todo al día'); draw(); };
+
+/* ---------- resumen ---------- */
+function vRes() {
+  const l = data(), g = new Set(l.map(r => r.grupo)).size, p = new Set(l.map(r => r.participante).filter(Boolean)).size, hs = l.reduce((s, r) => s + (+((r.h || {}).horas_semana) || 0), 0), alta = l.filter(r => (r.h || {}).prioridad === 'Alta').length, con = l.filter(r => r.consent && r.consent !== '').length;
+  const CM = { Baja: 1, Media: 2, Alta: 3 }, maxH = Math.max(...l.map(r => +((r.h || {}).horas_semana) || 0), 1);
+  const dots = l.map((r, i) => { const h = r.h || {}, x = (CM[h.complejidad] || 2) / 3 * 100 - 16, y = ((+h.horas_semana || 0) / maxH) * 84 + 6, jx = (i % 3) * 3; return `<div class="dot" data-id="${r.id}" style="left:${x + jx}%;bottom:${y}%;background:${h.prioridad === 'Alta' ? '#EE7623' : h.prioridad === 'Baja' ? '#9aa1a8' : '#00BED6'}" title="${esc(h.nombre_idea)} · ${h.horas_semana || 0} h/sem">${i + 1}</div>`; }).join('');
+  const qw = l.filter(r => ((r.h || {}).prioridad === 'Alta' || (+r.h.horas_semana || 0) > 0) && ['Baja', 'Media'].includes((r.h || {}).complejidad)).sort((a, b) => (+b.h.horas_semana || 0) - (+a.h.horas_semana || 0)).slice(0, 4);
+  $('#body').innerHTML = `${MEM.reales().length ? '' : '<div class="alert info"><span class="big">ℹ️</span><div>Estás viendo <b>datos de ejemplo</b>. Desaparecen cuando se publica la primera idea real (o en «Exportar y datos»).</div></div>'}
+  <div class="kpis"><div class="kpi"><small>Ideas</small><b>${l.length}</b></div><div class="kpi"><small>Grupos</small><b>${g}</b></div><div class="kpi"><small>Personas</small><b>${p}</b></div><div class="kpi"><small>Horas/semana por recuperar</small><b>${hs}</b><em>≈ ${AL.fmt(hs * 46)} h/año</em></div><div class="kpi"><small>Prioridad alta</small><b>${alta}</b></div><div class="kpi"><small>Con consentimiento</small><b>${con}</b><em>de ${l.length}</em></div></div>
+  <div class="cols3"><div class="card"><h3>🏭 Por área</h3>${bars(cnt(l, r => r.area), 'var(--or)')}</div><div class="card"><h3>🤖 Tipo de solución</h3>${bars(cnt(l, r => (r.h || {}).tipo_ia), 'var(--tl2)')}</div><div class="card"><h3>🎯 Prioridad</h3>${bars(cnt(l, r => (r.h || {}).prioridad), 'var(--or2)')}<h3 style="margin-top:1rem">👥 Ideas por grupo</h3>${bars(cnt(l, r => r.grupo).slice(0, 6), 'var(--gr)')}</div></div>
+  <div class="two" style="margin-top:1rem"><div class="card"><h3>🧭 Matriz valor vs. esfuerzo</h3><p class="muted small">Cada punto es una idea (número = fila en «Ideas»). Arriba y a la izquierda: ganancias rápidas.</p><div class="mx"><span class="q" style="left:.5rem;top:.3rem">Ganancias rápidas</span><span class="q" style="right:.5rem;top:.3rem">Apuestas grandes</span><span class="q" style="left:.5rem;bottom:.3rem">Rellenos</span><span class="q" style="right:.5rem;bottom:.3rem">Evitar</span>${dots}<span class="q" style="left:0;bottom:-1.5rem">Baja complejidad</span><span class="q" style="right:0;bottom:-1.5rem">Alta complejidad</span><span class="q" style="left:-3rem;top:42%;transform:rotate(-90deg);transform-origin:left">Horas ahorradas ↑</span></div></div>
+  <div class="card"><h3>⚡ Ganancias rápidas sugeridas</h3>${qw.map(r => `<div class="box" style="border:2px solid var(--line);border-radius:14px;padding:.7rem .9rem;margin:.5rem 0;cursor:pointer" data-id="${r.id}"><b>${esc(r.h.nombre_idea)}</b> <span class="chip or">${esc(r.grupo)}</span><br><span class="small muted">${esc(r.h.historia_usuario)}</span><br><span class="chip ok">⏱ ${r.h.horas_semana || 0} h/sem</span> <span class="chip">${esc(r.h.complejidad)}</span></div>`).join('') || '<p class="muted">Aún no hay candidatas.</p>'}</div></div>`;
+  $$('[data-id]').forEach(b => b.onclick = () => detalle(b.dataset.id));
+}
+/* ---------- ideas ---------- */
+const ESTADOS = ['nueva', 'en análisis', 'propuesta', 'en ejecución', 'descartada'];
+function vIde() {
+  const l = data().filter(r => !fq || JSON.stringify([r.grupo, r.participante, r.area, r.h]).toLowerCase().includes(fq.toLowerCase()));
+  $('#body').innerHTML = `<div class="card"><div style="display:flex;gap:.6rem;margin-bottom:.7rem"><input class="inp" id="fq" placeholder="Buscar por grupo, persona, área, palabra…" value="${esc(fq)}"></div><div style="overflow:auto"><table class="tb"><tr><th>#</th><th>Foto</th><th>Grupo · persona</th><th>Idea y historia de usuario</th><th>Área · solución</th><th>H/sem</th><th>Prioridad</th><th>Estado</th></tr>${l.map((r, i) => { const h = r.h || {}; return `<tr style="cursor:pointer" data-id="${r.id}"><td>${i + 1}</td><td>${r.foto ? `<img src="${r.foto}" style="width:3.6rem;height:2.7rem;object-fit:cover;border-radius:8px">` : '—'}</td><td><b>${esc(r.grupo)}</b><br><span class="small muted">${esc(r.participante || '')} · ${esc(r.rol || '')}</span></td><td><b>${esc(h.nombre_idea)}</b> ${r.ejemplo ? '<span class="sample">EJEMPLO</span>' : ''}<br><span class="small">${esc(h.historia_usuario)}</span></td><td>${esc(r.area || '')}<br><span class="small muted">${esc(h.tipo_ia || '')}</span></td><td><b>${h.horas_semana || 0}</b></td><td><span class="chip ${h.prioridad === 'Alta' ? 'or' : ''}">${esc(h.prioridad || '')}</span><br><span class="small muted">${esc(h.complejidad || '')}</span></td><td>${esc(r.estado || 'nueva')}</td></tr>`; }).join('') || '<tr><td colspan="8" class="muted">Sin resultados.</td></tr>'}</table></div></div>`;
+  $('#fq').oninput = e => { fq = e.target.value; clearTimeout(vIde.t); vIde.t = setTimeout(() => { vIde(); const f = $('#fq'); f.focus(); f.setSelectionRange(fq.length, fq.length); }, 250); };
+  $$('tr[data-id]').forEach(t => t.onclick = () => detalle(t.dataset.id));
+}
+function mdOf(r) { const h = r.h || {}; return `# ${h.nombre_idea}\n\n**Grupo:** ${r.grupo} · **Persona:** ${r.participante} (${r.rol || '—'}) · **Área:** ${r.area}\n**Fecha:** ${MEM.fmtFecha(r.ts)} · **Padrino/madrina:** ${r.padrino || '—'}\n\n## Historia de usuario\n${h.historia_usuario}\n\n## Problema\n${h.problema || ''}\n\n## Afectados\n${h.afectados || ''}\n\n## Impacto y valor\n${h.impacto || ''}\n${h.valor_estimado || ''}\nHoras por semana estimadas: ${h.horas_semana || 0}\n\n## Criterios de aceptación\n${(h.criterios || []).map(c => '- ' + c).join('\n')}\n\n## Riesgos\n${(h.riesgos || []).map(c => '- ' + c).join('\n')}\n\n## Dependencias\n${(h.dependencias || []).map(c => '- ' + c).join('\n')}\n\n## Primer paso\n${h.primer_paso || ''} (${h.fecha_objetivo || ''})\n\n## Clasificación\nPrioridad: ${h.prioridad} (${h.prioridad_razon || ''}) · Complejidad: ${h.complejidad} · Solución: ${h.tipo_ia}\n\n## Respuestas originales\n${(r.respuestas || []).map((a, i) => `${i + 1}. ${a}`).join('\n')}\n`; }
+async function detalle(id) {
+  const r = MEM.get(id); if (!r) return; const h = r.h || {}; if (!r.foto) MEM.fetchFoto(r).then(f => { if (f) { const im = $('#dfoto'); if (im) im.src = f; } });
+  const QS = ['¿Qué problema le quita el sueño?', '¿Quién lo vive y con qué frecuencia?', '¿Cómo cambiaría su día?', '¿Con qué datos/personas contamos?', 'Primer paso y fecha'];
+  AL.modal(`<div style="display:grid;grid-template-columns:15rem 1fr;gap:1.4rem"><div>${MEM.funda(r, 230)}<img id="dfoto" src="${r.foto || ''}" style="width:100%;border-radius:12px;margin-top:.6rem;${r.foto ? '' : 'display:none'}">${r.firma ? `<div class="small muted" style="margin-top:.5rem">Firma del equipo</div><img src="${r.firma}" style="width:100%;background:#fffdf7;border-radius:8px">` : ''}</div>
+  <div><h2 style="margin:0">${esc(h.nombre_idea)}</h2><div class="muted small">${esc(r.grupo)} · ${esc(r.participante || '')} (${esc(r.rol || '—')}) · ${esc(r.area)} · ${MEM.fmtFecha(r.ts)} · padrino/madrina: ${esc(r.padrino || '—')} · consentimiento: ${r.consent ? '✅' : '—'}</div>
+  <div class="story" style="margin:.7rem 0">${esc(h.historia_usuario)}</div>
+  <div class="ch2" style="display:flex;gap:.4rem;flex-wrap:wrap"><span class="chip ok">⏱ ${h.horas_semana || 0} h/sem</span><span class="chip or">Prioridad ${esc(h.prioridad)}</span><span class="chip">Complejidad ${esc(h.complejidad)}</span><span class="chip">🤖 ${esc(h.tipo_ia)}</span></div>
+  <div class="two" style="margin-top:.8rem"><div><b>Problema</b><p class="small">${esc(h.problema || '')}</p><b>Impacto / valor</b><p class="small">${esc(h.impacto || '')} ${esc(h.valor_estimado || '')}</p><b>Primer paso</b><p class="small">${esc(h.primer_paso || '')} · ${esc(h.fecha_objetivo || '')}</p></div><div><b>Criterios de aceptación</b><ul class="small">${(h.criterios || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul><b>Riesgos</b><ul class="small">${(h.riesgos || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul><b>Dependencias</b><ul class="small">${(h.dependencias || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul></div></div>
+  <details><summary><b>Respuestas originales de la entrevista</b></summary>${(r.respuestas || []).map((a, i) => `<div class="qa"><b>${QS[i]}</b>${esc(a)}</div>`).join('') || '<p class="muted small">—</p>'}</details>
+  ${(r.aplausos || []).length ? `<p class="small">👏 ${(r.aplausos).map(a => esc(a.de + ': ' + a.frase)).join(' · ')}</p>` : ''}
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;align-items:center"><select class="sel" id="est">${ESTADOS.map(e => `<option ${e === (r.estado || 'nueva') ? 'selected' : ''}>${e}</option>`).join('')}</select><button class="btn sm tl" id="prop">📝 Borrador de propuesta (IA)</button><button class="btn sm gr" id="md">⬇️ .md</button><button class="btn sm gr" id="del">🗑 Eliminar</button><span class="sp"></span><button class="btn sm" onclick="AL.closeModal()">Cerrar</button></div><div id="pr" class="md" style="margin-top:.8rem"></div></div></div>`, '');
+  $('#est').onchange = e => { r.estado = e.target.value; MEM.save(r); draw(); };
+  $('#md').onclick = () => AL.download('idea-' + (h.nombre_idea || r.id).replace(/\s+/g, '-') + '.md', 'text/markdown', mdOf(r));
+  $('#del').onclick = () => { if (!confirm('¿Eliminar esta idea de este equipo? (En Sheets queda el registro)')) return; MEM.store(MEM.list().filter(x => x.id !== r.id)); AL.closeModal(); draw(); };
+  $('#prop').onclick = async () => { const o = $('#pr'); o.innerHTML = '<span class="spin"></span> Redactando…'; const t = await IA(`Eres consultor de Softgic. Con esta historia de usuario de Alico redacta un BORRADOR de propuesta de servicio en markdown: ## Contexto y necesidad, ## Objetivo, ## Alcance de la fase 1 (MVP), ## Entregables, ## Plan en 3 sprints de 10 días hábiles, ## Equipo, ## Supuestos y prerrequisitos de Alico, ## Riesgos y mitigación, ## Indicadores de éxito. Sin precios. Basado solo en lo dicho; marca como [por validar] lo que falte. Máx. 350 palabras.`, mdOf(r), 900, 'Requiere conectar la IA en Ajustes para generar la propuesta.'); o.innerHTML = md(t) + '<button class="btn sm gr" id="dp">⬇️ Descargar propuesta</button>'; $('#dp').onclick = () => AL.download('propuesta-' + (h.nombre_idea || r.id).replace(/\s+/g, '-') + '.md', 'text/markdown', t); };
+}
+async function IA(sys, user, max, fb) { if (!AL.hasIA()) return fb; try { return await AL.claude(AL.SYS + ' ' + sys, user, { max, tag: 'memorias-admin' }); } catch (e) { return fb + '\n(La IA no respondió: ' + e.message + ')'; } }
+const md = t => esc(t).replace(/^# (.+)$/gm, '<h2>$1</h2>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/^[-•] (.+)$/gm, '<li>$1</li>').replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>').replace(/\n{2,}/g, '<br>');
+/* ---------- discovery ---------- */
+let lastDis = '';
+function disBasico(l) {
+  const A = cnt(l, r => r.area), T = cnt(l, r => (r.h || {}).tipo_ia), hs = l.reduce((s, r) => s + (+((r.h || {}).horas_semana) || 0), 0);
+  const top = l.slice().sort((a, b) => (+b.h.horas_semana || 0) - (+a.h.horas_semana || 0)).slice(0, 5);
+  return `## Resumen ejecutivo\nSe recogieron ${l.length} ideas de ${new Set(l.map(r => r.grupo)).size} grupos. Horas por semana potencialmente recuperables: ${hs}.\n\n## Temas dominantes\n- Áreas con más ideas: ${A.slice(0, 3).map(a => a[0] + ' (' + a[1] + ')').join(', ')}\n- Tipos de solución más pedidos: ${T.slice(0, 3).map(a => a[0] + ' (' + a[1] + ')').join(', ')}\n\n## Candidatas a empezar\n${top.map((r, i) => `- ${i + 1}. ${r.h.nombre_idea} (${r.grupo}) · ${r.h.horas_semana || 0} h/sem · complejidad ${r.h.complejidad}`).join('\n')}\n\n## Siguiente paso\nValidar las 3 primeras con sus equipos y priorizar un piloto de 30 días. (Informe básico: conecta la IA en Ajustes para el análisis completo.)`;
+}
+function vDis() {
+  $('#body').innerHTML = `<div class="guide"><span class="gi">🧭</span><div><b>Discovery automático</b><span>La IA lee todas las ideas, las agrupa por temas y propone portafolio, olas de implementación y la propuesta para Softgic.</span></div></div><div class="card"><button class="btn lg" id="gd">🧭 Generar discovery de las ${data().length} ideas</button> <button class="btn gr" id="dd" ${lastDis ? '' : 'hidden'}>⬇️ Descargar informe</button><div id="dr" class="md" style="margin-top:1rem">${lastDis ? md(lastDis) : ''}</div></div>`;
+  $('#gd').onclick = async () => { const l = data(); if (!l.length) return AL.toast('Aún no hay ideas'); const o = $('#dr'); o.innerHTML = '<span class="spin"></span> Analizando todas las ideas…'; const flat = l.map(r => { const f = MEM.flat(r); delete f.id; return f; });
+    lastDis = await IA(`Eres el analista de discovery de Softgic. Recibes las iniciativas que equipos de Alico (empaques flexibles) postularon en un taller de IA. Entrega un informe en markdown con: ## Resumen ejecutivo, ## Temas y patrones (agrupa ideas afines y nombra el grupo), ## Portafolio priorizado (top 5 con razón: valor, esfuerzo, urgencia), ## Ganancias rápidas (30 días), ## Hoja de ruta en 3 olas (0-30, 30-90, 90+ días), ## Datos y sistemas necesarios, ## Riesgos transversales, ## Recomendación de propuesta para Softgic (alcance sugerido de fase 1), ## Preguntas abiertas para validar con Alico. Usa solo lo que dicen los datos y marca [por validar] lo supuesto. Máx. 600 palabras, viñetas, sin tablas.`, JSON.stringify(flat), 1800, disBasico(l));
+    o.innerHTML = md(lastDis); $('#dd').hidden = false; $('#dd').onclick = () => AL.download('discovery-memorias-alico.md', 'text/markdown', lastDis); };
+}
+/* ---------- exportar ---------- */
+function vExp() {
+  const l = data();
+  $('#body').innerHTML = `<div class="two"><div class="card"><h3>⬇️ Descargas</h3><p class="muted small">Todo lo que captó el portal, listo para trabajar o subir a otra herramienta.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn" id="e1">CSV (Excel)</button><button class="btn tl" id="e2">JSON completo</button><button class="btn gr" id="e3">Todas las historias (.md)</button></div></div>
+  <div class="card"><h3>☁️ Google Sheets</h3><p class="muted small">Cada idea se guarda sola en la hoja <b>Ideas</b> al publicarse. La foto va a Drive (<i>Alico-Taller-IA/Modelos</i>). Estado actual: <b>${AL.hasCloud() ? 'nube configurada' : 'sin nube (solo este equipo)'}</b>; pendientes por enviar: <b>${AL.state.pending}</b>.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn tl" id="e4">Reenviar todo a Sheets</button><button class="btn gr" id="e5">Traer de Sheets</button></div></div></div>
+  <div class="card" style="margin-top:1rem"><h3>🧹 Datos</h3><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn gr" id="e6">Quitar ideas de EJEMPLO</button><button class="btn bad" id="e7">Borrar todo en este equipo</button></div><p class="muted small" style="margin-top:.5rem">Borrar no afecta lo ya guardado en Google Sheets.</p></div>`;
+  $('#e1').onclick = () => AL.download('memorias-alico.csv', 'text/csv', MEM.csv(l.map(MEM.flat)));
+  $('#e2').onclick = () => AL.download('memorias-alico.json', 'application/json', JSON.stringify(l.map(r => Object.assign({}, r, { foto: r.foto ? '[foto]' : null })), null, 1));
+  $('#e3').onclick = () => AL.download('historias-memorias-alico.md', 'text/markdown', l.map(mdOf).join('\n\n---\n\n'));
+  $('#e4').onclick = () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); MEM.reales().forEach(r => MEM.save(r)); AL.sync(); AL.toast('Enviando ' + MEM.reales().length + ' ideas'); };
+  $('#e5').onclick = async () => { if (!AL.hasCloud()) return AL.toast('Configura la nube en Ajustes'); AL.toast((await MEM.pull()) ? 'Ideas traídas' : 'Sin novedades'); draw(); };
+  $('#e6').onclick = () => { MEM.store(MEM.list().filter(r => !r.ejemplo)); showEj = false; AL.toast('Ejemplos quitados'); draw(); };
+  $('#e7').onclick = () => { if (prompt('Escribe BORRAR para confirmar') === 'BORRAR') { MEM.store([]); draw(); } };
+}
+ok ? start() : gate();
+window.__adm = { data };
+})();
+</script>
+</body>
+</html>

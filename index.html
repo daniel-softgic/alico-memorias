@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cápsula de Memorias · Alico</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/al.css">
+<style>
+:root{--navy:#0b1623;--navy2:#13243a;--glow:#4be3ff}
+html{font-size:clamp(14px,1.05vw,24px)}
+body{background:radial-gradient(1400px 800px at 78% -10%,#1b3a5c 0%,transparent 60%),radial-gradient(900px 600px at 5% 100%,#3a1f0c 0%,transparent 55%),var(--navy);color:#fff;overflow:hidden;height:100vh}
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.5;animation:tw 4s ease-in-out infinite}
+@keyframes tw{50%{opacity:.05;transform:scale(.6)}}
+.bub{position:absolute;bottom:-6rem;max-width:20rem;padding:.7rem 1.1rem;border-radius:99px;font-weight:600;font-size:1rem;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.28);backdrop-filter:blur(2px);animation:rise linear forwards;white-space:normal;text-align:center}
+.bub.o{background:rgba(238,118,35,.22);border-color:#EE7623}.bub.c{background:rgba(0,190,214,.2);border-color:#00BED6}
+@keyframes rise{0%{transform:translateY(0) scale(.8);opacity:0}10%{opacity:1;transform:translateY(-8vh) scale(1)}85%{opacity:1}100%{transform:translateY(-112vh) scale(1.05);opacity:0}}
+.app{position:relative;z-index:2;height:100vh;display:grid;grid-template-rows:auto 1fr auto auto}
+header.top{display:flex;align-items:center;gap:1.4rem;padding:1rem 2rem .4rem}
+h1.t{font-size:2.6rem;line-height:1.02;font-weight:800;margin:0}
+h1.t span{background:linear-gradient(90deg,#EE7623,#E99B35);-webkit-background-clip:text;color:transparent}
+.sub{color:#cfe0ee;font-size:1.05rem;margin-top:.3rem}
+.cnts{display:flex;gap:.8rem;margin-left:auto}
+.cn{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);border-radius:18px;padding:.5rem 1rem;text-align:center;min-width:6.5rem}
+.cn b{display:block;font-size:2rem;font-weight:800;color:#E99B35;line-height:1.1}.cn small{font-size:.72rem;color:#cfe0ee}
+.memowrap{display:flex;align-items:center;gap:.3rem}
+.say{background:#fff;color:#14202e;border-radius:18px 18px 18px 4px;padding:.6rem 1rem;font-weight:700;font-size:.95rem;max-width:15rem;position:relative}
+.memo{animation:float 3s ease-in-out infinite}.memo.talk{animation:float 1.2s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}@keyframes mth{to{d:path("M84 98 q16 4 32 0")}}
+.wallbox{padding:.4rem 2rem;min-height:0;display:flex;align-items:center}
+.wall{width:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:1.1rem;max-height:100%}
+.gc{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:22px;overflow:hidden;position:relative;cursor:pointer;animation:pop .7s cubic-bezier(.2,1.4,.4,1);transition:transform .25s,border-color .25s;display:flex;flex-direction:column;min-height:0}
+.gc:hover{transform:translateY(-6px) rotate(-.6deg);border-color:#EE7623}
+.gc .ph{position:relative;flex:1;min-height:0;background:#1d3550}.gc .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.gc .st{position:absolute;top:.5rem;right:.5rem;font-size:1.6rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:spin 6s linear infinite}
+@keyframes spin{50%{transform:scale(1.2) rotate(18deg)}}
+.gc .in{padding:.6rem .9rem .8rem;background:linear-gradient(0deg,rgba(11,22,35,.95),rgba(11,22,35,.75))}
+.gc h3{font-size:1.15rem;font-weight:800;margin:0;color:#E99B35}.gc p{margin:.1rem 0 .3rem;font-weight:700;font-size:1.02rem}.gc .tg{display:flex;gap:.35rem;flex-wrap:wrap}.gc .tg span{background:rgba(255,255,255,.14);border-radius:99px;padding:.1rem .6rem;font-size:.72rem;font-weight:600}
+.gc .ej{position:absolute;left:.5rem;top:.5rem;background:#fff3da;color:#8a6200;font-size:.6rem;font-weight:800;border-radius:99px;padding:.1rem .5rem}
+@keyframes pop{0%{transform:scale(.3) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+.empty{margin:auto;text-align:center;color:#cfe0ee;font-size:1.4rem}
+.ticker{overflow:hidden;white-space:nowrap;border-top:1.5px solid rgba(255,255,255,.15);background:rgba(0,0,0,.28);padding:.5rem 0;font-weight:700}
+.ticker.b{background:linear-gradient(90deg,rgba(238,118,35,.35),rgba(0,190,214,.25))}
+.tk{display:inline-block;animation:mq 70s linear infinite;padding-left:100%}.ticker.b .tk{animation-duration:55s;animation-direction:reverse}
+@keyframes mq{to{transform:translateX(-100%)}}
+.tk span{margin:0 2.2rem;font-size:1.1rem}.tk b{color:#E99B35}
+.fab{position:fixed;right:2rem;bottom:7.2rem;z-index:20;font-size:1.4rem;padding:1.1rem 2rem;border-radius:99px;box-shadow:0 0 0 0 rgba(238,118,35,.6),0 8px 30px rgba(0,0,0,.4);animation:pulse 2.2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 22px rgba(238,118,35,0),0 8px 30px rgba(0,0,0,.4)}}
+.adm{position:fixed;left:1rem;bottom:3.6rem;z-index:20;color:#7e93a8;font-size:.75rem;text-decoration:none}
+/* flujo */
+#flow{position:fixed;inset:0;z-index:50;background:radial-gradient(1200px 700px at 80% 0,#1b3a5c,transparent 60%),var(--navy);display:none;grid-template-rows:auto 1fr;padding:1.4rem 2.4rem}
+#flow.on{display:grid}
+.steps{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem}.steps i{flex:1;height:.5rem;border-radius:9px;background:rgba(255,255,255,.15)}.steps i.on{background:#EE7623}.steps i.now{background:#00BED6;box-shadow:0 0 12px #00BED6}
+.fx{display:grid;grid-template-columns:minmax(18rem,.8fr) minmax(0,1.5fr);gap:2rem;align-items:center;min-height:0}
+.left{text-align:center}.left .bubble{background:#fff;color:#14202e;border-radius:26px;padding:1.2rem 1.6rem;font-size:1.5rem;font-weight:700;line-height:1.35;margin-bottom:1rem;position:relative}
+.left .bubble:after{content:"";position:absolute;left:50%;bottom:-14px;border:14px solid transparent;border-top-color:#fff;border-bottom:0;transform:translateX(-50%)}
+.panel{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.18);border-radius:28px;padding:1.6rem 2rem;max-height:calc(100vh - 7rem);overflow:auto}
+.panel h2{font-size:1.7rem;font-weight:800;margin:0 0 .3rem}
+.panel .field label{color:#cfe0ee}.panel input,.panel select,.panel textarea{background:#fff;color:#14202e}
+.tx{width:100%;min-height:9rem;font-size:1.25rem;border-radius:18px;border:3px solid #4be3ff55;padding:1rem 1.2rem;line-height:1.45}
+.tx.live{border-color:#ff5a5a}
+.micr{display:flex;gap:1rem;align-items:center;margin:.8rem 0}
+.mic{width:5.2rem;height:5.2rem;border-radius:50%;background:#EE7623;font-size:2.2rem;border:0;box-shadow:0 6px 0 #B15E14}.mic.on{background:#e03a3a;box-shadow:0 0 0 0 #e03a3a;animation:rec 1.2s infinite}
+@keyframes rec{70%{box-shadow:0 0 0 24px rgba(224,58,58,0)}}
+.timer{flex:1;height:.7rem;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}.timer i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2BD67B,#E99B35)}
+.ejs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.4rem 0}.ejs button{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:99px;padding:.4rem .9rem;font-size:.9rem;font-weight:600;color:#fff}.ejs button:hover{border-color:#EE7623}
+.hint{color:#cfe0ee;font-size:1rem;margin-bottom:.4rem}
+.nav{display:flex;gap:.8rem;justify-content:space-between;margin-top:1rem}
+.big{font-size:1.2rem;padding:.9rem 1.8rem}
+.chk{display:flex;gap:.7rem;align-items:flex-start;margin:.6rem 0;font-size:1rem}.chk input{width:1.5rem;height:1.5rem;margin-top:.1rem}
+.gp{display:flex;gap:.5rem;flex-wrap:wrap}.gp button{padding:.6rem 1.1rem;border-radius:14px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);font-weight:700;color:#fff}.gp button.on{background:#EE7623;border-color:#EE7623}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.vid{position:relative;border-radius:22px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:58vh;margin:0 auto}.vid video,.vid img,.vid canvas{width:100%;height:100%;object-fit:cover;display:block}
+.cd{position:absolute;inset:0;display:grid;place-items:center;font-size:9rem;font-weight:800;color:#fff;text-shadow:0 0 30px #000;pointer-events:none}
+.frame{position:absolute;inset:6%;border:4px dashed rgba(255,255,255,.6);border-radius:20px;pointer-events:none}
+.acta{background:#fff;color:#14202e;border-radius:20px;padding:1.4rem 1.8rem}.acta h3{margin:0;font-weight:800;font-size:1.5rem}.acta .ln{display:flex;justify-content:space-between;border-bottom:1.5px solid #e6e1d8;padding:.5rem 0;font-size:1.05rem}.acta .ln span{color:#6b7480}
+#sig{background:#fffdf7;border:2px dashed #b9b0a0;border-radius:14px;width:100%;height:9rem;touch-action:none;cursor:crosshair}
+.ch2{display:flex;gap:.5rem;flex-wrap:wrap}.ch2 .c{background:rgba(255,255,255,.12);border-radius:99px;padding:.3rem .9rem;font-size:.9rem;font-weight:600}
+.story{background:#fff;color:#14202e;border-radius:20px;padding:1.1rem 1.4rem;font-size:1.15rem;line-height:1.5;border-left:8px solid #EE7623}
+#conf{position:fixed;inset:0;z-index:70;pointer-events:none}
+.spot{position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.86);display:none;place-items:center}.spot.on{display:grid}
+.spot .box{text-align:center;animation:pop .8s}.spot img.f{width:min(46vw,46rem);border-radius:28px;border:6px solid #E99B35;box-shadow:0 0 60px #EE7623aa}
+.spot h2{font-size:3rem;font-weight:800;margin:.8rem 0 .2rem;color:#E99B35}.spot p{font-size:1.6rem;margin:0 auto;max-width:48rem}
+.gen{text-align:center;padding:2rem}.gen .pk{animation:float 1.6s infinite}
+.mdet{display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start;color:#14202e}
+.mdet h3{margin:.8rem 0 .2rem;font-size:1rem;font-weight:800;color:#B15E14}.mdet ul{margin:.2rem 0 0 1.1rem;padding:0}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<div class="app">
+  <header class="top">
+    <div><h1 class="t">Cápsula de <span>Memorias Alico</span></h1><div class="sub">Hoy empacamos ideas. Mañana las hacemos realidad.</div></div>
+    <div class="cnts" id="cnts"></div>
+    <div class="memowrap"><div class="say" id="say">¡Hola, soy Memo!</div><div id="memoTop"></div></div>
+  </header>
+  <div class="wallbox"><div class="wall" id="wall"></div></div>
+  <div class="ticker"><div class="tk" id="tk1"></div></div>
+  <div class="ticker b"><div class="tk" id="tk2"></div></div>
+</div>
+<button class="btn lg fab" id="go">➕ Postular una idea</button>
+<a class="adm" href="admin.html">Panel administrativo</a>
+
+<div id="flow"></div>
+<div class="spot" id="spot"></div>
+<canvas id="conf"></canvas>
+
+<script src="shared/al.js"></script>
+<script src="shared/mem.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = AL.$, esc = AL.esc, $$ = s => [...document.querySelectorAll(s)];
+const H = id => $('#' + id);
+
+/* ============================ cielo y burbujas ============================ */
+const sky = H('sky');
+for (let i = 0; i < 70; i++) { const s = document.createElement('i'); s.className = 'star'; s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation-delay:${Math.random() * 4}s`; sky.appendChild(s); }
+const GEN = ['¿Y si el sello se avisara solo?', '¿Y si el inventario se contara solo?', 'Una idea pequeña puede ahorrar mil horas', '¿Qué te quita el sueño en tu área?', 'Cada idea es una funda llena de futuro', '¿Qué haría tu equipo con 5 horas más a la semana?', 'Las mejores ideas nacen en el piso de planta', 'Empaca tu idea, nosotros la llevamos lejos'];
+function bubble(t, cls) { const b = document.createElement('div'); b.className = 'bub ' + (cls || ''); b.textContent = t; const dur = 14 + Math.random() * 8; b.style.cssText += `left:${4 + Math.random() * 80}%;animation-duration:${dur}s`; sky.appendChild(b); setTimeout(() => b.remove(), dur * 1000); }
+function bubbles() { const txt = []; MEM.list().forEach(r => { const h = r.h || {}; if (h.eslogan) txt.push(['💡 ' + h.eslogan, 'o']); if (h.impacto) txt.push(['⭐ ' + h.impacto, 'c']); (r.aplausos || []).forEach(a => txt.push(['👏 ' + a.frase, 'c'])); }); GEN.forEach(g => txt.push([g, ''])); const [t, c] = txt[Math.floor(Math.random() * txt.length)]; bubble(t, c); }
+setInterval(bubbles, 2600); setTimeout(bubbles, 300);
+
+/* ============================ muro ============================ */
+let page = 0, seen = new Set(MEM.list().map(r => r.id));
+const PER = 8;
+function renderTop() {
+  const l = MEM.list(), g = new Set(l.map(r => r.grupo)).size, p = new Set(l.map(r => r.participante).filter(Boolean)).size, hs = l.reduce((s, r) => s + (+((r.h || {}).horas_semana) || 0), 0);
+  H('cnts').innerHTML = [[l.length, 'ideas'], [g, 'grupos'], [p, 'personas'], [hs, 'h/semana por ganar']].map(([n, t]) => `<div class="cn"><b>${n}</b><small>${t}</small></div>`).join('');
+  const tk = [];
+  l.forEach(r => { const h = r.h || {}; tk.push(`<span>⭐ <b>${esc(r.grupo)}</b> · ${esc(h.nombre_idea || '')} — ${esc(h.eslogan || h.impacto || '')}</span>`); (r.aplausos || []).forEach(a => tk.push(`<span>👏 <b>${esc(a.de || 'Alguien')}</b>: «${esc(a.frase)}»</span>`)); });
+  const t1 = tk.join('') || '<span>Sé el primero en postular una idea 💡</span>';
+  H('tk1').innerHTML = t1 + t1;
+  const t2 = [`<span>🚀 <b>${l.length}</b> ideas ya empacadas hoy</span>`, `<span>⏱ <b>${hs}</b> horas por semana que podemos recuperar</span>`, ...l.filter(r => (r.h || {}).tipo_ia).slice(0, 8).map(r => `<span>🤖 ${esc(r.h.tipo_ia)} · ${esc(r.area || '')}</span>`), '<span>💡 ¿Y si tu idea es la siguiente?</span>', '<span>🎉 Empacando ideas, construyendo un mejor mañana</span>'].join('');
+  H('tk2').innerHTML = t2 + t2;
+}
+function renderWall() {
+  const l = MEM.list(), pages = Math.max(1, Math.ceil(l.length / PER)); if (page >= pages) page = 0;
+  const sl = l.slice(page * PER, page * PER + PER), w = H('wall');
+  if (!l.length) { w.innerHTML = '<div class="empty">✨ El muro está vacío. ¡Postula la primera idea!</div>'; return; }
+  const cols = sl.length <= 3 ? sl.length : sl.length <= 6 ? 3 : 4; w.style.gridTemplateColumns = `repeat(${Math.max(cols, 2)},1fr)`;
+  w.innerHTML = sl.map(r => { const h = r.h || {}; return `<div class="gc" data-id="${r.id}" style="transform:rotate(${(r.id.charCodeAt(r.id.length - 1) % 5 - 2) * .4}deg)"><div class="ph">${r.foto ? `<img src="${r.foto}" alt="">` : `<div style="height:100%;display:grid;place-items:center;font-size:4rem">💡</div>`}<span class="st">⭐</span>${r.ejemplo ? '<span class="ej">EJEMPLO</span>' : ''}</div><div class="in"><h3>${esc(r.grupo)}</h3><p>${esc(h.nombre_idea || '')}</p><div class="tg"><span>${esc(r.area || '')}</span>${h.tipo_ia ? `<span>🤖 ${esc(h.tipo_ia)}</span>` : ''}${h.horas_semana ? `<span>⏱ ${h.horas_semana} h/sem</span>` : ''}</div></div></div>`; }).join('');
+  sl.filter(r => !r.foto && !r.ejemplo).forEach(r => MEM.fetchFoto(r).then(f => f && renderWall()));
+}
+H('wall').onclick = e => { const c = e.target.closest('.gc'); if (c) detalle(c.dataset.id); };
+function detalle(id) {
+  const r = MEM.get(id); if (!r) return; const h = r.h || {};
+  AL.modal(`<div class="mdet"><div>${MEM.funda(r, 250)}</div><div><h2 style="margin:0">${esc(h.nombre_idea)}</h2><div class="muted">${esc(r.grupo)} · ${esc(r.participante || '')} · ${esc(r.area || '')}</div><div class="story" style="margin:.8rem 0">${esc(h.historia_usuario || '')}</div><h3>Impacto</h3><p>${esc(h.impacto || '')}</p><h3>Primer paso</h3><p>${esc(h.primer_paso || '')} · ${esc(h.fecha_objetivo || '')}</p>${r.foto ? `<img src="${r.foto}" style="width:11rem;border-radius:12px;margin-top:.6rem">` : ''}<div style="text-align:right;margin-top:.6rem"><button class="btn gr" onclick="AL.closeModal()">Cerrar</button></div></div></div>`);
+}
+setInterval(() => { const pages = Math.ceil(MEM.list().length / PER); if (pages > 1 && !H('flow').classList.contains('on')) { page = (page + 1) % pages; renderWall(); } }, 14000);
+function refresh() { renderTop(); renderWall(); }
+H('memoTop').innerHTML = MEM.memo({ size: 120, pose: 'cordialidad' });
+const SAYS = ['¡Hola, soy Memo! 👋', 'Cuéntame tu idea: yo la empaco 🎁', 'Cada grupo cuenta, ¡súmate!', '¿Qué problema te quita el sueño?', 'Te escucho, entrevisto y celebro 🎉'];
+let si = 0; setInterval(() => { H('say').textContent = SAYS[++si % SAYS.length]; }, 6000);
+
+/* nuevas ideas desde otros equipos / nube */
+async function poll() { const before = new Set(MEM.list().map(r => r.id)); if (await MEM.pull()) { const nuevas = MEM.list().filter(r => !before.has(r.id)); refresh(); if (nuevas[0] && !H('flow').classList.contains('on')) spotlight(nuevas[0]); } }
+setInterval(poll, 10000); poll();
+
+function spotlight(r) {
+  const h = r.h || {}; const s = H('spot'); s.innerHTML = `<div class="box">${r.foto ? `<img class="f" src="${r.foto}">` : ''}<h2>🎉 ${esc(r.grupo)}</h2><p><b>${esc(h.nombre_idea || '')}</b><br>${esc(h.eslogan || '')}</p></div>`; s.classList.add('on'); confetti(); setTimeout(() => s.classList.remove('on'), 7000);
+}
+H('spot').onclick = () => H('spot').classList.remove('on');
+
+/* ============================ confeti ============================ */
+function confetti() {
+  const c = H('conf'), x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight; const P = [], cols = ['#EE7623', '#E99B35', '#00BED6', '#fff', '#2BD67B', '#ff6b9d'];
+  for (let i = 0; i < 170; i++) P.push({ x: Math.random() * c.width, y: -20 - Math.random() * c.height * .5, vx: (Math.random() - .5) * 5, vy: 2 + Math.random() * 5, s: 6 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[i % cols.length] });
+  let f = 0; (function a() { x.clearRect(0, 0, c.width, c.height); P.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); }); if (++f < 230) requestAnimationFrame(a); else x.clearRect(0, 0, c.width, c.height); })();
+}
+
+/* ============================ voz ============================ */
+function speak(t, cb) {
+  H('flow').querySelectorAll('.memo').forEach(m => m.classList.add('talk'));
+  const done = () => { H('flow').querySelectorAll('.memo').forEach(m => m.classList.remove('talk')); cb && cb(); };
+  if (!AL.cfg.voz || !('speechSynthesis' in window)) return setTimeout(done, 400);
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t), v = AL.mejorVoz(); u.lang = v ? v.lang : 'es-CO'; if (v) u.voice = v; u.rate = v && /natural|neural|online/i.test(v.name) ? 1.02 : .97; u.onend = done; u.onerror = done; speechSynthesis.speak(u); } catch (e) { done(); }
+}
+
+/* ============================ flujo de la entrevista ============================ */
+const Q = [
+  { q: 'Cuéntame, ¿qué problema le quita el sueño a tu equipo?', hint: 'Algo que se repite, les quita tiempo o genera errores. Habla como si me lo contaras a mí.', ej: ['Perdemos mucho tiempo buscando información', 'Los reportes se hacen a mano en Excel', 'Detectamos los defectos muy tarde'], fu: '¿Me das un ejemplo concreto de la última vez que pasó?' },
+  { q: '¿Quién lo vive y con qué frecuencia? Cuéntame cuánto tiempo les quita a la semana.', hint: 'Cuántas personas, cada cuánto y cuántas horas aproximadas.', ej: ['Los 6 operarios del turno, todos los días, unas 2 horas', 'Calidad, cada vez que llega un lote'], fu: '¿Cuántas personas, cada cuánto y cuánto tiempo aproximado?' },
+  { q: 'Si se resolviera mañana, ¿cómo cambiaría su día?', hint: 'Qué harían con ese tiempo, qué errores desaparecerían o qué se sentiría distinto.', ej: ['Podríamos dedicarnos a mejorar el proceso', 'Cero reclamos por ese motivo'], fu: '¿Qué harían con ese tiempo o qué errores desaparecerían?' },
+  { q: '¿Con qué datos, sistemas o personas contamos para lograrlo? ¿Quién te ayudaría?', hint: 'Dónde vive hoy la información y quién podría apoyarte.', ej: ['Los datos están en Epicor y en Excel', 'Mi jefe de planta y el área de TI'], fu: '¿Dónde vive hoy la información y quién podría apoyarte?' },
+  { q: '¿Cuál sería el primer paso y para cuándo lo harías?', hint: 'Algo pequeño, concreto y con fecha.', ej: ['Probarlo en una sola línea durante un mes', 'Reunir los datos esta semana'], fu: '¿Qué harías primero y para qué fecha?' }
+];
+const R = { id: '', grupo: '', participante: '', rol: '', area: 'Producción', consent: '', fotoOk: true, respuestas: ['', '', '', '', ''], h: null, foto: null, padrino: '', firma: '' };
+let step = 0, nfu = {};
+const TOTAL = 10; // intro,q1-5,gen,rev,foto,acta  (+ final)
+function openFlow() { Object.assign(R, { id: 'm' + AL.uid(), grupo: '', participante: '', rol: '', area: 'Producción', consent: '', fotoOk: true, respuestas: ['', '', '', '', ''], h: null, foto: null, padrino: '', firma: '' }); nfu = {}; step = 0; H('flow').classList.add('on'); draw(); }
+function closeFlow() { AL.stopListen(); stopCam(); try { speechSynthesis.cancel(); } catch (e) {} H('flow').classList.remove('on'); refresh(); }
+H('go').onclick = openFlow; document.addEventListener('keydown', e => { if ((e.key === 'n' || e.key === 'N') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !H('flow').classList.contains('on')) openFlow(); if (e.key === 'Escape' && H('flow').classList.contains('on') && step < 9) closeFlow(); });
+const stepper = () => `<div class="steps">${Array.from({ length: TOTAL }, (_, i) => `<i class="${i < step ? 'on' : i === step ? 'now' : ''}"></i>`).join('')}<button class="btn gr sm" id="x" style="margin-left:1rem">✕ Salir</button></div>`;
+function layout(bubbleTxt, inner, talk) { H('flow').innerHTML = stepper() + `<div class="fx"><div class="left"><div class="bubble" id="bub">${esc(bubbleTxt)}</div>${MEM.memo({ size: 300, talk, pose: POSE })}</div><div class="panel" id="pan">${inner}</div></div>`; H('x').onclick = () => { if (confirm('¿Salir? Se pierde lo que llevas de esta idea.')) closeFlow(); }; }
+let tim = null;
+let POSE = 'saludo';
+const POSES = ['saludo', 'atencion', 'atencion', 'atencion', 'atencion', 'atencion', 'analisis', 'aprobacion', 'senalar', 'presentacion'];
+function draw() { POSE = POSES[step] || 'saludo'; clearInterval(tim); AL.stopListen(); stopCam(); [dIntro, dQ, dQ, dQ, dQ, dQ, dGen, dRev, dFoto, dActa][step](); }
+const next = () => { step++; draw(); };
+
+/* --- 0 · intro y consentimiento --- */
+function dIntro() {
+  const gs = ['Grupo 1', 'Grupo 2', 'Grupo 3', 'Grupo 4', 'Grupo 5', 'Grupo 6', 'Grupo 7', 'Grupo 8'];
+  layout('¡Hola! Soy Memo. Voy a hacerte 5 preguntas cortas y, con tus respuestas, empacar tu idea. Primero, presentémonos.', `<h2>Empecemos 👋</h2>
+  <div class="field"><label>¿Qué grupo son?</label><div class="gp" id="gp">${gs.map(g => `<button data-g="${g}" class="${R.grupo === g ? 'on' : ''}">${g}</button>`).join('')}</div></div>
+  <div class="cols"><div class="field"><label>¿Quieren darle un nombre al grupo? (opcional)</label><input id="gn" placeholder="Ej.: Los Imparables" value="${esc(R.nombre || '')}"></div><div class="field"><label>Tu nombre</label><input id="pn" placeholder="Ej.: Marta" value="${esc(R.participante)}"></div></div>
+  <div class="cols"><div class="field"><label>Tu cargo o rol</label><input id="pr" placeholder="Ej.: Líder de turno" value="${esc(R.rol)}"></div><div class="field"><label>Tu área</label><select id="pa">${MEM.AREAS.map(a => `<option ${a === R.area ? 'selected' : ''}>${a}</option>`).join('')}</select></div></div>
+  <label class="chk"><input type="checkbox" id="c1"><span><b>¿Autorizas?</b> Autorizo el tratamiento de mis datos y el uso de mis frases en este espacio, conforme a la Ley 1581 de 2012 (Habeas Data).</span></label>
+  <label class="chk"><input type="checkbox" id="c2" checked><span>Autorizo el uso de mi <b>imagen</b> y mi voz en el muro y la memoria. <i>Si no, aparecerá sin foto.</i></span></label>
+  <div class="nav"><span></span><button class="btn lg big" id="nx">Empezar ➤</button></div>`);
+  $$('#gp button').forEach(b => b.onclick = () => { R.grupo = b.dataset.g; $$('#gp button').forEach(x => x.classList.toggle('on', x === b)); });
+  H('nx').onclick = () => {
+    R.nombre = H('gn').value.trim(); R.participante = H('pn').value.trim(); R.rol = H('pr').value.trim(); R.area = H('pa').value;
+    if (!R.grupo && !R.nombre) return AL.toast('Elige un grupo o ponle un nombre');
+    if (!R.participante) return AL.toast('Cuéntame tu nombre');
+    if (!H('c1').checked) return AL.toast('Necesito tu autorización para continuar');
+    R.fotoOk = H('c2').checked; R.consent = new Date().toISOString(); R.grupoLabel = R.nombre ? (R.grupo ? R.grupo + ' · ' + R.nombre : R.nombre) : R.grupo;
+    next();
+  };
+  speak('Hola, soy Memo. Voy a hacerte cinco preguntas cortas. Primero, dime qué grupo son y tu nombre.');
+}
+/* --- 1-5 · preguntas por voz o texto --- */
+function dQ() {
+  const i = step - 1, q = Q[i]; let t0 = 0;
+  layout(q.q, `<div class="hint">Pregunta ${i + 1} de 5 · ${esc(q.hint)}</div>
+  <textarea class="tx" id="tx" placeholder="Habla con el micrófono o escribe aquí…">${esc(R.respuestas[i])}</textarea>
+  <div class="micr"><button class="mic" id="mic" title="Hablar">🎤</button><div style="flex:1"><div id="ms" style="font-weight:700;margin-bottom:.3rem">Toca el micrófono y cuéntame (unos 40 segundos)</div><div class="timer"><i id="tm"></i></div></div></div>
+  <div class="ejs">${q.ej.map(e => `<button data-e="${esc(e)}">💬 ${esc(e)}</button>`).join('')}</div>
+  <div class="nav"><button class="btn gr" id="bk">← Atrás</button><button class="btn lg big" id="nx">${i === 4 ? 'Empacar mi idea 🎁' : 'Siguiente ➤'}</button></div>`, true);
+  const tx = H('tx'), mic = H('mic');
+  const stopT = () => { clearInterval(tim); };
+  const startMic = () => { if (AL.listening()) return; const base = tx.value ? tx.value.trim() + ' ' : ''; t0 = Date.now(); const ok = AL.listen({ continuous: true, onText: t => { tx.value = base + t; tx.classList.add('live'); }, onEnd: () => { if (!H('ms')) return; mic.classList.remove('on'); tx.classList.remove('live'); H('ms').textContent = 'Listo. Puedes corregir el texto o seguir hablando.'; stopT(); } }); if (ok) { mic.classList.add('on'); H('ms').textContent = '🔴 Te escucho… toca de nuevo cuando termines'; tim = setInterval(() => { if (!H('tm')) return clearInterval(tim); H('tm').style.width = Math.min(100, (Date.now() - t0) / 400) + '%'; }, 200); } };
+  mic.onclick = () => AL.listening() ? AL.stopListen() : startMic();
+  $$('.ejs button').forEach(b => b.onclick = () => { tx.value = (tx.value ? tx.value + ' ' : '') + b.dataset.e; });
+  H('bk').onclick = () => { R.respuestas[i] = tx.value.trim(); step--; draw(); };
+  H('nx').onclick = () => {
+    AL.stopListen(); const v = tx.value.trim(); R.respuestas[i] = v;
+    if (!v) { speak('Cuéntame algo, por favor. Puedes tocar el micrófono o elegir un ejemplo.'); return AL.toast('Cuéntame algo para poder seguir'); }
+    if (v.split(/\s+/).length < 8 && !nfu[i]) { nfu[i] = 1; H('bub').textContent = q.fu; { const m = H('flow').querySelector('img.memo'); if (m) m.src = 'assets/robot/duda.png'; } speak(q.fu); H('ms').textContent = '💡 ' + q.fu; return; }
+    next();
+  };
+  speak(q.q, () => { if (!tx.value) startMic(); });
+}
+/* --- 6 · generación de la historia --- */
+async function dGen() {
+  layout('Dame un momento… estoy empacando tu idea 🎁', `<div class="gen"><div class="pk">${MEM.funda({ h: { nombre_idea: '…', ingredientes: {} }, grupo: R.grupoLabel, ts: Date.now() }, 200)}</div><h2 style="margin-top:1rem">Memo está armando tu historia de usuario…</h2><p class="muted" style="color:#cfe0ee">Convierto tus respuestas en una historia de negocio lista para trabajar.</p></div>`, true);
+  speak('Dame un momento, estoy empacando tu idea.');
+  R.h = await historia(); step++; draw();
+}
+async function historia() {
+  const hoy = new Date().toLocaleDateString('es-CO');
+  if (AL.hasIA()) {
+    const sys = `Eres Memo, analista de negocio de Softgic. Con las respuestas de un colaborador de Alico (empaques flexibles, Medellín) construye una historia de usuario para una iniciativa de IA/automatización. Devuelve SOLO JSON: {"nombre_idea":"≤5 palabras, atractivo","eslogan":"≤10 palabras","area":"una de ${MEM.AREAS.join('|')}","tipo_ia":"una de ${MEM.IA.join('|')}","historia_usuario":"Como [rol] quiero [capacidad] para [beneficio medible]","problema":"1-2 frases","afectados":"quiénes y cuántos","horas_semana":número estimado de horas por semana que hoy se pierden (0 si no hay base),"impacto":"1 frase del cambio esperado","criterios":["3 a 5 criterios de aceptación medibles"],"valor_estimado":"1-2 frases con supuestos explícitos (no inventes cifras que el usuario no dio)","prioridad":"Alta|Media|Baja","prioridad_razon":"1 frase","complejidad":"Baja|Media|Alta","riesgos":["2 riesgos"],"dependencias":["datos, sistemas o personas"],"primer_paso":"acción concreta","fecha_objetivo":"texto","ingredientes":{"problema":"≤4 palabras","ia":"≤4 palabras","beneficio":"≤4 palabras"},"frase_empaque":"≤8 palabras"}. Español, sin inventar hechos; si falta información, dilo en el campo correspondiente.`;
+    const u = `Hoy: ${hoy}. Participante: ${R.participante}, ${R.rol || 'sin cargo'}, área ${R.area}. Grupo: ${R.grupoLabel}.\n` + Q.map((q, i) => `P${i + 1}: ${q.q}\nR${i + 1}: ${R.respuestas[i]}`).join('\n');
+    try { const h = AL.parseJSON(await AL.claude(sys, u, { max: 1200, tag: 'memorias-historia' })); h.horas_semana = +h.horas_semana || 0; h.via = 'ia'; return h; } catch (e) { AL.toast('La IA no respondió: armé la historia con reglas'); }
+  }
+  return historiaBasica();
+}
+function historiaBasica() {
+  const a = R.respuestas, cut = (s, n) => { s = (s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n).replace(/\s\S*$/, '') + '…' : s; };
+  const nombre = cut(a[0], 28).split(' ').slice(0, 4).join(' ');
+  const hrs = (() => { const m = (a[1] || '').match(/(\d+[.,]?\d*)\s*(h|hora)/i); return m ? Math.round(+m[1].replace(',', '.')) : 0; })();
+  return { nombre_idea: nombre || 'Mi idea', eslogan: 'Una idea para trabajar mejor', area: R.area, tipo_ia: 'Automatización de procesos', historia_usuario: `Como ${R.rol || 'colaborador'} quiero resolver «${cut(a[0], 90)}» para lograr «${cut(a[2], 90)}».`, problema: cut(a[0], 160), afectados: cut(a[1], 120), horas_semana: hrs, impacto: cut(a[2], 120), criterios: ['La solución se prueba con un grupo piloto', 'Se mide el tiempo antes y después', 'El equipo valida que resuelve el problema'], valor_estimado: 'Por definir con datos reales (modo básico, sin IA).', prioridad: 'Media', prioridad_razon: 'Pendiente de análisis', complejidad: 'Media', riesgos: ['Datos incompletos', 'Poca disponibilidad del equipo'], dependencias: [cut(a[3], 100)], primer_paso: cut(a[4], 100), fecha_objetivo: 'Por definir', ingredientes: { problema: cut(a[0], 24), ia: 'Por definir', beneficio: cut(a[2], 24) }, frase_empaque: 'Una idea empacada', via: 'reglas' };
+}
+/* --- 7 · revisión --- */
+function dRev() {
+  const h = R.h, r = Object.assign({}, R, { grupo: R.grupoLabel, ts: Date.now() });
+  layout('¡Listo! Esta es tu idea empacada. Revisa que diga lo que quisiste decir.', `<div style="display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start"><div id="fnd">${MEM.funda(r, 240)}</div><div>
+  <div class="field"><label>Nombre de la idea</label><input id="rn" value="${esc(h.nombre_idea)}"></div>
+  <div class="field"><label>Historia de usuario</label><textarea id="rh" style="min-height:6.5rem">${esc(h.historia_usuario)}</textarea></div>
+  <div class="cols"><div class="field"><label>Área</label><select id="ra">${MEM.AREAS.map(a => `<option ${a === h.area ? 'selected' : ''}>${a}</option>`).join('')}</select></div><div class="field"><label>Tipo de solución</label><select id="rt">${MEM.IA.map(a => `<option ${a === h.tipo_ia ? 'selected' : ''}>${a}</option>`).join('')}</select></div></div>
+  <div class="ch2"><span class="c">⏱ ${h.horas_semana || 0} h/semana</span><span class="c">🎯 Prioridad ${esc(h.prioridad)}</span><span class="c">🧩 Complejidad ${esc(h.complejidad)}</span></div></div></div>
+  <div class="cols" style="margin-top:.8rem"><div><b>✅ Criterios de aceptación</b><ul>${(h.criterios || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul></div><div><b>⚠️ Riesgos</b><ul>${(h.riesgos || []).map(c => `<li>${esc(c)}</li>`).join('')}</ul><b>🚀 Primer paso</b><p style="margin:.2rem 0">${esc(h.primer_paso || '')}</p></div></div>
+  <div class="nav"><button class="btn gr" id="bk">← Corregir mis respuestas</button><button class="btn lg big" id="nx">${R.fotoOk ? 'Me gusta · foto 📸' : 'Me gusta · firmar ✍️'}</button></div>`);
+  const sync = () => { h.nombre_idea = H('rn').value; h.historia_usuario = H('rh').value; h.area = H('ra').value; h.tipo_ia = H('rt').value; R.area = h.area; };
+  H('bk').onclick = () => { step = 1; draw(); };
+  H('nx').onclick = () => { sync(); step = R.fotoOk ? 8 : 9; draw(); };
+  speak('Esta es tu idea empacada. Revisa que diga lo que quisiste decir.');
+}
+/* --- 8 · foto del grupo --- */
+let stream = null;
+function stopCam() { if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } }
+async function dFoto() {
+  layout('¡Ahora la foto del grupo! Júntense, sonrían y cuando estén listos toquen el botón.', `<h2>📸 Foto del grupo</h2><div class="vid" id="vid"><video id="v" autoplay playsinline muted></video><div class="frame"></div><div class="cd" id="cd"></div></div>
+  <div class="nav"><button class="btn gr" id="skip">Seguir sin foto</button><div style="display:flex;gap:.6rem"><label class="btn gr" style="cursor:pointer">📁 Subir foto<input type="file" accept="image/*" id="up" hidden></label><button class="btn lg big" id="snap">📸 Tomar foto (3, 2, 1)</button></div></div>`);
+  speak('Júntense, sonrían, y cuando estén listos toquen el botón.');
+  try { stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720, facingMode: 'user' } }); H('v').srcObject = stream; } catch (e) { H('vid').innerHTML = '<div style="display:grid;place-items:center;height:100%;color:#fff;text-align:center;padding:1rem">No pude abrir la cámara.<br>Sube una foto o sigue sin ella.</div>'; }
+  H('skip').onclick = () => { R.foto = null; step = 9; draw(); };
+  H('up').onchange = async e => { const f = e.target.files[0]; if (f) { R.foto = await shrink(f); confirmFoto(); } };
+  H('snap').onclick = async () => { if (!stream) return AL.toast('Sube una foto o sigue sin ella'); H('snap').disabled = true; for (let n = 3; n > 0; n--) { H('cd').textContent = n; await new Promise(r => setTimeout(r, 900)); } H('cd').textContent = '📸'; const v = H('v'), c = document.createElement('canvas'), w = 560, h = Math.round(w * v.videoHeight / v.videoWidth) || 420; c.width = w; c.height = h; c.getContext('2d').drawImage(v, 0, 0, w, h); R.foto = c.toDataURL('image/jpeg', .72); confirmFoto(); };
+}
+function shrink(f) { return new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 560 / im.width), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .72)); }; im.src = URL.createObjectURL(f); }); }
+function confirmFoto() { stopCam(); H('vid').innerHTML = `<img src="${R.foto}">`; const n = $('.nav'); n.innerHTML = `<button class="btn gr" id="re">🔁 Repetir</button><button class="btn lg big" id="ok">¡Quedó genial! Seguir ➤</button>`; H('re').onclick = () => dFoto(); H('ok').onclick = () => { step = 9; draw(); }; speak('¡Qué buen equipo!'); }
+/* --- 9 · acta de nacimiento --- */
+function dActa() {
+  const h = R.h;
+  layout('Último paso: el acta de nacimiento de tu idea. Elijan un padrino o madrina y firmen.', `<div class="acta"><h3>📜 Acta de nacimiento de la idea</h3>
+  <div class="ln"><span>Nombre de la idea</span><b>${esc(h.nombre_idea)}</b></div><div class="ln"><span>Grupo</span><b>${esc(R.grupoLabel)}</b></div><div class="ln"><span>Fecha</span><b>${MEM.fmtFecha(Date.now())}</b></div>
+  <div class="field" style="margin-top:.7rem"><label style="color:#14202e">Padrino o madrina de la idea</label><input id="pd" placeholder="¿Quién la va a acompañar? Ej.: María González" value="${esc(R.padrino)}"></div>
+  <div class="field"><label style="color:#14202e">Primer paso y fecha</label><input id="pp" value="${esc((h.primer_paso || '') + (h.fecha_objetivo ? ' · ' + h.fecha_objetivo : ''))}"></div>
+  <label style="font-weight:700;color:#14202e">Firma del equipo (con el dedo o el mouse)</label><canvas id="sig" width="900" height="180"></canvas><div style="text-align:right"><button class="btn gr sm" id="clr">Borrar firma</button></div></div>
+  <div class="nav"><button class="btn gr" id="bk">← Atrás</button><button class="btn lg big" id="pub">✍️ Firmar y publicar en el muro</button></div>`);
+  const cv = H('sig'), g = cv.getContext('2d'); g.lineWidth = 4; g.lineCap = 'round'; g.strokeStyle = '#14202e'; let dr = false, has = false;
+  const pt = e => { const b = cv.getBoundingClientRect(); return [(e.clientX - b.left) * cv.width / b.width, (e.clientY - b.top) * cv.height / b.height]; };
+  cv.onpointerdown = e => { dr = true; has = true; const [x, y] = pt(e); g.beginPath(); g.moveTo(x, y); cv.setPointerCapture(e.pointerId); }; cv.onpointermove = e => { if (!dr) return; const [x, y] = pt(e); g.lineTo(x, y); g.stroke(); }; cv.onpointerup = () => dr = false;
+  H('clr').onclick = () => { g.clearRect(0, 0, cv.width, cv.height); has = false; };
+  H('bk').onclick = () => { step = R.fotoOk ? 8 : 7; draw(); };
+  H('pub').onclick = () => { if (!has) return AL.toast('Falta la firma del equipo ✍️'); R.padrino = H('pd').value.trim() || 'Por definir'; const pp = H('pp').value; R.h.primer_paso = pp; const s = document.createElement('canvas'); s.width = 300; s.height = 60; s.getContext('2d').drawImage(cv, 0, 0, 300, 60); R.firma = s.toDataURL('image/png'); publicar(); };
+  speak('Último paso: el acta de nacimiento. Elijan un padrino o madrina y firmen.');
+}
+function publicar() {
+  const rec = { id: R.id, ts: new Date().toISOString(), sesion: AL.cfg.sesion, grupo: R.grupoLabel, grupo_n: R.grupo, participante: R.participante, rol: R.rol, area: R.area, consent: R.consent, foto_ok: R.fotoOk, respuestas: R.respuestas.slice(), h: R.h, foto: R.foto, padrino: R.padrino, firma: R.firma, estado: 'nueva', aplausos: [] };
+  MEM.save(rec); AL.log('idea_publicada', { caso_id: 'memorias', area: rec.area, via: R.h.via, ok: 'si', detalle: (R.h.nombre_idea || '').slice(0, 100) }); seen.add(rec.id);
+  const fl = H('flow'); step = 10;
+  fl.innerHTML = `<div class="steps">${Array.from({ length: TOTAL }, () => '<i class="on"></i>').join('')}</div><div class="fx"><div class="left"><div class="bubble">¡Felicitaciones, ${esc(R.participante)}! Tu idea ya está en el muro 🎉</div>${MEM.memo({ size: 260, talk: true, pose: 'alegria' })}</div><div class="panel" id="pan"><h2>🎉 ¡Idea publicada!</h2><div style="display:flex;gap:1.4rem;align-items:flex-start;margin:.6rem 0">${MEM.funda(rec, 190)}<div><div class="story">${esc(R.h.historia_usuario)}</div><p style="margin-top:.8rem;color:#cfe0ee">Padrino/madrina: <b>${esc(R.padrino)}</b></p></div></div>
+  <h2 style="margin-top:1rem">👏 Aplauso entre compañeros</h2><p class="hint">Cada persona dice, en 10 segundos, algo que admira de un compañero.</p>
+  <div class="cols"><div class="field"><label>Quién aplaude (tu nombre)</label><input id="ad" value="${esc(R.participante)}"></div><div class="field"><label>Admiro de mi compañero/a…</label><div style="display:flex;gap:.5rem"><input id="af" placeholder="Admiro tu energía para…" style="flex:1"><button class="mic" id="am" style="width:3.2rem;height:3.2rem;font-size:1.3rem;box-shadow:none">🎤</button></div></div></div>
+  <div id="al" class="ch2"></div>
+  <div class="nav"><button class="btn gr" id="addA">👏 Agregar aplauso</button><button class="btn lg big" id="fin">Ver el muro ➤</button></div></div></div>`;
+  confetti(); speak('Felicitaciones. Tu idea ya está en el muro.');
+  H('am').onclick = () => AL.listening() ? AL.stopListen() : AL.listen({ onText: t => H('af').value = t, onEnd: () => H('am').classList.remove('on') }) && H('am').classList.add('on');
+  H('addA').onclick = () => { const f = H('af').value.trim(); if (!f) return; const rr = MEM.get(rec.id); (rr.aplausos = rr.aplausos || []).push({ de: H('ad').value.trim(), frase: f }); MEM.save(rr); AL.queue('aplauso', { id: AL.uid(), ts: new Date().toISOString(), sesion: AL.cfg.sesion, titulo: rr.grupo, estado: 'aplauso', json: JSON.stringify({ idea: rr.id, de: H('ad').value, frase: f }) }); H('al').innerHTML += `<span class="c">👏 ${esc(f)}</span>`; H('af').value = ''; confetti(); };
+  H('fin').onclick = () => { closeFlow(); page = 0; const rr = MEM.get(rec.id); refresh(); spotlight(rr); };
+}
+
+H('flow').addEventListener('click', e => { });
+refresh();
+window.__mem = { R, MEM, historiaBasica };
+})();
+</script>
+</body>
+</html>
