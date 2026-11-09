@@ -193,8 +193,25 @@ AL.settings = function () {
   $('#s-close').onclick = AL.closeModal;
   $('#s-save').onclick = () => { read(); AL.closeModal(); AL.toast('Ajustes guardados.'); setTimeout(() => location.reload(), 500); };
   $('#s-kill').onclick = () => { AL.cfg.apiKey = ''; AL.save(); AL.closeModal(); AL.paint(); AL.toast('Clave borrada de este equipo.'); };
-  $('#s-tia').onclick = async () => { read(); const r = $('#s-res'); r.innerHTML = '<span class="spin"></span> Probando…'; try { const t = await AL.claude('Responde solo con la palabra OK.', 'Prueba', {max: 10}); r.textContent = '✅ La IA respondió: ' + t.trim().slice(0, 40); } catch (e) { r.textContent = '❌ ' + e.message; } };
-  $('#s-tcl').onclick = async () => { read(); const r = $('#s-res'); r.innerHTML = '<span class="spin"></span> Probando…'; try { await AL.cloudGet({action: 'ping'}); r.textContent = '✅ Nube conectada.'; } catch (e) { r.textContent = '❌ ' + (e.message === 'auth' ? 'La nube respondió «auth»: revisa la clave.' : 'No pude llegar a la URL.'); AL.state.cloud = false; } AL.paint(); };
+  $('#s-tia').onclick = async () => { read(); const r = $('#s-res'), k = AL.cfg.apiKey;
+    if (!k) { r.innerHTML = '❌ Falta la clave. Pégala en «Clave de la IA». Se crea en <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a> (empieza por <b>sk-ant-</b>) y la cuenta debe tener saldo.'; return; }
+    if (!/^sk-ant-/.test(k)) { r.innerHTML = '❌ Esa no parece una clave de Anthropic: debe empezar por <b>sk-ant-</b>. Revisa que la copiaste completa y sin espacios.'; return; }
+    r.innerHTML = '<span class="spin"></span> Probando…';
+    try { const t = await AL.claude('Responde solo con la palabra OK.', 'Prueba', {max: 10}); r.textContent = '✅ La IA respondió: ' + t.trim().slice(0, 40) + ' (modelo ' + AL.cfg.model + ')'; }
+    catch (e) { const m = String(e.message || e); r.innerHTML = '❌ ' + (/invalid x-api-key|authentication/i.test(m) ? 'La clave no es válida o fue borrada. Crea una nueva en console.anthropic.com.' : /credit|billing|balance/i.test(m) ? 'La cuenta no tiene saldo. Agrega créditos en console.anthropic.com → Billing.' : /model/i.test(m) ? 'El modelo «' + AL.esc(AL.cfg.model) + '» no está disponible para tu cuenta. Prueba con claude-sonnet-5-5.' : /Failed to fetch|NetworkError/i.test(m) ? 'No hay conexión a internet o la red bloquea api.anthropic.com.' : AL.esc(m)); } };
+  $('#s-tcl').onclick = async () => { read(); const r = $('#s-res'), u = AL.cfg.cloudUrl;
+    if (!u) { r.innerHTML = '❌ Falta la URL de la nube. Sigue el MANUAL (sección 1-B) para crear el Apps Script y pega aquí la URL que termina en <b>/exec</b>.'; return; }
+    if (!/^https:\/\/script\.google(usercontent)?\.com\/.+\/exec$/.test(u)) { r.innerHTML = '❌ La URL debe empezar por <b>https://script.google.com/macros/s/</b> y terminar en <b>/exec</b> (no uses la que termina en /dev ni la del editor).'; return; }
+    if (!AL.cfg.cloudSecret) { r.innerHTML = '❌ Falta la «Clave de la nube»: es el mismo texto que pusiste en <b>SECRET</b> dentro del Apps Script.'; return; }
+    r.innerHTML = '<span class="spin"></span> Probando…';
+    let txt = '';
+    try { const res = await fetch(u + '?' + new URLSearchParams({action: 'ping', secret: AL.cfg.cloudSecret})); txt = await res.text(); const j = JSON.parse(txt);
+      if (j.ok) { r.textContent = '✅ Nube conectada' + (j.correo ? ' · correos activos (' + j.correo + ')' : ''); AL.state.cloud = true; }
+      else r.innerHTML = '❌ ' + (j.error === 'auth' ? 'La nube respondió pero la clave no coincide: escribe aquí exactamente lo mismo que en <b>SECRET</b> del Apps Script.' : 'La nube respondió: ' + AL.esc(j.error));
+    } catch (e) { AL.state.cloud = false;
+      r.innerHTML = '❌ ' + (/<html|<!DOCTYPE/i.test(txt) ? 'Google pide iniciar sesión: en Apps Script → Implementar → Administrar implementaciones → editar, pon <b>«Quién tiene acceso: Cualquier usuario»</b> y <b>«Ejecutar como: Yo»</b>, y crea una nueva versión.' : 'No pude llegar a la URL. Revisa que la copiaste completa, que la implementación es «Aplicación web» y que ejecutaste la función <b>autorizar</b> una vez.'); }
+    AL.paint(); };
+
 };
 
 /* ---------- barra superior de cada caso ---------- */
