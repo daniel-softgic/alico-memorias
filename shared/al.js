@@ -108,7 +108,7 @@ AL.micError = function (code) {
     'not-allowed': '🎙️ El micrófono está bloqueado. Toca el candado 🔒 junto a la dirección → Micrófono → Permitir, y recarga la página.',
     'service-not-allowed': '🎙️ Este navegador no deja dictar. Abre el portal en Google Chrome o Microsoft Edge.',
     'audio-capture': '🎙️ No encuentro un micrófono. Conecta uno o revisa que el computador no lo tenga silenciado.',
-    'network': '🎙️ El dictado necesita internet. Revisa la conexión e intenta otra vez.',
+    'network': '🎙️ El dictado por voz no responde en este navegador o red. Ábrelo en Google Chrome o Microsoft Edge (no dentro de otra aplicación) y revisa la conexión.',
     'language-not-supported': '🎙️ El navegador no reconoce español aquí. Usa Chrome o Edge.'
   }[code] || '🎙️ No te escuché bien. ¿Probamos otra vez?';
   AL.toast(m); AL.lastMicError = code;
@@ -123,8 +123,8 @@ AL.listen = function (opts) {
   const start = () => {
     const me = new SR(); me.lang = 'es-CO'; me.interimResults = true; me.continuous = !!opts.continuous; me.maxAlternatives = 1;
     let fin = '';
-    me.onresult = ev => { if (rec !== me) return; let it = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) fin += r[0].transcript + ' '; else it += r[0].transcript; } opts.onText && opts.onText((acc + fin + it).replace(/\s+/g, ' ').trim()); };
-    me.onerror = ev => { if (ev.error === 'no-speech' || ev.error === 'aborted') return; dead = true; AL.micError(ev.error); };
+    me.onresult = ev => { if (rec !== me) return; AL.micOk = true; let it = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) fin += r[0].transcript + ' '; else it += r[0].transcript; } opts.onText && opts.onText((acc + fin + it).replace(/\s+/g, ' ').trim()); };
+    me.onerror = ev => { AL.lastMicError = ev.error; if (ev.error === 'no-speech' || ev.error === 'aborted') return; dead = true; if (opts.onError) opts.onError(ev.error); else AL.micError(ev.error); };
     me.onend = () => {
       if (rec !== me) return;
       acc = (acc + fin).replace(/\s+/g, ' ').trim() + (fin ? ' ' : '');

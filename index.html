@@ -98,7 +98,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 .mrow{display:flex;align-items:center;gap:1rem;margin:.8rem 0}
 .mic{width:4.6rem;height:4.6rem;border-radius:50%;background:var(--ink);color:#fff;font-size:1.8rem;flex:none;box-shadow:0 8px 20px rgba(31,27,22,.25)}
 .mic.on{background:#D64545;animation:rec 1.3s infinite}@keyframes rec{70%{box-shadow:0 0 0 18px rgba(214,69,69,0)}}
-.wave{display:flex;gap:3px;align-items:center;height:1.6rem}.wave i{width:4px;border-radius:9px;background:var(--gold);height:20%;animation:wv 1s ease-in-out infinite}.wave.off i{animation:none;height:15%;background:#E2D7C4}
+.wave{display:flex;gap:3px;align-items:center;height:1.6rem}.wave.live i{animation:none!important;transition:height .08s}.wave i{width:4px;border-radius:9px;background:var(--gold);height:20%;animation:wv 1s ease-in-out infinite}.wave.off i{animation:none;height:15%;background:#E2D7C4}
 @keyframes wv{50%{height:100%}}
 .mst{font-weight:700;font-size:.95rem}.mst small{display:block;color:var(--mut);font-weight:500;font-size:.8rem}
 .edit{margin-left:auto;background:#fff;border:1px solid var(--line);border-radius:99px;padding:.45rem .9rem;font-weight:700;font-size:.82rem}
@@ -256,7 +256,7 @@ const POSES = ['saludo', 'atencion', 'analisis', 'explicacion', 'cordialidad', '
 let R = null, step = 0;
 const nuevo = () => ({ id: 'm' + AL.uid(), grupo: '', nombre: '', participante: '', rol: '', area: 'Producción', anon: false, consent: '', fotoOk: true, t: ['', '', '', '', '', ''], pre: [], a: { ayuda: [], gana: [], apoyo: [] }, h: null, foto: null, padrino: '' });
 function openFlow() { R = nuevo(); step = 0; H('flow').classList.add('on'); draw(); }
-function closeFlow() { AL.stopListen(true); stopCam(); hush(); H('flow').classList.remove('on'); refresh(); }
+function closeFlow() { AL.stopListen(true); medidor(false); stopCam(); hush(); H('flow').classList.remove('on'); refresh(); }
 H('go').onclick = openFlow;
 document.addEventListener('keydown', e => { if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return; if ((e.key === 'n' || e.key === 'N') && !H('flow').classList.contains('on')) openFlow(); });
 function shell(memoTxt, inner, o = {}) {
@@ -269,7 +269,7 @@ function shell(memoTxt, inner, o = {}) {
   H('rep').onclick = () => speak(full, null, H('subt'));
   if (!o.mute) speak(full, o.after, H('subt'));
 }
-function draw() { AL.stopListen(true); stopCam(); [dIntro, dQ, dQ, dQ, dQ, dQ, dQ, dGen, dFoto][step](); }
+function draw() { AL.stopListen(true); medidor(false); stopCam(); [dIntro, dQ, dQ, dQ, dQ, dQ, dQ, dGen, dFoto][step](); }
 
 /* --- 0 · presentación (espacio seguro) --- */
 function dIntro() {
@@ -315,7 +315,7 @@ function dQ() {
     ${conv ? `<details class="conv"><summary>Lo que llevamos (${i})</summary>${conv}</details>` : ''}`, { pre: R.pre[i], after: () => { if (!R.t[i] && AL.micOk) startMic(); } });
   let fin = R.t[i] || '', inter = '', editing = false;
   const paint = () => { if (editing || !H('live')) return; const on = AL.listening(); H('live').innerHTML = fin || inter ? `${esc(fin)} <span class="int">${esc(inter)}</span>${on ? '<span class="cur"></span>' : ''}` : `<span class="ph">${on ? 'Te escucho…' : 'Tu respuesta aparecerá aquí mientras hablas.'}</span>${on ? '<span class="cur"></span>' : ''}`; H('live').scrollTop = 1e6; };
-  const setRec = on => { if (!H('mic')) return; H('mic').classList.toggle('on', on); H('wave').classList.toggle('off', !on); H('live').classList.toggle('rec', on); H('mic').textContent = on ? '⏹' : '🎙️'; H('mst').innerHTML = on ? 'Te estoy escuchando…<small>Habla con naturalidad. Toca ⏹ cuando termines.</small>' : (fin ? 'Listo. Puedes seguir hablando o corregir.<small>Toca 🎙️ para agregar más</small>' : 'Toca el micrófono y cuéntame<small>Verás tus palabras aquí mientras hablas</small>'); paint(); };
+  const setRec = on => { if (!H('mic')) return; H('mic').classList.toggle('on', on); H('wave').classList.toggle('off', !on); H('live').classList.toggle('rec', on); H('mic').textContent = on ? '⏹' : '🎙️'; H('wave').classList.toggle('live', on && !!meter); H('mst').innerHTML = on ? 'Te estoy escuchando…<small>Habla con naturalidad. Toca ⏹ cuando termines.</small>' : (fin ? 'Listo. Puedes seguir hablando o corregir.<small>Toca 🎙️ para agregar más</small>' : 'Toca el micrófono y cuéntame<small>Verás tus palabras aquí mientras hablas · <a href="#" class="dg">¿No funciona?</a></small>'); paint(); };
   /* Memo «entiende» la respuesta y marca la opción por la persona (se puede cambiar) */
   const entender = () => {
     const txt = fin; if (!txt) return; let dijo = '';
@@ -333,18 +333,28 @@ function dQ() {
     $$('#qh button').forEach(b => b.classList.toggle('on', A.horas === +b.dataset.v)); $$('#qp button').forEach(b => b.classList.toggle('on', A.personas === +b.dataset.v));
     $$('#qm button').forEach(b => b.classList.toggle('on', (A[q.campo] || []).includes(b.dataset.k))); $$('#qr button').forEach(b => b.classList.toggle('on', A.listo === +b.dataset.v));
   };
-  async function startMic() {
+  /* el dictado arranca en el mismo toque (el navegador lo exige); el medidor muestra si de verdad llega sonido */
+  let wd = null;
+  function startMic() {
     if (AL.listening() || editing) return;
-    hush();
-    if (!(await AL.pedirMic())) { setRec(false); H('mst').innerHTML = '🔒 Micrófono bloqueado<small>Toca el candado junto a la dirección → Micrófono → Permitir. O usa ✍️ Escribir.</small>'; return; }
-    const base = fin ? fin + ' ' : '';
+    hush(); clearTimeout(wd);
+    const base = fin ? fin + ' ' : ''; let got = false;
     const ok = AL.listen({ continuous: true,
-      onText: t => { inter = ''; fin = (base + t).trim(); R.t[i] = fin; if (H('live')) H('live').innerHTML = `${esc(fin)}<span class="cur"></span>`; },
-      onEnd: f => { fin = (base + f).trim(); inter = ''; R.t[i] = fin; setRec(false); entender(); } });
-    setRec(ok);
+      onText: t => { got = true; inter = ''; fin = (base + t).trim(); R.t[i] = fin; if (H('live')) H('live').innerHTML = `${esc(fin)}<span class="cur"></span>`; },
+      onEnd: f => { clearTimeout(wd); medidor(false); fin = (base + f).trim(); inter = ''; R.t[i] = fin; setRec(false); entender(); if (AL.lastMicError && AL.lastMicError !== 'no-speech' && AL.lastMicError !== 'aborted' && !got) micAviso(AL.lastMicError); },
+      onError: code => micAviso(code) });
+    setRec(ok); if (!ok) { micAviso(window.SpeechRecognition || window.webkitSpeechRecognition ? 'x' : 'sin'); return; }
+    AL.lastMicError = ''; medidor(true);
+    wd = setTimeout(() => { if (!AL.listening() || got || !H('mst')) return; const m = meter ? meter.max() : -1;
+      H('mst').innerHTML = m >= 0 && m < 4 ? '🔇 No llega sonido del micrófono<small>Revisa que no esté silenciado o elige otro en el candado 🔒 → Micrófono. <a href="#" class="dg">Diagnóstico</a></small>' : '🤔 Te oigo, pero el dictado no escribe<small>Usa Chrome o Edge y revisa internet, o toca ✍️ Escribir. <a href="#" class="dg">Diagnóstico</a></small>'; }, 7000);
   }
+  function micAviso(code) {
+    const M = { 'not-allowed': ['🔒 Micrófono bloqueado', 'Toca el candado junto a la dirección → Micrófono → Permitir, y recarga.'], 'service-not-allowed': ['🚫 Este navegador no permite dictar', 'Abre el portal en Google Chrome o Microsoft Edge.'], 'audio-capture': ['🎙️ No encuentro micrófono', 'Conéctalo o revisa que el equipo no lo tenga silenciado.'], 'network': ['📶 El dictado no responde', 'Abre el portal en Chrome o Edge (no dentro de otra app) y revisa internet.'], 'sin': ['🚫 Este navegador no puede dictar', 'Usa Google Chrome o Microsoft Edge, o toca ✍️ Escribir.'] }[code] || ['🎙️ No pude escuchar', 'Toca el micrófono otra vez o usa ✍️ Escribir.'];
+    if (H('mst')) H('mst').innerHTML = `${M[0]}<small>${M[1]} <a href="#" class="dg">Diagnóstico</a></small>`;
+  }
+  H('rc').addEventListener('click', e => { if (e.target.closest('.dg')) { e.preventDefault(); diagnosticoMic(); } });
   setRec(false);
-  H('mic').onclick = () => AL.listening() ? AL.stopListen() : startMic();
+  H('mic').onclick = () => { if (AL.listening()) { AL.stopListen(); medidor(false); } else startMic(); };
   H('ed').onclick = () => { AL.stopListen(); editing = !editing; if (editing) { H('live').innerHTML = `<textarea id="ta" placeholder="Escribe aquí tu respuesta…">${esc(fin)}</textarea>`; H('ta').focus(); H('ta').oninput = e => { fin = e.target.value; R.t[i] = fin; }; H('ed').textContent = '✓ Listo'; } else { H('ed').textContent = '✍️ Escribir'; paint(); entender(); } };
   $$('.ejs button').forEach(b => b.onclick = () => { fin = (fin ? fin + ' ' : '') + b.dataset.e; R.t[i] = fin; editing = false; H('ed').textContent = '✍️ Escribir'; paint(); entender(); });
   const one = (sel, set) => $$(sel + ' button').forEach(b => b.onclick = () => { set(b.dataset); syncChips(); H('und').classList.remove('on'); });
@@ -360,6 +370,37 @@ function dQ() {
     R.pre[i + 1] = await reflejo(i); step++; draw();
   };
 }
+/* medidor de sonido real del micrófono (las barras se mueven con la voz) */
+let meter = null;
+async function medidor(on) {
+  if (!on) { if (meter) { meter.stop(); meter = null; } $$('#wave').forEach(w => w.classList.remove('live')); return; }
+  if (meter || !navigator.mediaDevices) return;
+  try {
+    const st = await navigator.mediaDevices.getUserMedia({ audio: true }); AL.micOk = true;
+    if (!AL.listening()) { st.getTracks().forEach(t => t.stop()); return; }
+    const ac = new (window.AudioContext || window.webkitAudioContext)(), an = ac.createAnalyser(); an.fftSize = 256; ac.createMediaStreamSource(st).connect(an);
+    const buf = new Uint8Array(an.frequencyBinCount); let raf = 0, max = 0;
+    const loop = () => { an.getByteTimeDomainData(buf); let pk = 0; for (const v of buf) pk = Math.max(pk, Math.abs(v - 128)); max = Math.max(max, pk); $$('#wave i').forEach((b, k) => b.style.height = Math.max(14, Math.min(100, pk * (1.4 + (k * 37 % 5) / 3))) + '%'); raf = requestAnimationFrame(loop); };
+    meter = { stop() { cancelAnimationFrame(raf); st.getTracks().forEach(t => t.stop()); try { ac.close(); } catch (e) {} $$('#wave i').forEach(b => b.style.height = ''); }, max: () => max };
+    $$('#wave').forEach(w => w.classList.add('live')); loop();
+  } catch (e) { if (e && e.name === 'NotAllowedError') AL.lastMicError = 'not-allowed'; }
+}
+async function diagnosticoMic() {
+  AL.stopListen(true); medidor(false);
+  const SR = !!(window.SpeechRecognition || window.webkitSpeechRecognition), ua = navigator.userAgent, nav = /Edg\//.test(ua) ? 'Microsoft Edge' : /OPR\//.test(ua) ? 'Opera' : /Brave/.test(ua) || navigator.brave ? 'Brave' : /Electron/.test(ua) ? 'Navegador integrado de una app' : /Chrome\//.test(ua) ? 'Google Chrome' : /Firefox/.test(ua) ? 'Firefox' : /Safari/.test(ua) ? 'Safari' : 'Otro';
+  let perm = '¿?'; try { perm = (await navigator.permissions.query({ name: 'microphone' })).state; } catch (e) {}
+  const P = { granted: '✅ Permitido', denied: '❌ Bloqueado', prompt: '⏳ Aún no se ha pedido' }[perm] || perm;
+  AL.modal(`<h2>🔧 Diagnóstico del micrófono</h2><div class="sum" style="grid-template-columns:1fr 1fr"><div><b>Navegador</b>${nav}</div><div><b>Dictado por voz</b>${SR ? '✅ Disponible' : '❌ No disponible: usa Chrome o Edge'}</div><div><b>Permiso del micrófono</b>${P}</div><div><b>Último error del dictado</b>${esc(AL.lastMicError || 'ninguno')}</div><div style="grid-column:1/-1"><b>Prueba de sonido</b><span id="dgs">Habla durante 3 segundos…</span><div style="height:.6rem;background:#F3ECE0;border-radius:99px;margin-top:.4rem;overflow:hidden"><i id="dgb" style="display:block;height:100%;width:0;background:var(--gold);transition:width .1s"></i></div></div></div>
+  <p class="muted small" style="margin-top:.8rem">El dictado necesita <b>Google Chrome o Microsoft Edge</b> con internet y el micrófono permitido (candado 🔒 junto a la dirección). Mientras tanto, siempre puedes usar ✍️ Escribir.</p><div style="text-align:right;margin-top:.6rem"><button class="b1" onclick="AL.closeModal()">Listo</button></div>`);
+  try {
+    const st = await navigator.mediaDevices.getUserMedia({ audio: true }), ac = new (window.AudioContext || window.webkitAudioContext)(), an = ac.createAnalyser(); ac.createMediaStreamSource(st).connect(an);
+    const buf = new Uint8Array(an.frequencyBinCount); let max = 0; const t0 = Date.now();
+    await new Promise(res => { const f = () => { an.getByteTimeDomainData(buf); let pk = 0; for (const v of buf) pk = Math.max(pk, Math.abs(v - 128)); max = Math.max(max, pk); if (H('dgb')) H('dgb').style.width = Math.min(100, pk * 1.6) + '%'; if (Date.now() - t0 < 3000) requestAnimationFrame(f); else res(); }; f(); });
+    st.getTracks().forEach(t => t.stop()); ac.close();
+    if (H('dgs')) H('dgs').innerHTML = max > 6 ? '✅ El micrófono capta tu voz.' : '⚠️ Casi no llega sonido: revisa que el micrófono no esté silenciado o elige otro en el candado 🔒.';
+  } catch (e) { if (H('dgs')) H('dgs').innerHTML = '❌ No pude abrir el micrófono (' + esc(e.name || e.message) + '). Permítelo en el candado 🔒 y recarga.'; }
+}
+
 /* Memo valida lo que la persona dijo antes de seguir (IA si hay clave; si no, frases cálidas por categoría) */
 async function reflejo(i) {
   const A = R.a, L = (arr, x) => (x || []).map(k => MEM.lab(arr, k).toLowerCase()).join(' y ');
@@ -381,31 +422,52 @@ async function dGen() {
   shell('Gracias. Dame un momento: estoy empacando tu idea con todo lo que me contaste.', `<div style="text-align:center;padding:2.5rem 1rem"><div style="max-width:13rem;margin:0 auto;opacity:.92" class="pkw">${MEM.empaque({ nombre: '…', eslogan: 'Empacando tu idea', caso: R.a.caso, id: R.id })}</div><h2 style="margin-top:1rem">Memo está empacando tu idea…</h2><p class="hint">${AL.hasIA() ? 'La IA está redactando el nombre y la historia con tus seis respuestas.' : 'Armando tu idea con tus respuestas.'}</p></div>`);
   R.h = await historia(); dRev();
 }
+/* respuestas en lenguaje natural para la IA y para el borrador */
+const lst = (arr, x) => { const v = (x || []).map(k => MEM.lab(arr, k).replace(/^Que /, '').toLowerCase()); return v.length > 1 ? v.slice(0, -1).join(', ') + ' y ' + v[v.length - 1] : v[0] || ''; };
+const jsonSuave = t => { try { return AL.parseJSON(t); } catch (e) { const o = {}; ['nombre_idea', 'eslogan', 'historia_usuario', 'impacto', 'prioridad', 'primer_paso', 'aprendizaje'].forEach(k => { const m = String(t).match(new RegExp('"' + k + '"\\s*:\\s*"([\\s\\S]*?)"\\s*[,}]')); if (m) o[k] = m[1].replace(/\\n/g, ' '); }); if (!o.historia_usuario) throw new Error('la IA no devolvió el formato esperado'); return o; } };
 async function historia() {
   const base = historiaBasica();
   if (!AL.hasIA()) return base;
-  const sys = `Eres Memo, analista de negocio de Softgic. Con las seis respuestas de un colaborador de Alico (empaques flexibles y termoformados, Medellín) redacta su idea de IA como una oportunidad concreta. Devuelve SOLO JSON:
-{"nombre_idea":"2 a 5 palabras, creativo y memorable, en español, sin comillas ni la palabra IA al inicio","eslogan":"máx. 9 palabras, inspirador","historia_usuario":"Como <su cargo> de <su área> quiero <capacidad concreta de IA que pidió> para <beneficio que dijo que ganaría>, sin perder <algo que valora>","impacto":"1 frase con las horas por semana del equipo y el beneficio","prioridad":"Alta|Media|Baja","primer_paso":"1 frase concreta y pequeña para empezar en su área","aprendizaje":"1 frase: qué va a aprender la persona trabajando con esta IA"}
-Usa SOLO lo que dijo; no inventes cifras distintas a las dadas; tono positivo, centrado en ayudar a la persona, nunca en reemplazarla.`;
-  const c = MEM.caso(R.a.caso) || {};
-  const u = MEM.Q.map((q, k) => `${k + 1}. ${q.corto}: ${resumenResp(R, k)}`).join('\n') + `\nCargo: ${R.rol || 'colaborador'} · Área: ${R.area} · Horas del equipo por semana: ${MEM.horasEquipo(R)} · Caso elegido: ${c.n} (${c.valor})`;
-  try { const h = AL.parseJSON(await AL.claude(sys, u, { max: 800, tag: 'memorias-historia' })); return Object.assign(base, h, { via: 'ia' }); } catch (e) { return Object.assign(base, { err: e.message }); }
+  const c = MEM.caso(R.a.caso) || {}, A = R.a, hrs = MEM.horasEquipo(R);
+  const sys = `Eres Memo, consultor senior de Softgic. Un colaborador de Alico (empaques flexibles y termoformados, Medellín) acaba de responder un discovery de 6 preguntas sobre IA. Redacta su idea como una PETICIÓN REAL y humana a la gerencia de Alico.
+Devuelve SOLO un JSON válido, sin texto adicional:
+{"nombre_idea":"2 a 5 palabras, creativo, memorable, en español","eslogan":"máximo 9 palabras, inspirador","historia_usuario":"RESUMEN de 3 frases y máximo 70 palabras, en primera persona","impacto":"1 frase con las horas por semana del equipo y el beneficio","prioridad":"Alta|Media|Baja","primer_paso":"1 frase concreta y pequeña","aprendizaje":"1 frase: qué aprenderá la persona"}
+Reglas del RESUMEN (historia_usuario):
+1) Primera frase: parte del SENTIMIENTO real que reflejan sus respuestas (cansancio, frustración, presión, ilusión, orgullo…) y del dolor concreto que contó, con sus horas.
+2) Segunda frase: la petición clara y ejecutiva: qué quiere que haga la IA, empezando por el caso que eligió, y lo que ganaría su equipo y los clientes de Alico.
+3) Tercera frase: el apoyo que pide a Alico y a sus líderes y su disposición a aprender.
+Tono humano, cálido, profesional y ejecutivo; frases cortas; sin tecnicismos, sin listas, sin comillas, sin inventar cifras distintas a las dadas; la IA ayuda a la persona, nunca la reemplaza.`;
+  const u = `Cargo: ${R.rol || 'colaborador'} · Área: ${R.area}
+1. Lo que más tiempo o energía le quita: ${MEM.lab(MEM.DOLORES, A.dolor)}${R.t[0] ? ' — en sus palabras: ' + R.t[0] : ''}
+2. Tiempo: ${A.horas} h a la semana, le pasa a ${(MEM.PERSONAS.find(x => x[1] === A.personas) || [''])[0]} → ${hrs} h/semana del equipo${R.t[1] ? ' — ' + R.t[1] : ''}
+3. Quiere que la IA: ${lst(MEM.AYUDAS, A.ayuda)}${R.t[2] ? ' — ' + R.t[2] : ''}
+4. Ganaría: ${lst(MEM.GANAS, A.gana)}${R.t[3] ? ' — ' + R.t[3] : ''}
+5. Apoyo que pide a Alico y sus líderes: ${lst(MEM.APOYOS, A.apoyo)}; ganas de aprender ${A.listo}/5${R.t[4] ? ' — ' + R.t[4] : ''}
+6. Caso que quiere primero: ${c.n} (${c.valor})${R.t[5] ? ' — ' + R.t[5] : ''}`;
+  let err = '';
+  for (let k = 0; k < 2; k++) {
+    try { const h = jsonSuave(await AL.claude(sys, u, { max: 900, tag: 'memorias-historia' })); return Object.assign(base, h, { via: 'ia', err: '' }); }
+    catch (e) { err = e.message || String(e); if (/x-api-key|authentication|invalid|credit|permission|model/i.test(err)) break; }
+  }
+  return Object.assign(base, { err });
 }
 function historiaBasica() {
-  const c = MEM.caso(R.a.caso) || {}, hrs = MEM.horasEquipo(R), cut = (s, n) => { s = (s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n).replace(/\s\S*$/, '') + '…' : s; };
-  const ay = MEM.lab(MEM.AYUDAS, (R.a.ayuda || [])[0] || '').replace(/^Que /, '').toLowerCase(), ga = MEM.lab(MEM.GANAS, (R.a.gana || [])[0] || '').toLowerCase();
-  const NOM = { reportes: 'Turno sin papel', informacion: 'Respuesta al instante', inspeccion: 'Calidad a la vista', paros: 'Máquina que avisa', pedidos: 'Pedido a la vista', solicitudes: 'Cliente escuchado', planeacion: 'Compra inteligente', coordinacion: 'Planta conectada' };
-  return { nombre_idea: (NOM[R.a.dolor] || c.n || 'Mi idea') + ' · ' + R.area, eslogan: cut(R.t[5] || R.t[2] || ga, 60), historia_usuario: `Como ${(R.rol || 'colaborador').toLowerCase()} de ${R.area} quiero una IA que ${ay || 'me apoye'} para ${ga || 'trabajar mejor'}${R.t[0] ? ' y dejar de perder tiempo en «' + cut(R.t[0], 70) + '»' : ''}.`,
-    impacto: hrs ? `${hrs} horas a la semana del equipo para ${ga || 'tareas de más valor'}` : 'Menos tiempo en tareas repetitivas', prioridad: hrs > 40 ? 'Alta' : hrs > 10 ? 'Media' : 'Baja', primer_paso: c.piloto || 'Piloto corto en un área', aprendizaje: 'Trabajar con un asistente de IA en su puesto', caso: R.a.caso, via: 'reglas' };
+  const c = MEM.caso(R.a.caso) || {}, A = R.a, hrs = MEM.horasEquipo(R), cut = (s, n) => { s = (s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n).replace(/\s\S*$/, '') + '…' : s; };
+  const SENT = { reportes: 'Hoy siento que buena parte de mi tiempo se va en digitar y armar reportes a mano', informacion: 'Hoy me frustra perder tiempo buscando información y documentos que deberían estar a la mano', inspeccion: 'Hoy siento la presión de revisar la calidad a ojo, sabiendo que un defecto puede llegarle al cliente', paros: 'Hoy me pesa ver cómo los paros y las fallas de las máquinas se repiten sin que podamos anticiparlos', pedidos: 'Hoy siento que perseguir pedidos y despachos me quita energía que podría dar al cliente', solicitudes: 'Hoy siento la presión de atender solicitudes y reclamos que llegan por muchos canales', planeacion: 'Hoy me preocupa planear compras e inventarios con datos que llegan tarde', coordinacion: 'Hoy siento que coordinar áreas y turnos me consume más energía de la que debería' };
+  const CN = { vision: 'Calidad a la vista', maestro: 'Turno que habla', conocimiento: 'Respuesta al instante', reclamos: 'Cliente escuchado', torre: 'Planta en una pantalla' };
+  const ay = lst(MEM.AYUDAS, A.ayuda), ga = lst(MEM.GANAS, A.gana), apo = lst(MEM.APOYOS, A.apoyo), ganas = A.listo >= 4 ? 'Tengo muchas ganas de aprender' : A.listo >= 3 ? 'Estoy dispuesto(a) a aprender' : 'Quiero aprender a mi ritmo';
+  const resumen = `${SENT[A.dolor] || 'Hoy siento que muchas tareas repetitivas me quitan tiempo'}: cerca de ${A.horas} horas a la semana, algo que vive ${A.personas > 1 ? 'mi equipo' : 'mi puesto'}. Le pido a Alico una IA que ${ay || 'me apoye en lo repetitivo'}, empezando por ${c.n || 'un piloto en mi área'}, para lograr ${ga || 'más tiempo para lo importante'} y que nuestros clientes reciban un mejor servicio. ${ganas} y, para lograrlo, le pido a Alico y a mis líderes ${apo || 'acompañamiento'}.`;
+  return { nombre_idea: (CN[A.caso] || 'Mi idea') + ' · ' + R.area, eslogan: cut('IA que ' + (MEM.lab(MEM.AYUDAS, (A.ayuda || [])[0] || '').replace(/^Que /, '').toLowerCase() || 'me ayuda'), 60),
+    historia_usuario: resumen, impacto: hrs ? `${hrs} horas a la semana del equipo para ${ga || 'tareas de más valor'}` : 'Menos tiempo en tareas repetitivas', prioridad: hrs > 40 ? 'Alta' : hrs > 10 ? 'Media' : 'Baja', primer_paso: c.piloto || 'Piloto corto en un área', aprendizaje: 'Trabajar con un asistente de IA en su puesto', caso: A.caso, via: 'reglas' };
 }
 
 /* --- revisión: el empaque futurista + historia --- */
 function dRev() {
   const h = R.h, ia = h.via === 'ia';
   shell(`Así quedó tu idea empacada: ${h.nombre_idea}. Revisa que diga lo que quisiste decir y elige quién la va a apadrinar.`, `<div class="qn">Tu idea</div><h2>Así quedó tu memoria</h2>
-  <div class="via">${ia ? '✨ <span><b>Redactado con IA</b> a partir de tus seis respuestas.</span>' : `📝 <span>Borrador automático.${AL.hasIA() ? '' : ' Para que la IA lo redacte, conecta la clave de IA en ⚙️ Ajustes.'}</span>`}${AL.hasIA() ? '<button class="edit" id="rg" style="margin-left:0">✨ Redactar otra versión con IA</button>' : ''}</div>
+  <div class="via">${ia ? '✨ <span><b>Redactado con IA</b> a partir de tus seis respuestas.</span>' : `📝 <span>Borrador automático.${AL.hasIA() ? (h.err ? ' La IA no respondió: <b>' + esc(h.err.slice(0, 140)) + '</b>' : '') : ' Para que la IA lo redacte, conecta la clave de IA en ⚙️ Ajustes.'}</span>`}${AL.hasIA() ? '<button class="edit" id="rg" style="margin-left:0">✨ Redactar otra versión con IA</button>' : ''}</div>
   <div class="idea"><div class="pkw" id="pkw"><span class="bd">Orgullosamente Alico</span>${MEM.empaque({ nombre: h.nombre_idea, eslogan: h.eslogan, caso: R.a.caso, id: R.id })}</div>
-  <div><div class="fld"><label>Nombre de la idea</label><input id="rn" value="${esc(h.nombre_idea)}"></div><div class="fld"><label>Eslogan</label><input id="re" value="${esc(h.eslogan || '')}"></div><div class="fld"><label>Historia de usuario</label><textarea id="rh" rows="3">${esc(h.historia_usuario)}</textarea></div>
+  <div><div class="fld"><label>Nombre de la idea</label><input id="rn" value="${esc(h.nombre_idea)}"></div><div class="fld"><label>Eslogan</label><input id="re" value="${esc(h.eslogan || '')}"></div><div class="fld"><label>Historia de usuario · resumen de tu petición</label><textarea id="rh" rows="5">${esc(h.historia_usuario)}</textarea></div>
   <div class="f2"><div class="fld"><label>Padrino o madrina (quien la impulsa)</label><input id="pd" placeholder="Ej.: jefe del área" value="${esc(R.padrino)}"></div><div class="fld"><label>Primer paso</label><input id="pp" value="${esc(h.primer_paso || '')}"></div></div>
   <div class="sum" style="grid-template-columns:repeat(3,1fr)"><div><b>Impacto</b>${esc(h.impacto || '')}</div><div><b>Lo que vas a aprender</b>${esc(h.aprendizaje || '')}</div><div><b>Ganas de aprender</b>${MEM.LISTO[(R.a.listo || 3) - 1]} ${R.a.listo}/5</div></div></div></div>
   <div class="nav"><button class="b2" id="bk">← Corregir respuestas</button><button class="b1 bg" id="nx">${R.fotoOk ? 'Me gusta · foto 📸' : 'Me gusta · publicar ✨'}</button></div>`);
